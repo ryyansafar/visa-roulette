@@ -1,5 +1,7 @@
 # Prompt for Fathima: the voice immigration officer
 
+> Superseded by [FATHIMA_AIRPORT_EXPERIENCE_PROMPT.md](FATHIMA_AIRPORT_EXPERIENCE_PROMPT.md) (whole journey). Kept for its STT/TTS notes.
+
 Paste everything below the line into your coding assistant, with the repo open at its root. It is self-contained. You own this feature end to end; the rest of the booth is already built and tested.
 
 ---
