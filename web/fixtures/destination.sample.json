@@ -1,0 +1,23 @@
+{
+  "iso3": "ARE",
+  "name": "United Arab Emirates",
+  "highlights": [
+    {
+      "title": "Burj Khalifa and Downtown",
+      "blurb": "The tallest tower in the world with a fountain show at its foot."
+    },
+    {
+      "title": "Desert safari",
+      "blurb": "Dune driving and a camp dinner just outside the city."
+    },
+    {
+      "title": "Old Dubai souks",
+      "blurb": "Gold, spice and textile markets across the creek by abra boat."
+    }
+  ],
+  "season": "Cooler months, roughly November to March.",
+  "tip": "Dress modestly in malls and mosques.",
+  "source": "https://www.visitdubai.com",
+  "as_of": "2026-10-11",
+  "curated": true
+}

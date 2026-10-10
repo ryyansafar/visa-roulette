@@ -23,6 +23,7 @@ A travel booth you can play. You walk up to an immigration desk and show a (samp
 - Paper-plane throw with real flight physics (`flight.py`: a 5 g point mass with lift, drag, stall and a dihedral-damped banked turn). Throw the plane straight at the webcam, nose first: the booth tracks the blob, reads the approach speed from how fast it grows, aims by sideways drift and sets the launch angle from the climb (`POST /api/throw/camera`). The ESP32 IMU board also shapes the flight: tilt it when held to bank the plane and its in-flight tumbling (flutter) costs range. Flick and single-switch inputs fly the same model. A fast spinning three.js globe slows and lands with a pin
 - Booth officer: a local Ollama model (default `gemma3n:e4b`, override with `VISA_ROULETTE_MODEL`) explains the verdict in plain words, bound to the rules facts; ungrounded or slow answers fall back to a template (`POST /api/operator/ask`)
 - Immigration interview: `POST /api/officer/start` and `POST /api/officer/turn` run a scripted, strictness-aware interview per destination (personas in `rules/officer_personas.json`). The backend owns the questions and the stamp (always the rules engine's verdict, with source and as-of date); the local model only adds a short grounded reaction. Strictness values are an unverified synthesis, not official data.
+- Destination copy: `GET /api/destination/{iso3}` returns curated highlights, season, tip and source for 11 countries (`rules/destinations.json`, unverified, no prices); other countries return an honest empty shape. Fixture: `web/fixtures/destination.sample.json`.
 - "What you need": for the landing country, the visa status and the documents to prepare, each linked to the matching pre-flight rule and an official-source link
 - QR hand-off: the landing spot becomes a QR (laptop LAN address, no internet needed on the phone) that opens a trip card with the visa verdict, its source and date, pre-flight status and the documents to carry
 - Passport duel: a second visitor with a different passport lands on the same country; the booth shows both verdicts side by side and crowns the stronger passport (draws are shown as draws)
@@ -57,7 +58,7 @@ uv venv .venv-tools && uv pip install --python .venv-tools/bin/python -r tools/r
 .venv-tools/bin/python tools/make_fixtures.py          # writes fixtures/
 python3 -m http.server 8000 --directory fixtures --bind 0.0.0.0
 # open http://<laptop-ip>:8000/wallet.html on a phone on the same Wi-Fi
-cd backend && ../.venv-tools/bin/python -m pytest -q    # 322 tests
+cd backend && ../.venv-tools/bin/python -m pytest -q    # 327 tests
 ```
 
 | Persona | Trap | Expected |

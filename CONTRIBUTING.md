@@ -17,7 +17,7 @@ Thanks for helping with Visa Roulette. This repo is being built during a hackath
 When behaviour, setup steps or features change, update `README.md` and `PLAN.md` in the same pull request.
 
 ## Tests
-`.venv/bin/python -m pytest backend/tests -q` (322 tests; serve with `--host 0.0.0.0` to test the phone QR on the same Wi-Fi). The front end is vanilla ES modules with no build step; three.js is vendored in `web/vendor/`. The whole airport-experience brief (QR, phone OCR, talking immigration officer, papers, gate, outdoors) is in [docs/FATHIMA_AIRPORT_EXPERIENCE_PROMPT.md](docs/FATHIMA_AIRPORT_EXPERIENCE_PROMPT.md); it supersedes the voice-only brief. Visa and checklist rules are unverified demo rules: add a `source_url` and `as_of` to every new one.
+`.venv/bin/python -m pytest backend/tests -q` (327 tests; serve with `--host 0.0.0.0` to test the phone QR on the same Wi-Fi). The front end is vanilla ES modules with no build step; three.js is vendored in `web/vendor/`. The whole airport-experience brief (QR, phone OCR, talking immigration officer, papers, gate, outdoors) is in [docs/FATHIMA_AIRPORT_EXPERIENCE_PROMPT.md](docs/FATHIMA_AIRPORT_EXPERIENCE_PROMPT.md); it supersedes the voice-only brief. Visa and checklist rules are unverified demo rules: add a `source_url` and `as_of` to every new one.
 
 ## Socials and support
 - Portfolio: https://ryyansafar.site
