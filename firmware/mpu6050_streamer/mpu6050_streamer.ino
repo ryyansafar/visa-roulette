@@ -4,13 +4,24 @@
 
 // Wiring: ESP32(3V3->GY-521 VCC, GND->GND, 21->SDA, 22->SCL)
 
+#ifndef LED_BUILTIN
+#define LED_BUILTIN 2
+#endif
+
 #ifndef M_PI
 #define M_PI 3.141592653589793
 #endif
 
-const char* WIFI_SSID = "YOUR_SSID";
-const char* WIFI_PASS = "YOUR_PASSWORD";
-const char* SERVER_HOST = "192.168.1.100";
+// Copy secrets.example.h to secrets.h (git-ignored) and fill in the Wi-Fi and booth laptop address.
+#if __has_include("secrets.h")
+#include "secrets.h"
+#else
+#define WIFI_SSID "YOUR_SSID"
+#define WIFI_PASS "YOUR_PASSWORD"
+#define SERVER_HOST_IP "192.168.1.100"
+#endif
+
+const char* SERVER_HOST = SERVER_HOST_IP;
 const int SERVER_PORT = 8766;
 const char* WS_PATH = "/ws/imu";
 
@@ -36,6 +47,13 @@ struct Sample {
 } samples[BATCH_SIZE];
 
 WebSocketsClient webSocket;
+
+void send_batch();
+void read_imu(int16_t& ax, int16_t& ay, int16_t& az, int16_t& gx, int16_t& gy, int16_t& gz);
+void read_gyro(int16_t& gx, int16_t& gy, int16_t& gz);
+void read_bytes(uint8_t reg, uint8_t* buf, int len);
+void write_reg(uint8_t reg, uint8_t val);
+void webSocketEvent(WStype_t type, uint8_t* payload, size_t length);
 
 void setup() {
   Serial.begin(115200);

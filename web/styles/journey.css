@@ -1,0 +1,219 @@
+/* Airport Experience (post-landing journey). Built on tokens.css - see docs/DESIGN.md for the rules
+   this follows: hairline grid, one signal colour, mechanical motion, no gradients/glass/glow. */
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.journey-main {
+  flex: 1;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--gutter);
+  display: grid;
+  gap: 18px;
+  align-content: start;
+  min-width: 0;
+}
+
+.journey-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: var(--hairline);
+  padding-bottom: 8px;
+}
+
+.journey-step {
+  font-family: var(--font-data);
+  font-size: var(--t-12);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.journey-skip {
+  font-family: var(--font-data);
+  font-size: var(--t-12);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 4px;
+}
+.journey-skip:hover, .journey-skip:focus-visible { color: var(--signal); }
+
+.scene[hidden] { display: none; }
+.scene {
+  display: grid;
+  gap: 16px;
+  animation: slide-in 220ms var(--ease-mech);
+}
+@keyframes slide-in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .scene { animation: none; } }
+
+.scene h2 {
+  margin: 0;
+  font: 700 var(--t-28)/1.1 var(--font-display);
+}
+
+.scene p { margin: 0; }
+
+.btn-primary {
+  font: 700 var(--t-14)/1 var(--font-display);
+  letter-spacing: 0.02em;
+  background: var(--signal);
+  color: var(--ink);
+  border: none;
+  padding: 14px 18px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.btn-primary:hover, .btn-primary:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+.btn-secondary {
+  font: 600 var(--t-14)/1 var(--font-data);
+  background: none;
+  color: var(--text);
+  border: var(--hairline);
+  padding: 12px 16px;
+  cursor: pointer;
+}
+.btn-secondary:hover, .btn-secondary:focus-visible { border-color: var(--signal); color: var(--signal); }
+
+/* --- Boarding-pass check-in --- */
+.scan-button { display: block; text-align: center; }
+.scan-status { min-height: 1.4em; font-family: var(--font-data); font-size: var(--t-12); color: var(--muted); letter-spacing: 0.06em; }
+.scan-status[data-tone="bad"] { color: var(--held, var(--signal)); }
+#desk-typed-form { display: flex; gap: 8px; }
+#desk-typed-input {
+  flex: 1; min-width: 0; background: transparent; color: var(--text); border: var(--hairline); border-radius: 0;
+  padding: 12px 14px; font: 400 var(--t-14)/1.2 var(--font-data);
+}
+#desk-typed-input::placeholder { color: var(--muted); }
+#desk-typed-input:focus-visible { outline: 2px solid var(--signal); outline-offset: 1px; }
+.fields dt { font-family: var(--font-data); font-size: var(--t-12); color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+.fields dd { margin: 0 0 8px; font: 700 var(--t-18)/1.2 var(--font-display); }
+
+/* --- Security / papers drawer --- */
+.need-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.need-list li {
+  border: var(--hairline);
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font: 600 var(--t-14)/1.3 var(--font-display);
+}
+.need-list li[data-held="true"] { border-color: var(--go); color: var(--go); }
+
+/* --- Immigration desk --- */
+.desk-header { display: flex; justify-content: space-between; align-items: center; }
+.desk-title { font: 700 var(--t-18)/1.1 var(--font-display); }
+.strictness-dial { font-family: var(--font-data); font-size: var(--t-12); color: var(--muted); letter-spacing: 0.08em; }
+
+.officer-face {
+  justify-self: center;
+  width: 140px;
+  height: 140px;
+}
+.officer-face .mouth { transition: transform 90ms linear; transform-origin: center; }
+.officer-face.speaking .mouth { animation: talk 420ms ease-in-out infinite; }
+.officer-face .eye { animation: blink 4800ms steps(1) infinite; }
+@keyframes talk { 0%, 100% { transform: scaleY(0.4); } 50% { transform: scaleY(1); } }
+@keyframes blink { 0%, 96%, 100% { transform: scaleY(1); } 98% { transform: scaleY(0.1); } }
+@media (prefers-reduced-motion: reduce) {
+  .officer-face.speaking .mouth, .officer-face .eye { animation: none; }
+}
+
+.desk-state {
+  font-family: var(--font-data);
+  font-size: var(--t-12);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--signal);
+  text-align: center;
+}
+
+.caption-box { border: var(--hairline); padding: 14px; min-height: 48px; }
+.caption-box.officer { color: var(--text); }
+.caption-box.visitor { color: var(--muted); font-style: italic; }
+
+.concerns { font-family: var(--font-data); font-size: var(--t-12); color: var(--warn); }
+
+/* --- Papers --- */
+.paper-cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.paper-cards li {
+  border: var(--hairline);
+  padding: 12px 14px;
+  cursor: pointer;
+  font: 600 var(--t-14)/1.3 var(--font-display);
+  transition: transform 180ms var(--ease-mech);
+}
+.paper-cards li[data-placed="true"] {
+  border-color: var(--go);
+  color: var(--go);
+  transform: translateX(8px);
+}
+@media (prefers-reduced-motion: reduce) { .paper-cards li { transition: none; } }
+
+/* --- Gate / arrivals --- */
+.arrivals-board {
+  border: var(--hairline);
+  padding: 20px;
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+.flap-row { display: flex; flex-wrap: wrap; gap: 2px; max-width: 100%; }
+.flap {
+  font: 700 var(--t-28)/1 var(--font-data);
+  background: var(--ink-2);
+  padding: 2px 4px;
+  min-width: 0.65em;
+  text-align: center;
+}
+.flap.ticking { animation: flap-tick var(--tick) var(--ease-mech); }
+@keyframes flap-tick { from { opacity: 0.2; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .flap.ticking { animation: none; } }
+
+.source-line { font-family: var(--font-data); font-size: var(--t-12); color: var(--muted); }
+.source-line a { color: var(--muted); }
+
+/* --- Outdoors --- */
+.highlight-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.highlight-list li {
+  border: var(--hairline);
+  padding: 14px;
+  animation: rise 260ms var(--ease-mech) backwards;
+}
+.highlight-list li:nth-child(1) { animation-delay: 0ms; }
+.highlight-list li:nth-child(2) { animation-delay: 80ms; }
+.highlight-list li:nth-child(3) { animation-delay: 160ms; }
+.highlight-list li:nth-child(4) { animation-delay: 240ms; }
+.highlight-list li:nth-child(5) { animation-delay: 320ms; }
+.highlight-list li:nth-child(6) { animation-delay: 400ms; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .highlight-list li { animation: none; } }
+
+.highlight-list h3 { margin: 0 0 4px; font: 700 var(--t-18)/1.2 var(--font-display); }
+.highlight-list p { color: var(--muted); font-size: var(--t-14); }
+
+.season-tip { font-family: var(--font-data); font-size: var(--t-14); color: var(--muted); }
+
+.scan-frame { border: var(--hairline); background: var(--bg, #000); aspect-ratio: 16 / 9; overflow: hidden; }
+.scan-frame[hidden] { display: none; }
+.scan-frame video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.scan-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (min-width: 900px) {
+  .journey-main { max-width: 760px; }
+}

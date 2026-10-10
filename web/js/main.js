@@ -573,6 +573,15 @@ async function onConsent(event) {
   }
 }
 
+function startAirportJourney() {
+  const { profile, landing } = state;
+  sessionStorage.setItem("vr_journey", JSON.stringify({
+    nationality: profile.nationality, destination: landing.iso3, visas: profile.visas || [], name: profile.name || "", needs: [],
+  }));
+  closeCamera();
+  location.href = "/journey.html";
+}
+
 const countryName = (iso3) => state.countries?.find((c) => c.iso3 === iso3)?.name || iso3;
 const VISA_FOR_YOU = {
   free: "Visa-free for you too.",
@@ -631,6 +640,7 @@ async function init() {
   $("f-consent").addEventListener("change", (e) => ($("confirm").disabled = !e.target.checked));
   $("consent-form").addEventListener("submit", onConsent);
   $("restart").addEventListener("click", () => { resetThrow(); show("profile"); });
+  $("to-airport").addEventListener("click", startAirportJourney);
   await initChecklist({
     api,
     setStatus,
