@@ -23,6 +23,9 @@ A travel booth you can play. You walk up to an immigration desk and show a (samp
 - Paper-plane throw: webcam motion tracking or an ESP32 IMU board flicks a plane across the map; a fast spinning three.js globe slows and lands with a pin
 - "What you need": for the landing country, the visa status and the documents to prepare, each linked to the matching pre-flight rule and an official-source link
 - QR hand-off: the landing spot becomes a QR (laptop LAN address, no internet needed on the phone) that opens a trip card with the visa verdict, its source and date, pre-flight status and the documents to carry
+- Passport duel: a second visitor with a different passport lands on the same country; the booth shows both verdicts side by side and crowns the stronger passport (draws are shown as draws)
+- Wrong-Document Pick: after landing, three documents for a made-up traveller are shown and one breaks a cited pre-flight rule (short passport validity or a name mismatch); tap it and the booth reveals the rule and its source
+- Souvenir swap and Tonight's Landings wall (`/wall.html`): opt-in, anonymous nickname and note, filtered for rude words; the wall shows live landings, the luckiest passport and paper-plane notes. Stored on the laptop only
 - Offline-first: the core flow needs no internet; three.js and all assets are vendored
 
 Still planned: destination pros-and-cons reports, accessible input beyond mouse and camera, WebMCP tools. See [PLAN.md](PLAN.md).
@@ -44,7 +47,7 @@ uv venv .venv-tools && uv pip install --python .venv-tools/bin/python -r tools/r
 .venv-tools/bin/python tools/make_fixtures.py          # writes fixtures/
 python3 -m http.server 8000 --directory fixtures --bind 0.0.0.0
 # open http://<laptop-ip>:8000/wallet.html on a phone on the same Wi-Fi
-cd backend && ../.venv-tools/bin/python -m pytest -q    # 191 tests
+cd backend && ../.venv-tools/bin/python -m pytest -q    # 241 tests
 ```
 
 | Persona | Trap | Expected |
