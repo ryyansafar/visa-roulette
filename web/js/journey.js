@@ -1,20 +1,35 @@
-// Airport Experience - static click-through on mock data (step 1 of the build in
-// docs/FATHIMA_AIRPORT_EXPERIENCE_PROMPT.md). Scenes 2-7 of the journey; scene 1 (trip card) lives
-// in phone.html, which links here. Swapping each scene to the real endpoints is a render-function
-// change only - the data shapes already match the backend contract.
+// Airport Experience - scenes 2-7 of the journey (scene 1, the trip card, is phone.html, which
+// links here). Check-in and security still use mock data (not yet wired, see
+// docs/FATHIMA_AIRPORT_EXPERIENCE_PROMPT.md step 2); the desk, papers, gate and outdoors scenes
+// call the real backend, with sessionStorage from phone.html giving the real trip context.
 
-import {
-  MOCK_PROFILE, MOCK_BOARDING_PASS, MOCK_STAMP, MOCK_PAPERS,
-  MOCK_PERSONA, MOCK_INTERVIEW, MOCK_VERDICT_LINE, loadDestination,
-} from "./journey_data.js";
+import { MOCK_PROFILE, MOCK_BOARDING_PASS, MOCK_PAPERS } from "./journey_data.js";
+import { fetchDestination } from "./officer_api.js";
+import * as desk from "./desk.js";
 
 const SCENES = ["checkin", "security", "desk", "papers", "gate", "outdoors"];
 let index = 0;
-let interviewStep = 0;
-const placedPapers = new Set();
 const heldItems = new Set();
+const placedPapers = new Set();
+let currentPapers = MOCK_PAPERS;
+let currentStamp = null;
+let currentConcerns = 0;
 
 function $(id) { return document.getElementById(id); }
+
+function context() {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem("vr_journey") || "null");
+    if (saved && saved.nationality && saved.destination) return saved;
+  } catch { /* fall through to mock */ }
+  return { nationality: MOCK_PROFILE.nationality, destination: MOCK_PROFILE.destination, visas: [] };
+}
+
+let destinationInfoPromise = null;
+function destinationInfo() {
+  destinationInfoPromise ||= fetchDestination(context().destination);
+  return destinationInfoPromise;
+}
 
 function showScene(name) {
   for (const scene of SCENES) {
@@ -28,18 +43,17 @@ function goTo(name) {
   index = SCENES.indexOf(name);
   showScene(name);
   if (name === "security") renderSecurity();
-  if (name === "desk") renderInterviewTurn();
+  if (name === "desk") enterDesk();
   if (name === "papers") renderPapers();
   if (name === "gate") renderGate();
   if (name === "outdoors") renderOutdoors();
 }
 
 function next() {
-  const target = SCENES[Math.min(index + 1, SCENES.length - 1)];
-  goTo(target);
+  goTo(SCENES[Math.min(index + 1, SCENES.length - 1)]);
 }
 
-// --- Scene: boarding-pass check-in ---
+// --- Scene: boarding-pass check-in (mock - OCR wiring is a separate step) ---
 function renderCheckin() {
   $("checkin-demo").addEventListener("click", () => {
     const pass = MOCK_BOARDING_PASS;
@@ -56,7 +70,7 @@ function renderCheckin() {
   $("checkin-confirm").addEventListener("click", next);
 }
 
-// --- Scene: security / papers drawer ---
+// --- Scene: security / papers drawer (mock list - real needs() wiring is a separate step) ---
 function renderSecurity() {
   const list = $("need-list");
   list.replaceChildren();
@@ -75,79 +89,32 @@ function renderSecurity() {
 }
 $("security-continue").addEventListener("click", () => goTo("desk"));
 
-// --- Scene: immigration desk ---
-function strictnessDots(level) {
-  return "●".repeat(level) + "○".repeat(5 - level);
+// --- Scene: immigration desk (real /api/officer/*) ---
+function enterDesk() {
+  destinationInfo(); // kick off now so it is likely ready by the gate scene
+  desk.start(context(), {
+    onDocuments(papers) {
+      currentPapers = papers.length ? papers : MOCK_PAPERS;
+      goTo("papers");
+    },
+    onVerdict(stamp, concerns) {
+      currentStamp = stamp;
+      currentConcerns = concerns;
+      goTo("gate");
+    },
+    onOffline() {
+      currentStamp = null;
+      currentConcerns = 0;
+      goTo("gate");
+    },
+  });
 }
-
-function speak(text, done) {
-  const caption = $("officer-caption");
-  const face = $("officer-face");
-  const state = $("desk-state");
-  face.classList.add("speaking");
-  state.textContent = "Speaking";
-  caption.textContent = text;
-  // Mock timing only: the real build drives this from actual TTS audio length / boundary events.
-  const settle = Math.min(2600, 500 + text.length * 35);
-  setTimeout(() => {
-    face.classList.remove("speaking");
-    state.textContent = done ? "" : "Listening";
-  }, settle);
-}
-
-function renderInterviewTurn() {
-  $("desk-title").textContent = MOCK_PERSONA.title;
-  $("desk-strictness").textContent = `How thorough this desk usually is: ${strictnessDots(MOCK_PERSONA.strictness)}`;
-  $("visitor-caption").hidden = true;
-  $("desk-next").hidden = false;
-
-  if (interviewStep >= MOCK_INTERVIEW.length) {
-    speak(MOCK_VERDICT_LINE, true);
-    $("desk-next").hidden = true;
-    setTimeout(() => goTo("gate"), 1800);
-    return;
-  }
-
-  const turn = MOCK_INTERVIEW[interviewStep];
-  speak(turn.say, false);
-
-  if (turn.stage === "documents_check") {
-    $("desk-next").hidden = true;
-    setTimeout(() => goTo("papers"), 1200);
-  }
-}
-
-function advanceInterview(said) {
-  if (said) {
-    $("visitor-caption").hidden = false;
-    $("visitor-caption").textContent = said;
-  }
-  interviewStep += 1;
-  renderInterviewTurn();
-}
-
-$("desk-next").addEventListener("click", () => {
-  const turn = MOCK_INTERVIEW[interviewStep];
-  advanceInterview(turn ? turn.said : null);
-});
-
-$("desk-typed-toggle").addEventListener("click", () => {
-  $("desk-typed-form").hidden = !$("desk-typed-form").hidden;
-});
-
-$("desk-typed-form").addEventListener("submit", (event) => {
-  event.preventDefault();
-  const input = $("desk-typed-input");
-  advanceInterview(input.value || "(no answer)");
-  input.value = "";
-  $("desk-typed-form").hidden = true;
-});
 
 // --- Scene: papers ---
 function renderPapers() {
   const list = $("paper-cards");
   list.replaceChildren();
-  for (const paper of MOCK_PAPERS) {
+  for (const paper of currentPapers) {
     const li = document.createElement("li");
     li.textContent = paper.label;
     li.dataset.placed = String(placedPapers.has(paper.id));
@@ -160,8 +127,11 @@ function renderPapers() {
   }
 }
 $("papers-continue").addEventListener("click", () => {
-  interviewStep += 1; // past documents_check, toward verdict
-  goTo("desk");
+  // Show the desk UI again without starting a new session - this continues the one from
+  // enterDesk(), it does not call desk.start() again.
+  index = SCENES.indexOf("desk");
+  showScene("desk");
+  desk.submitDocuments();
 });
 
 // --- Scene: gate / arrivals ---
@@ -171,7 +141,7 @@ function flapRow(text) {
   [...text.toUpperCase()].forEach((ch, i) => {
     const span = document.createElement("span");
     span.className = "flap ticking";
-    span.textContent = ch === " " ? " " : ch;
+    span.textContent = ch === " " ? " " : ch;
     span.style.animationDelay = `${i * 40}ms`;
     row.append(span);
   });
@@ -181,29 +151,37 @@ function sourceHost(url) {
   try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return "the official source"; }
 }
 
-function renderGate() {
-  flapRow(MOCK_PROFILE.destinationName);
-  const stamp = $("gate-stamp");
-  stamp.textContent = MOCK_STAMP.label;
-  stamp.hidden = false;
-  stamp.classList.add("thud");
-  $("gate-note").textContent = MOCK_STAMP.note;
-  $("gate-source").textContent =
-    `Source: ${sourceHost(MOCK_STAMP.source_url)}, as of ${MOCK_STAMP.as_of}.` +
-    (MOCK_STAMP.verified ? "" : " Demo rules, unverified.");
+async function renderGate() {
+  const dest = await destinationInfo();
+  flapRow(dest.name || context().destination);
+  const stampEl = $("gate-stamp");
+  if (currentStamp) {
+    stampEl.textContent = currentStamp.label;
+    stampEl.hidden = false;
+    stampEl.classList.add("thud");
+    $("gate-note").textContent = currentStamp.note;
+    $("gate-source").textContent =
+      `Source: ${sourceHost(currentStamp.source_url)}, as of ${currentStamp.as_of}.` +
+      (currentStamp.verified ? "" : " Demo rules, unverified.") +
+      (currentConcerns ? " Answers can be noted. The stamp comes from the rules." : "");
+  } else {
+    stampEl.hidden = true;
+    $("gate-note").textContent = "The desk could not be reached, so there is no stamp to show this time.";
+    $("gate-source").textContent = "";
+  }
 }
 $("gate-continue").addEventListener("click", () => goTo("outdoors"));
 
 // --- Scene: outdoors ---
 async function renderOutdoors() {
-  const dest = await loadDestination();
+  const dest = await destinationInfo();
   $("outdoors-title").textContent = `Welcome to ${dest.name}`;
-  $("outdoors-season").textContent = dest.season;
-  $("outdoors-tip").textContent = dest.tip;
-  $("outdoors-source").textContent = `Source: ${sourceHost(dest.source)}, as of ${dest.as_of}.`;
+  $("outdoors-season").textContent = dest.season || "";
+  $("outdoors-tip").textContent = dest.tip || "";
+  $("outdoors-source").textContent = dest.source ? `Source: ${sourceHost(dest.source)}, as of ${dest.as_of}.` : "";
   const list = $("outdoors-highlights");
   list.replaceChildren();
-  for (const item of dest.highlights) {
+  for (const item of dest.highlights || []) {
     const li = document.createElement("li");
     const h3 = document.createElement("h3"); h3.textContent = item.title;
     const p = document.createElement("p"); p.textContent = item.blurb;
@@ -218,7 +196,8 @@ $("outdoors-done").addEventListener("click", () => {
 // --- Skip: moves past the current scene without blocking the journey ---
 $("journey-skip").addEventListener("click", () => {
   if (SCENES[index] === "desk" || SCENES[index] === "papers") {
-    interviewStep = MOCK_INTERVIEW.length;
+    currentStamp = null;
+    currentConcerns = 0;
     goTo("gate");
   } else {
     next();

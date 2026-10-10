@@ -45,12 +45,15 @@
       <div class="caption-box officer" id="officer-caption" role="status"></div>
       <div class="caption-box visitor" id="visitor-caption" hidden></div>
       <p class="concerns" id="desk-concerns" hidden></p>
-      <button class="btn-primary" id="desk-next" type="button">Continue</button>
-      <p class="help"><button class="journey-skip" id="desk-typed-toggle" type="button">Type instead of speaking</button></p>
-      <form id="desk-typed-form" hidden>
-        <input id="desk-typed-input" type="text" maxlength="200" aria-label="Your answer" placeholder="Say your answer">
+      <button class="btn-primary" id="desk-talk" type="button">Hold to talk</button>
+      <form id="desk-typed-form">
+        <input id="desk-typed-input" type="text" maxlength="200" aria-label="Your answer" placeholder="Or type your answer">
         <button class="btn-secondary" type="submit">Send</button>
       </form>
+      <div id="desk-offline" class="caption-box officer" hidden>
+        <p>The desk can't be reached right now.</p>
+        <button class="btn-primary" id="desk-offline-skip" type="button">Skip to arrivals</button>
+      </div>
     </section>
 
     <section class="scene" id="scene-papers" data-scene="papers" hidden>

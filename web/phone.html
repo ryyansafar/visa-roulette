@@ -101,11 +101,20 @@
           document.getElementById("facts").append(dt, dd);
         }
         document.getElementById("start-journey").hidden = false;
+        window._vrTripData = data;
       } catch (err) {
         fail("This code is damaged or incomplete. Scan it again.");
       }
     })();
     document.getElementById("start-journey").addEventListener("click", () => {
+      if (window._vrTripData) {
+        sessionStorage.setItem("vr_journey", JSON.stringify({
+          nationality: window._vrTripData.profile.nationality,
+          destination: window._vrTripData.landing_iso3,
+          visas: window._vrTripData.profile.visas || [],
+          destinationName: window._vrTripData.landing_iso3,
+        }));
+      }
       window.location.href = `/journey.html${location.hash}`;
     });
   </script>
