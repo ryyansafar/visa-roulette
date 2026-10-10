@@ -16,6 +16,7 @@ from visa_roulette.handoff import Handoff, VisaVerdict, encode_handoff, qr_matri
 from visa_roulette.mrz import parse_td3
 from visa_roulette.profile import Iso3, TravelerProfile, VisaHeld, prefill_from_mrz
 from visa_roulette.visa import needs, reachable, requirement
+from visa_roulette.wall import build_wall
 from visa_roulette.throw import (
     Sample,
     ThrowDetector,
@@ -182,10 +183,12 @@ def _phone_origin(request: Request) -> str:
     return origin
 
 
-def _swap_souvenir(body: HandoffIn) -> Optional[Souvenir]:
+def _swap_souvenir(body: HandoffIn, status: str) -> Optional[Souvenir]:
     """Leave this traveller's souvenir, take a stranger's, and work out what that stranger's trip would be for you."""
     mine = Souvenir(
         origin=body.profile.origin,
+        nationality=body.profile.nationality,
+        status=status,
         landing_iso3=body.landing_iso3,
         nickname=clean(body.leave.nickname, MAX_NICKNAME, DEFAULT_NICKNAME),
         note=clean(body.leave.note, MAX_NOTE, DEFAULT_NOTE),
@@ -194,7 +197,12 @@ def _swap_souvenir(body: HandoffIn) -> Optional[Souvenir]:
     if theirs is None:
         return None
     verdict = requirement(body.profile.nationality, theirs.landing_iso3, body.profile.visas)
-    return theirs.model_copy(update={"for_you_status": verdict.status, "for_you_label": verdict.label[:40]})
+    return theirs.model_copy(update={"nationality": None, "status": None, "for_you_status": verdict.status, "for_you_label": verdict.label[:40]})
+
+
+@router.get("/api/wall")
+async def wall() -> dict:
+    return build_wall(journal.all())
 
 
 @router.post("/api/handoff")
@@ -202,7 +210,7 @@ async def handoff(request: Request, body: HandoffIn) -> dict:
     if not body.consent:
         raise ScanError("no_consent", "Agree to the trip and budget first.")
     verdict = requirement(body.profile.nationality, body.landing_iso3, body.profile.visas)
-    stranger = _swap_souvenir(body) if body.leave is not None else None
+    stranger = _swap_souvenir(body, verdict.status) if body.leave is not None else None
     card = Handoff.model_validate({
         **body.model_dump(exclude={"leave"}),
         "visa": VisaVerdict(status=verdict.status, label=verdict.label, as_of=verdict.as_of, source_url=verdict.source_url),

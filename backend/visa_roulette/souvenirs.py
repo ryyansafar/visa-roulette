@@ -38,6 +38,8 @@ class Souvenir(BaseModel):
     nickname: str = Field(max_length=MAX_NICKNAME)
     note: str = Field(max_length=MAX_NOTE)
     seeded: bool = False
+    nationality: Optional[str] = Field(default=None, pattern=r"^[A-Z]{3}$")
+    status: Optional[str] = Field(default=None, max_length=16)
     for_you_status: Optional[str] = Field(default=None, max_length=16)
     for_you_label: Optional[str] = Field(default=None, max_length=40)
 

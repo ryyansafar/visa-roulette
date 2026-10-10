@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tonight's landings - Visa Roulette</title>
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles/tokens.css">
+  <link rel="stylesheet" href="/styles/app.css">
+  <link rel="stylesheet" href="/styles/wall.css">
+</head>
+<body class="wall">
+  <header class="board">
+    <h1 class="mark">TONIGHT'S LANDINGS</h1>
+    <p class="status" id="clock" aria-hidden="true">LAYOVER 2026 &middot; TinkerSpace Calicut</p>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+  </header>
+
+  <main class="wall-grid">
+    <section class="wall-globe" aria-label="Globe of tonight's landings">
+      <canvas id="map" width="1200" height="800" aria-hidden="true"></canvas>
+      <p id="flash" class="flash" role="status" aria-live="polite" hidden></p>
+    </section>
+
+    <aside class="wall-side">
+      <section class="wall-stats" aria-labelledby="stats-h">
+        <p id="stats-h" class="label">PASSPORT OF THE NIGHT</p>
+        <p id="s-passport" class="wall-big">-</p>
+        <p id="s-passport-note" class="help"></p>
+        <dl class="wall-facts">
+          <div><dt class="label">Landings</dt><dd id="s-total">0</dd></div>
+          <div><dt class="label">Visa-free</dt><dd id="s-rate">0%</dd></div>
+          <div><dt class="label">Most landed</dt><dd id="s-top">-</dd></div>
+        </dl>
+      </section>
+
+      <section aria-labelledby="ticker-h">
+        <p id="ticker-h" class="label">LATEST</p>
+        <ol id="ticker" class="ticker"></ol>
+      </section>
+
+      <p class="help wall-plane">Write a line for the next stranger on a paper plane. Fly it into the bin by the booth. We read them all, out loud, before they go.</p>
+    </aside>
+  </main>
+
+  <footer class="foot">
+    <p>Entries marked demo are seeded travellers so the wall is never empty. Verdicts are unverified demo rules. Informational only.</p>
+    <p class="links">
+      <a href="https://ryyansafar.site">Portfolio</a>
+      <a href="https://github.com/ryyansafar">GitHub</a>
+      <a href="https://buymeacoffee.com/ryyansafar">Buy me a coffee</a>
+      <a href="https://www.paypal.com/paypalme/ryyansafar">PayPal</a>
+      <a href="https://razorpay.me/@ryyansafar">Razorpay</a>
+    </p>
+  </footer>
+  <script type="module" src="/js/wall.js"></script>
+</body>
+</html>
