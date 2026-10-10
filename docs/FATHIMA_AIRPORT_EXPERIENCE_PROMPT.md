@@ -66,7 +66,7 @@ Other endpoints you will use (all exist now unless marked soon):
 - `POST /api/scan/boarding-pass` (multipart image) returns the parsed pass. `POST /api/scan/passport` likewise.
 - `GET /api/handoff/{card_id}` returns `{ "text": "VR1...." }`; decode as `web/phone.html` already does.
 - `POST /api/visa/requirement`, `POST /api/checklist`, `POST /api/operator/ask` (typed Q&A to the same local model).
-- **Soon (by about 3:30 am):** `GET /api/destination/{iso3}` returning `{ "name", "highlights": [{"title","blurb"}], "season": "...", "tip": "...", "source": "..." }` for the outdoors scene. Until it lands, build against a local fixture `web/fixtures/destination.sample.json` with the same shape and swap with one line.
+- **Live now:** `GET /api/destination/{iso3}` returning `{ "name", "highlights": [{"title","blurb"}], "season": "...", "tip": "...", "source": "..." }` for the outdoors scene. The same shape is saved in `web/fixtures/destination.sample.json` for offline work. Countries without curated copy return `curated: false` and an empty `highlights` list, so show a generic outdoors scene for those.
 - **Soon:** `POST /api/officer/listen` (audio in, `{text}` out) once local Whisper is installed. Until then, **typed input and the browser's `SpeechRecognition` where available are the working path**.
 
 The officer's strictness per country is data (`rules/officer_personas.json`: title, strictness 1 to 5, tone, voice id). Your UI only shows `persona.title` and picks a voice and a face style from `persona.voice`.
