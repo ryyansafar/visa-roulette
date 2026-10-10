@@ -1,5 +1,4 @@
 import pytest
-
 from visa_roulette.flight import fly
 from visa_roulette.imu_sim import synth_throw
 from visa_roulette.throw import (

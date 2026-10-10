@@ -10,7 +10,13 @@ import math
 
 import numpy as np
 
-from visa_roulette.throw import MIN_SPEED, MAX_SPEED, ThrowError, ThrowResult, make_result
+from visa_roulette.throw import (
+    MAX_SPEED,
+    MIN_SPEED,
+    ThrowError,
+    ThrowResult,
+    make_result,
+)
 
 FOV_DEG = 60.0
 PLANE_SIZE_M = 0.12  # side of a square with the same area as a folded plane seen from the front or the back

@@ -1,5 +1,4 @@
 import pytest
-
 from visa_roulette import geo
 
 

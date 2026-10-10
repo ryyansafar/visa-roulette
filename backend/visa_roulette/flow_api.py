@@ -7,22 +7,31 @@ import secrets
 import socket
 from collections import OrderedDict
 from datetime import date
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Literal
 
+from fastapi import APIRouter, HTTPException, Request, Response, WebSocket, WebSocketDisconnect
 from fastapi.concurrency import run_in_threadpool
-from fastapi import APIRouter, HTTPException, Request, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, Field
 
-from visa_roulette import destination as destination_info, geo, officer_flow, operator as booth_operator, pick
+from visa_roulette import destination as destination_info
+from visa_roulette import geo, officer_flow, pick, stt, tts
+from visa_roulette import operator as booth_operator
 from visa_roulette.camera_throw import throw_from_camera
 from visa_roulette.duel import duel
 from visa_roulette.errors import ScanError
-from visa_roulette.souvenirs import JOURNAL_PATH, Journal, Souvenir, clean, DEFAULT_NICKNAME, DEFAULT_NOTE, MAX_NICKNAME, MAX_NOTE
 from visa_roulette.handoff import Handoff, VisaVerdict, encode_handoff, qr_matrix
 from visa_roulette.mrz import parse_td3
 from visa_roulette.profile import Iso3, TravelerProfile, VisaHeld, prefill_from_mrz
-from visa_roulette.visa import needs, reachable, requirement
-from visa_roulette.wall import build_wall
+from visa_roulette.souvenirs import (
+    DEFAULT_NICKNAME,
+    DEFAULT_NOTE,
+    JOURNAL_PATH,
+    MAX_NICKNAME,
+    MAX_NOTE,
+    Journal,
+    Souvenir,
+    clean,
+)
 from visa_roulette.throw import (
     Sample,
     ThrowDetector,
@@ -31,6 +40,8 @@ from visa_roulette.throw import (
     throw_from_flick,
     throw_from_power,
 )
+from visa_roulette.visa import needs, reachable, requirement
+from visa_roulette.wall import build_wall
 
 MAX_BATCH_SAMPLES = 5000
 MAX_STREAM_SAMPLES = 500
@@ -99,7 +110,7 @@ class LandingIn(BaseModel):
     origin: str = Field(pattern=r"^[A-Z]{3}$")
     heading_deg: float = Field(ge=0, lt=360, allow_inf_nan=False)
     distance_km: float = Field(ge=0, le=20_000, allow_inf_nan=False)
-    nationality: Optional[Iso3] = None
+    nationality: Iso3 | None = None
     visas: list[VisaHeld] = Field(default_factory=list, max_length=10)
 
 
@@ -115,13 +126,13 @@ class VisaRequirementIn(VisaIn):
 class Leave(BaseModel):
     """What the traveller chooses to leave in the souvenir swap. Everything is optional and anonymous."""
 
-    nickname: Optional[str] = Field(default=None, max_length=200)
-    note: Optional[str] = Field(default=None, max_length=500)
+    nickname: str | None = Field(default=None, max_length=200)
+    note: str | None = Field(default=None, max_length=500)
 
 
 class HandoffIn(Handoff):
     issued: date = Field(default_factory=date.today)
-    leave: Optional[Leave] = None
+    leave: Leave | None = None
 
 
 journal = Journal(JOURNAL_PATH)
@@ -259,6 +270,44 @@ async def officer_turn(body: OfficerTurnIn) -> dict:
         raise HTTPException(status_code=404, detail="That interview is over or unknown.")
 
 
+@router.post("/api/officer/listen")
+async def officer_listen(request: Request, session_id: str | None = None) -> dict:
+    data = await request.body()
+    if not data:
+        raise ScanError("no_audio", "No audio was received.", 422)
+    if len(data) > stt.MAX_BYTES:
+        raise HTTPException(status_code=413, detail="That recording is too long.")
+    try:
+        heard = await run_in_threadpool(stt.transcribe, data)
+    except stt.SttUnavailable:
+        raise ScanError("stt_unavailable", "Speech recognition is not installed on this booth.", 503)
+    except (stt.SttError, ValueError):
+        raise ScanError("bad_audio", "That audio could not be read.", 422)
+    if session_id is None:
+        return {"text": heard}
+    try:
+        return {**await run_in_threadpool(officer_flow.turn, session_id, heard), "heard": heard}
+    except KeyError:
+        raise HTTPException(status_code=404, detail="That interview is over or unknown.")
+
+
+class SpeakIn(BaseModel):
+    text: str = Field(min_length=1, max_length=tts.MAX_TEXT)
+    voice: str = Field(default="en-neutral", max_length=20)
+
+
+@router.post("/api/officer/speak")
+async def officer_speak(body: SpeakIn) -> Response:
+    spoken = tts.clean(body.text)
+    if not spoken:
+        raise ScanError("no_text", "Nothing to say.", 422)
+    try:
+        audio = await run_in_threadpool(tts.synthesize, spoken, body.voice)
+    except tts.TtsUnavailable:
+        raise ScanError("tts_unavailable", "Speech output is not available on this machine.", 503)
+    return Response(content=audio, media_type="audio/wav")
+
+
 @router.get("/api/destination/{iso3}")
 async def destination_get(iso3: str) -> dict:
     info = destination_info.lookup(iso3.upper())
@@ -274,7 +323,7 @@ async def visa_map(body: VisaIn) -> dict:
     return reachable(body.nationality, body.visas)
 
 
-def _lan_ip() -> Optional[str]:
+def _lan_ip() -> str | None:
     """This laptop's address on the local network. A UDP connect sends no packet, it only picks the route."""
     probe = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
@@ -295,7 +344,7 @@ def _phone_origin(request: Request) -> str:
     return origin
 
 
-def _swap_souvenir(body: HandoffIn, status: str) -> Optional[Souvenir]:
+def _swap_souvenir(body: HandoffIn, status: str) -> Souvenir | None:
     """Leave this traveller's souvenir, take a stranger's, and work out what that stranger's trip would be for you."""
     mine = Souvenir(
         origin=body.profile.origin,

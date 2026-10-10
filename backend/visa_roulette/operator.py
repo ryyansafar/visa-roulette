@@ -6,7 +6,7 @@ is thrown away for a plain template when it is slow, off, or says anything the f
 
 import os
 import re
-from typing import Callable, Optional
+from collections.abc import Callable
 
 import httpx
 
@@ -65,7 +65,7 @@ def tidy(text: str) -> str:
 
 def grounded(answer: str, known: dict) -> bool:
     """Short, no links, and no number the rules did not produce."""
-    if not answer or len(answer) > MAX_ANSWER or re.search(r"https?://|www\.", answer, re.I):
+    if not answer or len(answer) > MAX_ANSWER or re.search(r"https?://|www\.", answer, re.IGNORECASE):
         return False
     allowed = set(re.findall(r"\d+", _haystack(known)))
     return all(number in allowed for number in re.findall(r"\d+", answer))
@@ -86,7 +86,7 @@ def ollama_chat(messages: list, timeout: float = TIMEOUT_S) -> str:
     return reply.json()["message"]["content"].strip()
 
 
-def warm(chat: Optional[Callable] = None) -> bool:
+def warm(chat: Callable | None = None) -> bool:
     """Load the model into memory so the first visitor does not hit a cold start that blows the answer timeout."""
     try:
         (chat or (lambda messages: ollama_chat(messages, timeout=WARM_TIMEOUT_S)))([{"role": "user", "content": "Hi"}])
@@ -95,7 +95,7 @@ def warm(chat: Optional[Callable] = None) -> bool:
     return True
 
 
-def ask(question: str, nationality: str, destination: str, visas: list, chat: Optional[Callable] = None) -> dict:
+def ask(question: str, nationality: str, destination: str, visas: list, chat: Callable | None = None) -> dict:
     known = facts(nationality, destination, visas)
     cleaned = " ".join(_CONTROL.sub(" ", question).split())[:MAX_QUESTION]
     if not cleaned or _blocked(cleaned):

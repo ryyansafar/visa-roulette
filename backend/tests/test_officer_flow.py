@@ -1,5 +1,4 @@
 import pytest
-
 from visa_roulette import officer_flow as of
 from visa_roulette.visa import requirement
 

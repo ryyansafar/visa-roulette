@@ -2,7 +2,6 @@ import math
 
 import pytest
 from fastapi.testclient import TestClient
-
 from visa_roulette.api import create_app
 from visa_roulette.camera_throw import FOV_DEG, PLANE_SIZE_M, throw_from_camera
 from visa_roulette.throw import ThrowError

@@ -2,11 +2,11 @@
 
 import json
 import re
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import date
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional, Sequence
 
 from visa_roulette.bcbp import BoardingPass
 from visa_roulette.mrz import TD3, is_valid_for_months
@@ -23,7 +23,7 @@ class Item:
     status: str  # pass | fail | warn | manual | pending
     detail: str
     fix: str
-    source_url: Optional[str]
+    source_url: str | None
     source_kind: str
     as_of: str
     verified: bool
@@ -80,7 +80,7 @@ def names_match(doc_name: str, passport_name: str, truncated: bool = False) -> b
     return any(candidate.startswith(last) for candidate in remaining)
 
 
-def _expiry(expiry_date: str) -> Optional[date]:
+def _expiry(expiry_date: str) -> date | None:
     try:
         return date(2000 + int(expiry_date[0:2]), int(expiry_date[2:4]), int(expiry_date[4:6]))
     except ValueError:
@@ -115,7 +115,7 @@ def _check_validity(mrz: TD3, travel_date: date) -> Item:
 
 
 def _check_name(
-    rule_id: str, doc_name: Optional[str], passport_name: str, what: str, truncated: bool = False
+    rule_id: str, doc_name: str | None, passport_name: str, what: str, truncated: bool = False
 ) -> Item:
     if doc_name is None:
         return _item(rule_id, "pending", f"No {what} supplied to compare.")
@@ -129,7 +129,7 @@ def _check_name(
     )
 
 
-def _check_return(return_ticket_name: Optional[str]) -> Item:
+def _check_return(return_ticket_name: str | None) -> Item:
     if return_ticket_name:
         return _item("R-RETURN-TICKET", "pass", "Return ticket found.")
     detail = "No return or onward ticket supplied."
@@ -175,8 +175,8 @@ def build_checklist(
     *,
     mrz: TD3,
     boarding: BoardingPass,
-    return_ticket_name: Optional[str],
-    hotel_name: Optional[str],
+    return_ticket_name: str | None,
+    hotel_name: str | None,
     bag: Sequence[str],
     travel_date: date,
     ticked: frozenset = frozenset(),

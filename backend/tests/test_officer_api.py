@@ -1,6 +1,5 @@
 import pytest
 from fastapi.testclient import TestClient
-
 from visa_roulette import officer_flow, operator
 from visa_roulette.api import create_app
 

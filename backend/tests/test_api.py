@@ -6,7 +6,6 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 from PIL import Image
-
 from visa_roulette.api import create_app
 
 ROOT = Path(__file__).resolve().parents[2]

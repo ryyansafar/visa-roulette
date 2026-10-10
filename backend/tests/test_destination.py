@@ -2,7 +2,6 @@ import json
 from pathlib import Path
 
 from fastapi.testclient import TestClient
-
 from visa_roulette import destination
 from visa_roulette.api import create_app
 

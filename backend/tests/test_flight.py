@@ -1,7 +1,6 @@
 import math
 
 import pytest
-
 from visa_roulette.flight import RELEASE_HEIGHT_M, fly
 
 

@@ -1,6 +1,5 @@
 """Locate the machine-readable zone in a messy frame (classic morphology approach)."""
 
-from typing import Optional
 
 from PIL import Image
 
@@ -18,7 +17,7 @@ def opencv_available() -> bool:
     return cv2 is not None
 
 
-def locate_mrz(image: Image.Image) -> Optional[Image.Image]:
+def locate_mrz(image: Image.Image) -> Image.Image | None:
     """Return a padded crop around the lowest wide text block, or None."""
     if cv2 is None:
         return None

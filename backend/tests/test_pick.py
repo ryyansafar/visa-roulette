@@ -1,6 +1,5 @@
 import pytest
 from fastapi.testclient import TestClient
-
 from visa_roulette.api import create_app
 from visa_roulette.pick import answer, deal
 

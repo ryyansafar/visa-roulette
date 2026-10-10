@@ -3,7 +3,6 @@
 import json
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional
 
 from visa_roulette import geo
 
@@ -15,7 +14,7 @@ def _data() -> dict:
     return json.loads(PATH.read_text())
 
 
-def lookup(iso3: str) -> Optional[dict]:
+def lookup(iso3: str) -> dict | None:
     if not geo.is_country(iso3):
         return None
     data = _data()

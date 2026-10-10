@@ -11,7 +11,6 @@ import math
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 
@@ -92,7 +91,7 @@ def _in_polygon(rings: tuple, lon: float, lat: float) -> bool:
     return _in_ring(rings[0], lon, lat) and not any(_in_ring(hole, lon, lat) for hole in rings[1:])
 
 
-def country_at(lat: float, lon: float) -> Optional[Country]:
+def country_at(lat: float, lon: float) -> Country | None:
     for shape in _shapes():
         min_lon, min_lat, max_lon, max_lat = shape.bbox
         if not (min_lon <= lon <= max_lon and min_lat <= lat <= max_lat):
@@ -138,7 +137,7 @@ def _coast() -> tuple:
     return np.vstack(points), tuple(owners)
 
 
-def land(lat: float, lon: float, only: Optional[frozenset] = None) -> Landing:
+def land(lat: float, lon: float, only: frozenset | None = None) -> Landing:
     """Resolve a point to a country, snapping to the nearest coastline vertex when it is open water
     or (if `only` is given) a country outside that set."""
     found = country_at(lat, lon)
@@ -157,7 +156,7 @@ def land(lat: float, lon: float, only: Optional[frozenset] = None) -> Landing:
     )
 
 
-def resolve_landing(origin_iso3: str, heading_deg: float, distance_km: float, only: Optional[frozenset] = None) -> Landing:
+def resolve_landing(origin_iso3: str, heading_deg: float, distance_km: float, only: frozenset | None = None) -> Landing:
     start_lat, start_lon = country_centroid(origin_iso3)
     lat, lon = destination(start_lat, start_lon, heading_deg, distance_km)
     result = land(lat, lon, only)

@@ -58,8 +58,8 @@ Prices: curated estimate bands labelled "estimate, as of date". Affiliate: deep 
 | 1 | Boarding pass + passport engines, props, tests | 3 | DONE (191 tests, props, wallet page) |
 | 1b | Booth spine: camera desk (passport OCR) + interactive checklist + stamp | 2.5 | DONE |
 | 2 | Spinning globe + paper-plane throw (camera/ESP32/mouse) + visa map + "what you need" list | 3.5 | DONE |
-| 3 | Destination report (cached first, live refresh) | 2.5 | todo |
-| 4 | QR morph + phone page (route, traveller, budget) | 1 | partial (richer card todo) |
+| 3 | Destination copy (curated, offline) via `/api/destination/{iso3}` | 2.5 | DONE (11 countries) |
+| 4 | QR short link + phone page (route, traveller, budget, verdict) | 1 | DONE (needs `--host 0.0.0.0`) |
 | 5 | Offline hardening + rehearsal | 1.5 | todo |
 Feature freeze 4:30 AM. Sleep in staggered 2-3 h shifts.
 
@@ -71,7 +71,7 @@ Feature freeze 4:30 AM. Sleep in staggered 2-3 h shifts.
 - [x] ollama + gemma3n:e4b, Tesseract eng, MRZ/BCBP engines, fixtures, globe textures + country polygons
 - [x] three.js r170 vendored in web/vendor (globe.gl and MediaPipe dropped: camera throw uses a frame-diff tracker)
 - [ ] Whisper weights + mlx-whisper/ocrmac (install failed on a network timeout; retry with UV_HTTP_TIMEOUT=120)
-- [ ] ~20 destination reports cached; 8-10 combo rules verified with sources
+- [x] 11 destinations curated offline (`rules/destinations.json`); [ ] visa rules verified with sources
 - [ ] 90-second booth script + 2-minute pitch rehearsed against the table above
 
 ## Risks

@@ -8,7 +8,7 @@ globe: one metre of throw is GLOBE_KM_PER_M kilometres, capped at half the plane
 
 import math
 from dataclasses import dataclass
-from typing import Optional, Union
+from typing import Union
 
 import numpy as np
 
@@ -127,7 +127,7 @@ def throw_from_flick(dx: float, dy: float, dt_ms: float) -> ThrowResult:
     return make_result(low + (high - low) * power, DEFAULT_ELEVATION_DEG, heading, "flick")
 
 
-def _rest_gravity(history: list, before_t: float) -> Optional[np.ndarray]:
+def _rest_gravity(history: list, before_t: float) -> np.ndarray | None:
     rest = [s for s in history if before_t - REST_S <= s.t < before_t and abs(s.magnitude - G) < REST_TOLERANCE]
     if len(rest) < 5:
         return None
@@ -148,7 +148,7 @@ def _bank_from_rest(gravity: np.ndarray) -> float:
     return 0.0 if abs(roll) < BANK_DEADBAND_DEG else float(np.clip(roll, -MAX_IMU_BANK_DEG, MAX_IMU_BANK_DEG))
 
 
-def _launch(history: list, push: list, release_t: float) -> Union[Launch, ThrowRejected]:
+def _launch(history: list, push: list, release_t: float) -> Launch | ThrowRejected:
     gravity = _rest_gravity(history, push[0].t)
     if gravity is None:
         return ThrowRejected("no_rest", "Hold the board still for a moment before you throw.")
@@ -183,11 +183,11 @@ class ThrowDetector:
         self._state = "idle"
         self._history: list = []
         self._push: list = []
-        self._low_since: Optional[float] = None
-        self._pending: Optional[Launch] = None
+        self._low_since: float | None = None
+        self._pending: Launch | None = None
         self._flutter: list = []
         self._release_t = 0.0
-        self._quiet_since: Optional[float] = None
+        self._quiet_since: float | None = None
 
     def feed(self, sample: Sample) -> Outcome:
         if self._state == "idle":
