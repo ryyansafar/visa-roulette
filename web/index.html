@@ -180,6 +180,17 @@
           <ul id="needs-list"></ul>
           <p id="needs-foot" class="help"></p>
         </section>
+        <section id="officer" class="duel" aria-labelledby="officer-h" hidden>
+          <p id="officer-h" class="label">ASK THE OFFICER</p>
+          <p id="officer-tag" class="help"></p>
+          <p id="officer-text" class="officer-text" aria-live="polite"></p>
+          <div id="officer-chips" class="duel-chips"></div>
+          <form id="officer-form" class="officer-form">
+            <input id="officer-q" type="text" maxlength="200" autocomplete="off" aria-label="Your question" placeholder="Ask about this landing">
+            <button type="submit" class="ghost">Ask</button>
+          </form>
+          <p id="officer-foot" class="help"></p>
+        </section>
         <section id="duel" class="duel" aria-labelledby="duel-h" hidden>
           <p id="duel-h" class="label">PASSPORT DUEL</p>
           <p class="help">Hand the plane to a friend with a different passport. Same country, same rules.</p>

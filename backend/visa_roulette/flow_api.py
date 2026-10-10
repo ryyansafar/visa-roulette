@@ -7,10 +7,12 @@ import socket
 from datetime import date
 from typing import Annotated, Literal, Optional
 
+from fastapi.concurrency import run_in_threadpool
 from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, Field
 
-from visa_roulette import geo, pick
+from visa_roulette import geo, operator as booth_operator, pick
+from visa_roulette.camera_throw import throw_from_camera
 from visa_roulette.duel import duel
 from visa_roulette.errors import ScanError
 from visa_roulette.souvenirs import JOURNAL_PATH, Journal, Souvenir, clean, DEFAULT_NICKNAME, DEFAULT_NOTE, MAX_NICKNAME, MAX_NOTE
@@ -63,6 +65,17 @@ class FlickIn(BaseModel):
 class SwitchIn(BaseModel):
     heading_deg: float = Field(allow_inf_nan=False)
     power: float = Field(allow_inf_nan=False)
+
+
+class TrackPoint(BaseModel):
+    t_ms: float = Field(ge=0, le=20_000, allow_inf_nan=False)
+    cx: float = Field(ge=0, le=1, allow_inf_nan=False)
+    cy: float = Field(ge=0, le=1, allow_inf_nan=False)
+    w: float = Field(gt=0, le=1, allow_inf_nan=False)
+
+
+class CameraIn(BaseModel):
+    track: list[TrackPoint] = Field(min_length=1, max_length=120)
 
 
 class ImuIn(BaseModel):
@@ -128,6 +141,11 @@ async def throw_flick(body: FlickIn) -> dict:
     return dataclasses.asdict(throw_from_flick(body.dx, body.dy, body.dt_ms))
 
 
+@router.post("/api/throw/camera")
+async def throw_camera(body: CameraIn) -> dict:
+    return dataclasses.asdict(throw_from_camera([point.model_dump() for point in body.track]))
+
+
 @router.post("/api/throw/switch")
 async def throw_switch(body: SwitchIn) -> dict:
     return dataclasses.asdict(throw_from_power(body.heading_deg, body.power))
@@ -189,6 +207,18 @@ async def pick_deal(iso3: str) -> dict:
 @router.post("/api/pick/{iso3}/answer")
 async def pick_answer(iso3: str, body: PickIn) -> dict:
     return pick.answer(_known_destination(iso3), body.choice)
+
+
+class AskIn(VisaIn):
+    destination: Iso3
+    question: str = Field(min_length=1, max_length=500)
+
+
+@router.post("/api/operator/ask")
+async def operator_ask(body: AskIn) -> dict:
+    if not (geo.is_country(body.nationality) and geo.is_country(body.destination)):
+        raise ScanError("bad_country", "That country is not known.", 422)
+    return await run_in_threadpool(booth_operator.ask, body.question, body.nationality, body.destination, body.visas)
 
 
 @router.post("/api/visa/map")

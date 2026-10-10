@@ -2,6 +2,7 @@ import { acceptPassport, enterChecklist, initChecklist, preflightSummary, ruleSt
 import { closeCamera, openCamera, scanLoop, watchThrow } from "/js/camera.js";
 import { createGlobe } from "/js/globe.js";
 import { closeDuel, initDuel, openDuel } from "/js/duel.js";
+import { initOfficer } from "/js/officer.js";
 import { initPick } from "/js/pick.js";
 const $ = (id) => document.getElementById(id);
 const STEPS = ["profile", "checklist", "throw", "consent", "handoff"];
@@ -216,6 +217,7 @@ function paintGlobe() {
 
 /* ---- throw ---- */
 let pickGame = { open() {}, close() {} };
+let officer = { open() {}, close() {} };
 function resetThrow() {
   state.landing = null;
   state.throwResult = null;
@@ -225,6 +227,7 @@ function resetThrow() {
   $("needs").hidden = true;
   closeDuel();
   pickGame.close();
+  officer.close();
   $("r-distance").textContent = "---";
   $("r-country").textContent = "-";
   $("r-stamp").hidden = true;
@@ -275,20 +278,37 @@ const planeEl = () => $("plane");
 const showPlane = (on) => planeEl().toggleAttribute("hidden", !on);
 let planeRest = "none";
 
-function flyPlane(headingDeg) {
+function flyPlane(result) {
   const plane = planeEl();
-  const rad = (headingDeg * Math.PI) / 180;
+  const heading = result.heading_deg ?? 0;
+  const rad = (heading * Math.PI) / 180;
   const box = $("map").getBoundingClientRect();
   const reach = Math.min(box.width, box.height) * 0.7;
-  const from = `translate(${-Math.sin(rad) * reach}px, ${Math.cos(rad) * reach}px) rotate(${headingDeg}deg) scale(1.5)`;
-  const to = `translate(0px, 0px) rotate(${headingDeg}deg) scale(0.9)`;
-  planeRest = `translate(0px, 0px) rotate(${headingDeg}deg) scale(0.2)`;
+  const ahead = { x: Math.sin(rad), y: -Math.cos(rad) };
+  const right = { x: Math.cos(rad), y: Math.sin(rad) };
+  const path = result.path?.length > 2 ? result.path : null;
+  const range = Math.max(result.range_m || 1, 1);
+  const lastLateral = path ? path.at(-1)[2] : 0;
+  const at = (fwd, lateral, height) => {
+    const behind = (1 - fwd / range) * reach;
+    const bow = ((lateral - lastLateral) / range) * reach;
+    const x = -ahead.x * behind + right.x * bow;
+    const y = -ahead.y * behind + right.y * bow;
+    return `translate(${x}px, ${y}px) rotate(${heading}deg) scale(${0.7 + Math.min(height, 6) * 0.14})`;
+  };
+  planeRest = `translate(0px, 0px) rotate(${heading}deg) scale(0.2)`;
   showPlane(true);
+  const total = path ? path.at(-1)[0] : 1;
+  const frames = path
+    ? path.map((p) => ({ transform: at(p[1], p[2], p[3]), opacity: 1, offset: Math.min(p[0] / total, 1) }))
+    : [{ transform: at(0, 0, 1.5), opacity: 1 }, { transform: at(range, 0, 0), opacity: 1 }];
+  frames[0].opacity = 0;
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    plane.style.transform = to;
+    plane.style.transform = frames.at(-1).transform;
     return Promise.resolve();
   }
-  return plane.animate([{ transform: from, opacity: 0 }, { transform: from, opacity: 1, offset: 0.08 }, { transform: to, opacity: 1 }], { duration: 1100, easing: "cubic-bezier(.2,.7,.3,1)", fill: "forwards" }).finished;
+  const duration = Math.min(Math.max((result.flight_s || 1) * 450, 900), 2600);
+  return plane.animate(frames, { duration, easing: "linear", fill: "forwards" }).finished;
 }
 
 function landPlane() {
@@ -310,7 +330,7 @@ async function land(result) {
     const landing = await api("/api/landing", { origin: state.profile.origin, heading_deg: result.heading_deg, distance_km: result.distance_km, nationality: state.profile.nationality, visas: state.profile.visas });
     const verdict = await api("/api/visa/requirement", { nationality: state.profile.nationality, destination: landing.iso3, visas: state.profile.visas });
     setStatus("Thrown. The globe is slowing down...");
-    flyPlane(result.heading_deg ?? 0).catch(() => {});
+    flyPlane(result).catch(() => {});
     await state.globe?.land(landing, landing.distance_km);
     landPlane();
     state.landing = landing;
@@ -327,6 +347,7 @@ async function land(result) {
     renderNeeds(verdict);
     openDuel(state.profile.nationality);
     pickGame.open();
+    officer.open();
     $("keep").disabled = false;
     setStatus(`Landed in ${landing.name}.`);
   } catch (err) {
@@ -379,9 +400,8 @@ async function syncThrowCamera() {
     setStatus(err.message, true);
     return;
   }
-  $("throw-hint").textContent = "Throw the plane across the view.";
-  state.stopThrowCam = watchThrow($("throw-video"), (flick) => throwWith("/api/throw/flick", flick), {
-    mapWidth: W,
+  $("throw-hint").textContent = "Throw the plane straight at the camera, nose first.";
+  state.stopThrowCam = watchThrow($("throw-video"), (track) => throwWith("/api/throw/camera", { track }), {
     onMotion: (moving) => ($("throw-finder").dataset.moving = String(moving)),
   });
 }
@@ -390,7 +410,7 @@ const currentMode = () => document.querySelector('input[name="mode"]:checked').v
 
 const MODE_HELP = {
   flick: "The globe is spinning. Flick the plane across the screen with your mouse or finger. A faster, longer flick throws farther. Up is north.",
-  camera: "Allow the camera, then throw the paper plane (or a dart) across its view. A quicker, wider throw lands farther. The globe slows and stops where it would have landed.",
+  camera: "Allow the camera, then throw the paper plane straight at the lens, nose first, from 2 to 4 metres away. A harder throw lands farther; drift to your right to aim east. The globe slows and stops where it would have landed.",
   switch: "Press Space (or the button) once to lock the heading, again to lock the power.",
   board: "Throw the ESP32 board. Hold it still first, then throw.",
 };
@@ -536,6 +556,7 @@ async function init() {
   $("scan-file").addEventListener("change", onScan);
   $("desk-start").addEventListener("click", startDeskCamera);
   renderDeskPeople();
+  officer = initOfficer({ api, setStatus, getContext: () => ({ profile: state.profile, landing: state.landing }) });
   pickGame = initPick({ api, setStatus, getContext: () => ({ landing: state.landing }) });
   initDuel({ api, setStatus, getContext: () => ({ profile: state.profile, landing: state.landing }) });
   $("again").addEventListener("click", resetThrow);

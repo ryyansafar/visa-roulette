@@ -17,7 +17,7 @@ Thanks for helping with Visa Roulette. This repo is being built during a hackath
 When behaviour, setup steps or features change, update `README.md` and `PLAN.md` in the same pull request.
 
 ## Tests
-`.venv/bin/python -m pytest backend/tests -q` (241 tests). The front end is vanilla ES modules with no build step; three.js is vendored in `web/vendor/`. Visa and checklist rules are unverified demo rules: add a `source_url` and `as_of` to every new one.
+`.venv/bin/python -m pytest backend/tests -q` (281 tests). The front end is vanilla ES modules with no build step; three.js is vendored in `web/vendor/`. The voice-officer brief for the immigration desk is in [docs/FATHIMA_OFFICER_VOICE_PROMPT.md](docs/FATHIMA_OFFICER_VOICE_PROMPT.md). Visa and checklist rules are unverified demo rules: add a `source_url` and `as_of` to every new one.
 
 ## Socials and support
 - Portfolio: https://ryyansafar.site

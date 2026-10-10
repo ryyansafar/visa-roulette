@@ -1,19 +1,21 @@
 """Turn motion into a throw: IMU samples, a mouse flick or a single switch all become one ThrowResult.
 
 Heading is clockwise from "forward" (0 = north on the map, 90 = east). For the IMU the device x axis is
-forward and z is up when the board sits flat before the throw. The range is ballistic and then scaled to
-the globe: one metre of throw is GLOBE_KM_PER_M kilometres, capped at half the planet.
+forward and z is up when the board sits flat before the throw. Every input ends in one launch (speed, pitch,
+heading, bank, flutter) that flight.fly() turns into a paper-plane path. The range is then scaled to the
+globe: one metre of throw is GLOBE_KM_PER_M kilometres, capped at half the planet.
 """
 
-import dataclasses
 import math
 from dataclasses import dataclass
 from typing import Optional, Union
 
 import numpy as np
 
+from visa_roulette.flight import fly
+
 G = 9.81
-GLOBE_KM_PER_M = 1500.0
+GLOBE_KM_PER_M = 900.0
 MAX_DISTANCE_KM = 19_000.0
 
 LAUNCH_READING = 20.0  # m/s^2 total reading that starts a throw
@@ -28,7 +30,10 @@ MAX_FLIGHT_S = 4.0
 SWITCH_SPEED_RANGE = (3.0, 11.0)
 FLICK_FULL_POWER_PX_PER_MS = 3.0
 FLICK_MIN_PX = 20.0
-DEFAULT_ELEVATION_DEG = 40.0
+DEFAULT_ELEVATION_DEG = 25.0
+MAX_IMU_BANK_DEG = 20.0
+BANK_DEADBAND_DEG = 2.0
+FLUTTER_WINDOW_S = (0.06, 0.5)
 
 
 class ThrowError(ValueError):
@@ -62,6 +67,11 @@ class ThrowResult:
     distance_km: float
     source: str
     flight_s: float = 0.0
+    launch_heading_deg: float = 0.0
+    bank_deg: float = 0.0
+    flutter: float = 0.0
+    lateral_m: float = 0.0
+    path: tuple = ()
 
 
 @dataclass(frozen=True)
@@ -73,16 +83,26 @@ class ThrowRejected:
 Outcome = Union[ThrowResult, ThrowRejected, None]
 
 
-def _result(speed: float, elevation_deg: float, heading_deg: float, source: str) -> ThrowResult:
-    effective = min(max(elevation_deg, 5.0), 85.0)
-    range_m = speed**2 * math.sin(math.radians(2 * effective)) / G
+def make_result(
+    speed: float, elevation_deg: float, heading_deg: float, source: str, bank_deg: float = 0.0, flutter: float = 0.0
+) -> ThrowResult:
+    """Fly the plane and report where it lands: the final bearing includes any curve from a banked launch."""
+    flight = fly(speed, elevation_deg, bank_deg, flutter)
+    ahead = math.sqrt(max(flight.range_m**2 - flight.lateral_m**2, 0.0))
+    curve = math.degrees(math.atan2(flight.lateral_m, ahead))
     return ThrowResult(
         speed_mps=speed,
         elevation_deg=elevation_deg,
-        heading_deg=heading_deg % 360.0,
-        range_m=range_m,
-        distance_km=min(range_m * GLOBE_KM_PER_M, MAX_DISTANCE_KM),
+        heading_deg=(heading_deg + curve) % 360.0,
+        range_m=flight.range_m,
+        distance_km=min(flight.range_m * GLOBE_KM_PER_M, MAX_DISTANCE_KM),
         source=source,
+        flight_s=flight.flight_s,
+        launch_heading_deg=heading_deg % 360.0,
+        bank_deg=bank_deg,
+        flutter=flutter,
+        lateral_m=flight.lateral_m,
+        path=flight.path,
     )
 
 
@@ -93,7 +113,7 @@ def throw_from_power(heading_deg: float, power: float) -> ThrowResult:
     if not (0.0 <= power <= 1.0):
         raise ThrowError("bad_power", "Power must be between 0 and 1.")
     low, high = SWITCH_SPEED_RANGE
-    return _result(low + (high - low) * power, DEFAULT_ELEVATION_DEG, heading_deg, "switch")
+    return make_result(low + (high - low) * power, DEFAULT_ELEVATION_DEG, heading_deg, "switch")
 
 
 def throw_from_flick(dx: float, dy: float, dt_ms: float) -> ThrowResult:
@@ -104,7 +124,7 @@ def throw_from_flick(dx: float, dy: float, dt_ms: float) -> ThrowResult:
     power = min(1.0, (length / dt_ms) / FLICK_FULL_POWER_PX_PER_MS)
     heading = math.degrees(math.atan2(dx, -dy)) % 360.0
     low, high = SWITCH_SPEED_RANGE
-    return _result(low + (high - low) * power, DEFAULT_ELEVATION_DEG, heading, "flick")
+    return make_result(low + (high - low) * power, DEFAULT_ELEVATION_DEG, heading, "flick")
 
 
 def _rest_gravity(history: list, before_t: float) -> Optional[np.ndarray]:
@@ -114,7 +134,21 @@ def _rest_gravity(history: list, before_t: float) -> Optional[np.ndarray]:
     return np.mean([s.vector for s in rest], axis=0)
 
 
-def _launch(history: list, push: list, release_t: float) -> Union[ThrowResult, ThrowRejected]:
+@dataclass(frozen=True)
+class Launch:
+    speed: float
+    elevation_deg: float
+    heading_deg: float
+    bank_deg: float
+
+
+def _bank_from_rest(gravity: np.ndarray) -> float:
+    """Roll of the board while it rested: right wing down is positive. Small tilts are just a hand not quite flat."""
+    roll = math.degrees(math.asin(float(np.clip(-gravity[1] / np.linalg.norm(gravity), -1.0, 1.0))))
+    return 0.0 if abs(roll) < BANK_DEADBAND_DEG else float(np.clip(roll, -MAX_IMU_BANK_DEG, MAX_IMU_BANK_DEG))
+
+
+def _launch(history: list, push: list, release_t: float) -> Union[Launch, ThrowRejected]:
     gravity = _rest_gravity(history, push[0].t)
     if gravity is None:
         return ThrowRejected("no_rest", "Hold the board still for a moment before you throw.")
@@ -136,7 +170,7 @@ def _launch(history: list, push: list, release_t: float) -> Union[ThrowResult, T
         return ThrowRejected("straight_up", "Throw it forward, not straight up.")
     elevation = math.degrees(math.asin(float(np.clip(velocity @ up / speed, -1.0, 1.0))))
     heading = math.degrees(math.atan2(float(horizontal @ right), float(horizontal @ forward)))
-    return _result(min(speed, MAX_SPEED), elevation, heading, "imu")
+    return Launch(min(speed, MAX_SPEED), elevation, heading % 360.0, _bank_from_rest(gravity))
 
 
 class ThrowDetector:
@@ -150,7 +184,8 @@ class ThrowDetector:
         self._history: list = []
         self._push: list = []
         self._low_since: Optional[float] = None
-        self._pending: Optional[ThrowResult] = None
+        self._pending: Optional[Launch] = None
+        self._flutter: list = []
         self._release_t = 0.0
         self._quiet_since: Optional[float] = None
 
@@ -165,7 +200,7 @@ class ThrowDetector:
         """End of data: a throw still in the air counts as landed now."""
         if self._state != "flight" or self._pending is None:
             return None
-        return self._complete(self._release_t + self._pending.flight_s)
+        return self._complete()
 
     def _idle(self, sample: Sample) -> Outcome:
         self._history = [s for s in self._history if sample.t - s.t <= 1.5] + [sample]
@@ -199,20 +234,22 @@ class ThrowDetector:
 
     def _flying(self, sample: Sample) -> Outcome:
         in_air = sample.t - self._release_t
+        if FLUTTER_WINDOW_S[0] < in_air <= FLUTTER_WINDOW_S[1]:
+            self._flutter.append(sample.magnitude)
         if sample.magnitude > LAUNCH_READING and in_air > FREEFALL_HOLD_S:
-            return self._complete(sample.t)
+            return self._complete()
         if abs(sample.magnitude - G) < 1.5 and in_air > 0.2:
             self._quiet_since = sample.t if self._quiet_since is None else self._quiet_since
             if sample.t - self._quiet_since >= LANDED_QUIET_S:
-                return self._complete(self._quiet_since)
+                return self._complete()
         else:
             self._quiet_since = None
-        return self._complete(sample.t) if in_air >= MAX_FLIGHT_S else None
+        return self._complete() if in_air >= MAX_FLIGHT_S else None
 
-    def _complete(self, landed_t: float) -> ThrowResult:
-        result = dataclasses.replace(self._pending, flight_s=max(landed_t - self._release_t, 0.0))
+    def _complete(self) -> ThrowResult:
+        launch, flutter = self._pending, float(np.median(self._flutter)) if self._flutter else 0.0
         self._reset()
-        return result
+        return make_result(launch.speed, launch.elevation_deg, launch.heading_deg, "imu", launch.bank_deg, flutter)
 
 
 def analyze_throw(samples: list) -> ThrowResult:

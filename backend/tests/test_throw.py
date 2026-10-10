@@ -1,7 +1,9 @@
 import pytest
 
+from visa_roulette.flight import fly
 from visa_roulette.imu_sim import synth_throw
 from visa_roulette.throw import (
+    GLOBE_KM_PER_M,
     Sample,
     ThrowDetector,
     ThrowError,
@@ -30,10 +32,38 @@ def test_throw_to_the_right_has_a_right_hand_heading():
     assert r.heading_deg == pytest.approx(90.0, abs=6)
 
 
-def test_range_follows_ballistics_and_scales_to_the_globe():
+def test_range_comes_from_the_paper_plane_model_and_scales_to_the_globe():
     r = analyze_throw(samples(speed=8.0, elevation_deg=45.0, heading_deg=0.0))
-    assert r.range_m == pytest.approx(8.0**2 / 9.81, rel=0.2)
-    assert r.distance_km == pytest.approx(r.range_m * 1500, rel=0.01)
+    flown = fly(r.speed_mps, r.elevation_deg)
+    assert r.range_m == pytest.approx(flown.range_m, rel=1e-6)
+    assert r.distance_km == pytest.approx(r.range_m * GLOBE_KM_PER_M, rel=0.01)
+    assert r.flight_s == pytest.approx(flown.flight_s) and r.path[0][3] > 0
+
+
+def test_a_board_held_banked_right_curves_right():
+    flat = analyze_throw(samples(speed=8.0, elevation_deg=30.0, heading_deg=0.0))
+    banked = analyze_throw(samples(speed=8.0, elevation_deg=30.0, heading_deg=0.0, roll_deg=10.0))
+    assert banked.bank_deg == pytest.approx(10.0, abs=0.5)
+    assert banked.lateral_m > 1.0 and 5.0 < banked.heading_deg < 90.0
+    assert banked.launch_heading_deg < 10.0 and banked.heading_deg > banked.launch_heading_deg + 8
+    assert flat.bank_deg == pytest.approx(0.0, abs=0.1) and abs(flat.lateral_m) < 0.01
+
+
+def test_a_board_banked_left_curves_left():
+    left = analyze_throw(samples(speed=8.0, elevation_deg=30.0, heading_deg=0.0, roll_deg=-10.0))
+    assert left.lateral_m < -1.0 and 270.0 < left.heading_deg < 355.0
+
+
+def test_a_tumbling_board_flies_worse_than_a_clean_one():
+    clean = analyze_throw(samples(speed=8.0, elevation_deg=30.0, heading_deg=0.0))
+    tumble = analyze_throw(samples(speed=8.0, elevation_deg=30.0, heading_deg=0.0, tumble=6.0))
+    assert clean.flutter == pytest.approx(0.0, abs=0.1) and tumble.flutter > 3.0
+    assert tumble.range_m < clean.range_m * 0.9
+
+
+def test_a_barely_tilted_board_does_not_bank():
+    r = analyze_throw(samples(speed=8.0, elevation_deg=30.0, heading_deg=0.0, roll_deg=1.0))
+    assert r.bank_deg == 0.0
 
 
 def test_distance_is_capped_to_half_the_planet():
