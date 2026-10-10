@@ -11,3 +11,4 @@ dist/
 
 # visitors' souvenir notes stay on the booth laptop
 data/souvenirs.jsonl
+phone_props/
