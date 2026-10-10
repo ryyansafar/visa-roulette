@@ -1,9 +1,7 @@
 import time
 
-import pytest
 from fastapi.testclient import TestClient
-
-from visa_roulette import flow_api, operator as op
+from visa_roulette import operator as op
 from visa_roulette.api import create_app
 
 client = TestClient(create_app())

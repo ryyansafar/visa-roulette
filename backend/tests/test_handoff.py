@@ -3,7 +3,6 @@ from datetime import date
 import pytest
 import zxingcpp
 from PIL import Image
-
 from visa_roulette.handoff import Handoff, decode_handoff, encode_handoff, qr_matrix
 from visa_roulette.profile import TravelerProfile
 

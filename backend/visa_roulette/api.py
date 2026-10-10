@@ -7,7 +7,7 @@ import shutil
 from contextlib import asynccontextmanager
 from datetime import date
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 from fastapi import FastAPI, Query, Request
 from fastapi.concurrency import run_in_threadpool
@@ -19,7 +19,8 @@ from visa_roulette import operator as booth_operator
 from visa_roulette.bcbp import parse_bcbp
 from visa_roulette.checklist import build_checklist
 from visa_roulette.errors import ScanError
-from visa_roulette.flow_api import Hub, router as flow_router
+from visa_roulette.flow_api import Hub
+from visa_roulette.flow_api import router as flow_router
 from visa_roulette.imaging import load_image
 from visa_roulette.mrz import parse_td3
 from visa_roulette.mrz_locate import opencv_available
@@ -38,8 +39,8 @@ RuleId = Annotated[str, StringConstraints(pattern=r"^R-[A-Z0-9-]{2,24}$")]
 class ChecklistRequest(BaseModel):
     mrz_lines: list[str] = Field(min_length=2, max_length=2)
     boarding_pass: str = Field(min_length=60, max_length=200)
-    return_ticket_name: Optional[ShortText] = None
-    hotel_name: Optional[ShortText] = None
+    return_ticket_name: ShortText | None = None
+    hotel_name: ShortText | None = None
     bag: list[ShortText] = Field(default_factory=list, max_length=50)
     travel_date: date
     ticked: list[RuleId] = Field(default_factory=list, max_length=20)

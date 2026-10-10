@@ -4,7 +4,7 @@ Read-only over the souvenir journal. No passport data: only the nickname, the tw
 """
 
 from collections import Counter
-from typing import Iterable
+from collections.abc import Iterable
 
 from visa_roulette.visa import LABELS, requirement
 

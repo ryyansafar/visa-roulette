@@ -10,7 +10,6 @@ import random
 import re
 import threading
 from pathlib import Path
-from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -40,7 +39,7 @@ def _blocked(text: str) -> bool:
     return any(word.startswith(stem) for word in words for stem in _BLOCKED_STEMS)
 
 
-def clean(text: Optional[str], limit: int, fallback: str) -> str:
+def clean(text: str | None, limit: int, fallback: str) -> str:
     """Plain text only: control characters become spaces, runs of spaces collapse, length is capped, rude words fall back."""
     squashed = " ".join(_CONTROL.sub(" ", text or "").split())[:limit].strip()
     return fallback if not squashed or _blocked(squashed) else squashed
@@ -54,16 +53,16 @@ class Souvenir(BaseModel):
     nickname: str = Field(max_length=MAX_NICKNAME)
     note: str = Field(max_length=MAX_NOTE)
     seeded: bool = False
-    nationality: Optional[str] = Field(default=None, pattern=r"^[A-Z]{3}$")
-    status: Optional[str] = Field(default=None, max_length=16)
-    for_you_status: Optional[str] = Field(default=None, max_length=16)
-    for_you_label: Optional[str] = Field(default=None, max_length=40)
+    nationality: str | None = Field(default=None, pattern=r"^[A-Z]{3}$")
+    status: str | None = Field(default=None, max_length=16)
+    for_you_status: str | None = Field(default=None, max_length=16)
+    for_you_label: str | None = Field(default=None, max_length=40)
 
 
 class Journal:
     """Append-only JSON lines. A damaged line is skipped, never fatal."""
 
-    def __init__(self, path: Path, seed_path: Path = SEED_PATH, rng: Optional[random.Random] = None) -> None:
+    def __init__(self, path: Path, seed_path: Path = SEED_PATH, rng: random.Random | None = None) -> None:
         self.path = path
         self.seed_path = seed_path
         self.rng = rng or random.Random()
@@ -92,7 +91,7 @@ class Journal:
     def all(self) -> list:
         return self._load(self.seed_path, True) + self._load(self.path, False)
 
-    def swap(self, mine: Souvenir) -> Optional[Souvenir]:
+    def swap(self, mine: Souvenir) -> Souvenir | None:
         """Keep `mine`, hand back a stranger's. Prefers a different landing country and never returns your own."""
         with self._lock:
             known = self.all()

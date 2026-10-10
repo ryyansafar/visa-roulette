@@ -2,7 +2,6 @@ from datetime import date
 
 import pytest
 from pydantic import ValidationError
-
 from visa_roulette.mrz import parse_td3
 from visa_roulette.profile import TravelerProfile, prefill_from_mrz
 

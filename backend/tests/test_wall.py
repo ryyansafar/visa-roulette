@@ -3,7 +3,6 @@ import random
 
 import pytest
 from fastapi.testclient import TestClient
-
 from visa_roulette import flow_api
 from visa_roulette.api import create_app
 from visa_roulette.souvenirs import Journal, Souvenir

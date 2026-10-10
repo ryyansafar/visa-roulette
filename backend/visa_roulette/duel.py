@@ -1,14 +1,14 @@
 """Passport duel: two passports, one destination, side-by-side verdicts. Stateless, nothing is stored."""
 
+from collections.abc import Iterable
 from dataclasses import asdict
-from typing import Iterable, Optional
 
 from visa_roulette.visa import needs, requirement
 
 _STRENGTH = {"home": 0, "held": 0, "free": 0, "on_arrival": 1, "evisa": 2, "required": 3}
 
 
-def strength(status: str) -> Optional[int]:
+def strength(status: str) -> int | None:
     """Lower is easier entry. A status with no ranking (unknown) cannot win or lose."""
     return _STRENGTH.get(status)
 
@@ -18,7 +18,7 @@ def _side(nationality: str, destination: str, visas: Iterable) -> dict:
     return {"nationality": nationality, "verdict": asdict(verdict), "needs": needs(verdict.status, destination)}
 
 
-def _winner(a: dict, b: dict) -> Optional[str]:
+def _winner(a: dict, b: dict) -> str | None:
     a_rank, b_rank = strength(a["verdict"]["status"]), strength(b["verdict"]["status"])
     if a_rank is None or b_rank is None or a_rank == b_rank:
         return None

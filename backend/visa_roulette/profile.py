@@ -1,9 +1,16 @@
 """The traveller profile collected before the throw. Optional fields stay optional; nothing leaves the laptop."""
 
 from datetime import date
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    StringConstraints,
+    field_validator,
+    model_validator,
+)
 
 from visa_roulette.geo import is_country
 from visa_roulette.mrz import TD3, birth_to_date
@@ -30,7 +37,7 @@ class VisaHeld(BaseModel):
 
     country: Iso3
     kind: VisaKind
-    valid_until: Optional[date] = None
+    valid_until: date | None = None
 
     _country_exists = field_validator("country")(_known_country)
 
@@ -42,8 +49,8 @@ class TravelerProfile(BaseModel):
     nationality: Iso3
     age: int = Field(ge=0, le=120)
     gender: Gender = "undisclosed"
-    name: Optional[str] = Field(default=None, max_length=80)
-    passport_type: Optional[PassportType] = None  # None: no passport yet
+    name: str | None = Field(default=None, max_length=80)
+    passport_type: PassportType | None = None  # None: no passport yet
     visas: list[VisaHeld] = Field(default_factory=list, max_length=MAX_VISAS)
 
     _origin_exists = field_validator("origin")(_known_country)
@@ -51,7 +58,7 @@ class TravelerProfile(BaseModel):
 
     @field_validator("name")
     @classmethod
-    def tidy_name(cls, value: Optional[str]) -> Optional[str]:
+    def tidy_name(cls, value: str | None) -> str | None:
         cleaned = " ".join((value or "").split()).upper()
         return cleaned or None
 

@@ -8,7 +8,7 @@ import base64
 import json
 import zlib
 from datetime import date
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Literal
 
 import qrcode
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -27,7 +27,7 @@ class VisaVerdict(BaseModel):
     status: str = Field(max_length=16)
     label: str = Field(max_length=60)
     as_of: str = Field(max_length=10)
-    source_url: Optional[str] = Field(default=None, max_length=120)
+    source_url: str | None = Field(default=None, max_length=120)
 
 
 class Preflight(BaseModel):
@@ -48,10 +48,10 @@ class Handoff(BaseModel):
     currency: str = Field(pattern=r"^[A-Z]{3}$")
     consent: bool
     issued: date
-    visa: Optional[VisaVerdict] = None
-    preflight: Optional[Preflight] = None
+    visa: VisaVerdict | None = None
+    preflight: Preflight | None = None
     needs: list[Annotated[str, Field(max_length=48)]] = Field(default_factory=list, max_length=8)
-    stranger: Optional[Souvenir] = None
+    stranger: Souvenir | None = None
 
     @field_validator("landing_iso3")
     @classmethod

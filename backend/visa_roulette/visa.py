@@ -1,10 +1,10 @@
 """Visa requirement lookup. Rules decide: a destination with no rule on file is "unknown", never guessed."""
 
 import json
+from collections.abc import Iterable
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Iterable, Optional
 
 from visa_roulette.profile import VisaHeld
 
@@ -27,10 +27,10 @@ class Verdict:
     status: str
     label: str
     note: str
-    source_url: Optional[str]
+    source_url: str | None
     as_of: str
     verified: bool
-    unlocked_by: Optional[str] = None
+    unlocked_by: str | None = None
 
 
 @lru_cache(maxsize=1)
@@ -38,12 +38,12 @@ def _rules() -> dict:
     return json.loads(RULES_PATH.read_text())
 
 
-def _verdict(status: str, note: str, unlocked_by: Optional[str] = None) -> Verdict:
+def _verdict(status: str, note: str, unlocked_by: str | None = None) -> Verdict:
     rules = _rules()
     return Verdict(status, LABELS[status], note, rules["source_url"], rules["as_of"], rules["verified"], unlocked_by)
 
 
-def _matching_visa(wanted: Iterable[str], held: list) -> Optional[str]:
+def _matching_visa(wanted: Iterable[str], held: list) -> str | None:
     schengen = set(_rules()["schengen"])
     for visa in held:
         if visa.country in wanted or ("SCHENGEN" in wanted and visa.country in schengen):

@@ -4,9 +4,9 @@ import io
 import re
 import shutil
 import subprocess
+from collections.abc import Iterator
 from dataclasses import dataclass
 from itertools import product
-from typing import Iterator, Optional
 
 from PIL import Image, ImageOps
 
@@ -87,7 +87,7 @@ def _crops(image: Image.Image) -> Iterator[tuple]:
 
 
 def read_mrz(image: Image.Image) -> MrzScan:
-    best: Optional[MrzScan] = None
+    best: MrzScan | None = None
     for method, crop in _crops(image):
         for pair in _line_pairs(_candidate_lines(ocr_text(crop))):
             for first, second in product(_variants(pair[0]), _variants(pair[1])):
