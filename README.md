@@ -28,6 +28,23 @@ A travel booth you can play. You scan a (sample) passport, the booth checks it w
 ## Stack
 Python (FastAPI) backend, three.js globe frontend, Ollama LLM, mlx-whisper, ocrmac, sentence-transformers, MediaPipe, optional ESP32 + IMU.
 
+## Specimen props (fake passport, boarding pass, bookings)
+Three fictional travellers with a SPECIMEN watermark, a made-up airline, and checksum-valid passport MRZs and IATA boarding-pass barcodes. They exist only to demo the booth.
+
+```bash
+uv venv .venv-tools && uv pip install --python .venv-tools/bin/python -r tools/requirements.txt
+.venv-tools/bin/python tools/make_fixtures.py          # writes fixtures/
+python3 -m http.server 8000 --directory fixtures --bind 0.0.0.0
+# open http://<laptop-ip>:8000/wallet.html on a phone on the same Wi-Fi
+cd backend && ../.venv-tools/bin/python -m pytest -q    # 25 tests
+```
+
+| Persona | Trap | Expected |
+|---|---|---|
+| Lakshmi | passport has under 6 months validity | HELD |
+| Arjun | none | CLEARED |
+| Shafeeq | hotel booking name differs from passport | HELD |
+
 ## Data and credits
 - Earth textures: NASA Blue Marble (via the [globe.gl](https://github.com/vasturiano/globe.gl) examples)
 - Country polygons: [Natural Earth](https://www.naturalearthdata.com/) (public domain)

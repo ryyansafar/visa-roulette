@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Specimen Wallet</title>
+<style>
+  :root { --bg:#0a0a0a; --card:#161616; --text:#f2f2f2; --muted:#9a9a9a; --accent:#e0592a; }
+  @media (prefers-color-scheme: light) {
+    :root { --bg:#f5f0e8; --card:#fff; --text:#111; --muted:#666; }
+  }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.5 system-ui,sans-serif; }
+  header { padding:16px; position:sticky; top:0; background:var(--bg); z-index:2; }
+  h1 { margin:0; font-size:20px; }
+  .note { color:var(--muted); font-size:13px; }
+  nav { display:flex; gap:8px; padding:0 16px 12px; overflow-x:auto; }
+  nav a { color:var(--text); border:1px solid var(--muted); border-radius:999px;
+          padding:6px 14px; text-decoration:none; white-space:nowrap; }
+  section { padding:16px; }
+  .story { color:var(--muted); margin:4px 0 12px; }
+  .strip { display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; }
+  .strip a { flex:0 0 92%; scroll-snap-align:center; background:var(--card);
+             border-radius:12px; padding:6px; }
+  .strip img { width:100%; display:block; border-radius:8px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Specimen Wallet</h1>
+  <div class="note">Fictional props for a hackathon demo. Not real documents. Max screen brightness helps scanners.</div>
+</header>
+<nav><a href="#lakshmi">Lakshmi</a><a href="#arjun">Arjun</a><a href="#shafeeq">Shafeeq</a></nav>
+<section id="lakshmi">
+  <h2>Lakshmi Ammal Nair</h2>
+  <p class="story">You are Lakshmi Ammal, 62, a retired teacher. This is your first flight. You are visiting your son in Dubai and packed gifts and your daily tablets.</p>
+  <div class="strip"><a href="lakshmi/role_card.png"><img src="lakshmi/role_card.png" alt="role_card"></a><a href="lakshmi/boarding_pass.png"><img src="lakshmi/boarding_pass.png" alt="boarding_pass"></a><a href="lakshmi/passport.png"><img src="lakshmi/passport.png" alt="passport"></a><a href="lakshmi/return_ticket.png"><img src="lakshmi/return_ticket.png" alt="return_ticket"></a><a href="lakshmi/hotel_booking.png"><img src="lakshmi/hotel_booking.png" alt="hotel_booking"></a></div>
+</section>
+<section id="arjun">
+  <h2>Arjun Menon</h2>
+  <p class="story">You are Arjun, 24, a developer on a short work trip to Dubai. Your papers are in order and you travel light.</p>
+  <div class="strip"><a href="arjun/role_card.png"><img src="arjun/role_card.png" alt="role_card"></a><a href="arjun/boarding_pass.png"><img src="arjun/boarding_pass.png" alt="boarding_pass"></a><a href="arjun/passport.png"><img src="arjun/passport.png" alt="passport"></a><a href="arjun/return_ticket.png"><img src="arjun/return_ticket.png" alt="return_ticket"></a><a href="arjun/hotel_booking.png"><img src="arjun/hotel_booking.png" alt="hotel_booking"></a></div>
+</section>
+<section id="shafeeq">
+  <h2>Shafeeq Mohammed</h2>
+  <p class="story">You are Shafeeq, 35, visiting family in Dubai. You booked your hotel in a hurry and typed your name a little differently.</p>
+  <div class="strip"><a href="shafeeq/role_card.png"><img src="shafeeq/role_card.png" alt="role_card"></a><a href="shafeeq/boarding_pass.png"><img src="shafeeq/boarding_pass.png" alt="boarding_pass"></a><a href="shafeeq/passport.png"><img src="shafeeq/passport.png" alt="passport"></a><a href="shafeeq/return_ticket.png"><img src="shafeeq/return_ticket.png" alt="return_ticket"></a><a href="shafeeq/hotel_booking.png"><img src="shafeeq/hotel_booking.png" alt="hotel_booking"></a></div>
+</section>
+</body>
+</html>
