@@ -102,3 +102,12 @@ def test_a_forged_stranger_in_the_request_is_ignored(journal):
 
 def test_an_oversized_leave_is_refused(journal):
     assert client.post("/api/handoff", json=body(leave={"note": "x" * 501})).status_code == 422
+
+
+@pytest.mark.parametrize("text", ["what the FUCK", "sh1t trip", "f u c k this", "total b.i.t.c.h"])
+def test_clean_swaps_profanity_for_the_fallback(text):
+    assert clean(text, 80, "fallback") == "fallback"
+
+
+def test_clean_keeps_innocent_words_that_contain_a_blocked_stem():
+    assert clean("Scunthorpe was lovely", 80, "fallback") == "Scunthorpe was lovely"
