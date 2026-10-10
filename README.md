@@ -2,10 +2,10 @@
   <img src="assets/logo.svg" alt="Logo" width="96">
 </p>
 
-<h1 align="center">VISA VERSA</h1>
+<h1 align="center">VISA ROULETTE</h1>
 
 <p align="center">
-  Clear the border, earn your throw, land anywhere your passport can take you.<br>
+  <b>Spin. Throw. Land.</b><br>Clear the border, earn your throw, land anywhere your passport can take you.<br>
   Built for <a href="https://github.com/jasimcm/layover-2026">LAYOVER 2026</a> at TinkerSpace Calicut, 10–11 Oct 2026.
 </p>
 

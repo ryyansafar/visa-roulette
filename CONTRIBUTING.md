@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping with Visa Versa. This repo is being built during a hackathon, so keep changes small and easy to review.
+Thanks for helping with Visa Roulette. This repo is being built during a hackathon, so keep changes small and easy to review.
 
 ## Ground rules
 - Rules decide, AI suggests. Verdicts must come from the deterministic rules engine with a source link and "as of" date.

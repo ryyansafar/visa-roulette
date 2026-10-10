@@ -1,4 +1,4 @@
-# VISA VERSA — LAYOVER 2026 plan
+# VISA ROULETTE — LAYOVER 2026 plan
 
 Build 6 PM–6 AM. Judging 7–9:30 AM (booth round, then ~2 min finalist pitch).
 Rubric (50): What was built 20 · Creativity 10 · Travel connection 10 · Execution 5 · Demo 5.
