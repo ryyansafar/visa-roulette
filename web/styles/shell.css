@@ -1,0 +1,228 @@
+/* shell: header, main, footer container layout and sizing */
+
+/* header: fixed height, centered grid, full-bleed rule with contained content */
+.board {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  border-bottom: var(--hairline);
+}
+
+.board-inner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 36px;
+  align-items: baseline;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.mark {
+  font: 700 var(--t-18)/1 var(--font-display);
+  letter-spacing: 0.22em;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.steps {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font: 400 var(--t-12)/1 var(--font-data);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  justify-self: center;
+  white-space: nowrap;
+}
+
+.step-text {
+  display: none;
+}
+
+.steps li {
+  position: relative;
+  padding-bottom: 2px;
+  cursor: default;
+}
+
+.steps li[aria-current="step"] {
+  color: var(--text);
+  border-bottom: 2px solid var(--text);
+  padding-bottom: 0;
+}
+
+.steps li[data-done="true"] {
+  color: var(--muted);
+}
+
+.steps li[data-done="true"]::after {
+  content: "✓";
+  margin-left: 4px;
+  font-size: var(--t-12);
+}
+
+.status {
+  grid-column: auto;
+  justify-self: end;
+  min-height: 1.4em;
+  font: 400 var(--t-12)/1.4 var(--font-data);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+  margin: 0;
+}
+
+.status.bad {
+  color: var(--held);
+}
+
+/* main: align container padding with .grid */
+main {
+  padding: 24px;
+}
+
+main > * {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.grid {
+  padding: 0;
+}
+
+/* footer: quiet about/support disclosure with two-column link list */
+.foot {
+  border-top: var(--hairline);
+  padding: 24px;
+  font: 400 var(--t-12)/1.6 var(--font-data);
+  color: var(--muted);
+}
+
+.foot > p:first-child {
+  max-width: 1280px;
+  margin: 0 auto 16px;
+}
+
+.about {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.about summary {
+  cursor: pointer;
+  font: 400 var(--t-12)/1 var(--font-data);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 6px 0;
+  user-select: none;
+}
+
+.about summary:hover {
+  color: var(--text);
+}
+
+.about .links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  list-style: none;
+  margin: 12px 0 0 0;
+  padding: 0;
+}
+
+.about .links li {
+  border-top: var(--hairline);
+  padding: 8px 0;
+  margin: 0;
+}
+
+.about .links li:nth-child(odd) {
+  padding-right: 12px;
+}
+
+.about .links li:nth-child(even) {
+  padding-left: 12px;
+  border-left: var(--hairline);
+}
+
+.about .links a {
+  color: var(--signal);
+  text-decoration: none;
+  font: 400 var(--t-12)/1.4 var(--font-data);
+  letter-spacing: 0.08em;
+}
+
+.about .links a:hover {
+  text-decoration: underline;
+}
+
+.about[open] summary {
+  color: var(--text);
+}
+
+@media (max-width: 900px) {
+  .board-inner {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .steps {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+
+  .status {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+
+  .step-text {
+    display: inline;
+  }
+
+  .about .links {
+    grid-template-columns: 1fr;
+  }
+
+  .about .links li:nth-child(even) {
+    border-left: none;
+    padding-left: 0;
+  }
+}
+
+.foot > * {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* the globe screen runs wider; header and footer follow so edges stay shared */
+body:has(#step-throw:not([hidden])) .board-inner,
+body:has(#step-throw:not([hidden])) .foot > * {
+  max-width: 1872px;
+}
+
+/* Eyebrows: section helper text 12px mono uppercase muted */
+.desk-head, .desk-form-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.desk-head .desk-note, .desk-form-head .desk-note {
+  order: -1;
+  font: 400 var(--t-12)/1 var(--font-data);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 6px 0;
+}

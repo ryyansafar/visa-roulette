@@ -7,90 +7,103 @@
   <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/styles/tokens.css">
   <link rel="stylesheet" href="/styles/app.css">
+  <link rel="stylesheet" href="/styles/shell.css">
+  <link rel="stylesheet" href="/styles/controls.css">
+  <link rel="stylesheet" href="/styles/desk.css">
+  <link rel="stylesheet" href="/styles/throw.css">
+  <link rel="stylesheet" href="/styles/checklist.css">
+  <link rel="stylesheet" href="/styles/stamp.css">
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
   <header class="board">
-    <h1 class="mark">VISA ROULETTE</h1>
-    <ol class="steps" aria-label="Progress">
-      <li data-step="profile">01 Immigration</li>
-      <li data-step="checklist">02 Pre-flight</li>
-      <li data-step="throw">03 Throw</li>
-      <li data-step="consent">04 Consent</li>
-      <li data-step="handoff">05 Hand-off</li>
-    </ol>
-    <p id="status" class="status" role="status" aria-live="polite"></p>
+    <div class="board-inner">
+      <h1 class="mark">VISA ROULETTE</h1>
+      <ol class="steps" aria-label="Progress">
+        <li data-step="profile">01<span class="step-text"> Immigration</span></li>
+        <li data-step="checklist">02<span class="step-text"> Pre-flight</span></li>
+        <li data-step="throw">03<span class="step-text"> Throw</span></li>
+        <li data-step="consent">04<span class="step-text"> Consent</span></li>
+        <li data-step="handoff">05<span class="step-text"> Hand-off</span></li>
+      </ol>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </div>
   </header>
 
   <main id="main">
     <section id="step-profile" class="grid" aria-labelledby="h-profile">
-      <div class="col-5" style="order:2">
+      <header class="desk-head">
         <h2 id="h-profile">Immigration desk</h2>
-        <p class="help">Show your passport photo page to the camera. A printed prop or a picture on your phone both work. It is read on this laptop and goes nowhere else.</p>
+        <p class="desk-note">Read on this laptop. Nothing is uploaded.</p>
+      </header>
+
+      <div class="desk-scan">
         <div class="viewfinder">
           <video id="desk-video" playsinline muted></video>
-          <div class="guide" aria-hidden="true"></div>
+          <div class="guide" aria-hidden="true"><span class="guide-tag">Photo page</span><span class="guide-mrz">Two lines of &lt;&lt;&lt;</span></div>
           <p id="desk-hint" class="hint" role="status">Camera is off.</p>
         </div>
-        <div class="actions">
-          <button type="button" id="desk-start" class="primary">Start camera</button>
-          <label class="file ghost-label">Upload a photo instead
-            <input id="scan-file" type="file" accept="image/*"></label>
+        <div class="desk-bar">
+          <div class="actions">
+            <button type="button" id="desk-start" class="primary">Start camera</button>
+            <label class="file ghost-label">Upload a photo instead
+              <input id="scan-file" type="file" accept="image/*"></label>
+          </div>
+          <aside class="sample" aria-labelledby="h-sample">
+            <span id="h-sample" class="sample-lead">No passport on you? Try a sample traveller</span>
+            <div id="desk-people" class="people"></div>
+          </aside>
         </div>
         <p id="scan-result" class="mono" aria-live="polite"></p>
       </div>
 
-      <aside class="col-7 side" style="order:1" aria-labelledby="h-sample">
-        <div class="card">
-          <h2 id="h-sample">No passport on you?</h2>
-          <p class="help">Pick a sample traveller. We run their passport and boarding pass through the same scanner.</p>
-          <div id="desk-people" class="people"></div>
+      <form id="profile-form" class="desk-form" novalidate>
+        <div class="desk-form-head">
+          <p class="label">Passport details</p>
+          <p class="desk-note">Filled from the scan. Edit anything that is wrong.</p>
         </div>
-        <details class="own">
-          <summary>Type the details in instead</summary>
-          <form id="profile-form" novalidate>
-            <div class="fields">
-              <label>Where are you now
-                <select id="f-origin" required></select></label>
-              <label>Nationality
-                <select id="f-nationality" required></select></label>
-              <label>Age
-                <input id="f-age" type="number" min="0" max="120" inputmode="numeric" required></label>
-              <label>Gender <span class="opt">optional</span>
-                <select id="f-gender">
-                  <option value="undisclosed">Prefer not to say</option>
-                  <option value="female">Female</option>
-                  <option value="male">Male</option>
-                  <option value="nonbinary">Non-binary</option>
-                </select></label>
-              <label class="wide">Name <span class="opt">optional</span>
-                <input id="f-name" type="text" maxlength="80" autocomplete="name"></label>
-              <label>Passport
-                <select id="f-passport">
-                  <option value="">No passport yet</option>
-                  <option value="ordinary" selected>Ordinary</option>
-                  <option value="diplomatic">Diplomatic</option>
-                  <option value="official">Official / service</option>
-                  <option value="emergency">Emergency travel document</option>
-                  <option value="refugee">Refugee travel document</option>
-                </select></label>
-            </div>
-            <fieldset id="visas">
-              <legend>Visas you already hold <span class="opt">optional</span></legend>
-              <ul id="visa-list"></ul>
-              <button type="button" id="add-visa" class="ghost">+ Add a visa</button>
-            </fieldset>
-            <p id="profile-error" class="error" role="alert"></p>
-            <button type="submit" class="primary">Continue to pre-flight</button>
-          </form>
-        </details>
-      </aside>
+        <div class="fields">
+          <label>Where are you now
+            <select id="f-origin" required></select></label>
+          <label>Nationality
+            <select id="f-nationality" required></select></label>
+          <label>Passport
+            <select id="f-passport">
+              <option value="">No passport yet</option>
+              <option value="ordinary" selected>Ordinary</option>
+              <option value="diplomatic">Diplomatic</option>
+              <option value="official">Official / service</option>
+              <option value="emergency">Emergency travel document</option>
+              <option value="refugee">Refugee travel document</option>
+            </select></label>
+          <label>Name <span class="opt">optional</span>
+            <input id="f-name" type="text" maxlength="80" autocomplete="name"></label>
+          <label>Age
+            <input id="f-age" type="number" min="0" max="120" inputmode="numeric" required></label>
+          <label>Gender <span class="opt">optional</span>
+            <select id="f-gender">
+              <option value="undisclosed">Prefer not to say</option>
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+              <option value="nonbinary">Non-binary</option>
+            </select></label>
+        </div>
+        <fieldset id="visas">
+          <legend>Visas you already hold <span class="opt">optional</span></legend>
+          <ul id="visa-list"></ul>
+          <button type="button" id="add-visa" class="ghost">+ Add a visa</button>
+        </fieldset>
+        <div class="desk-submit">
+          <p id="profile-error" class="error" role="alert"></p>
+          <button type="submit" class="secondary">Continue to pre-flight</button>
+        </div>
+      </form>
     </section>
 
     <section id="step-checklist" class="grid" aria-labelledby="h-checklist" hidden>
       <div class="col-7">
         <h2 id="h-checklist">Pre-flight check</h2>
-        <p class="help">Your papers are read on this laptop. Every line cites its rule.</p>
+        <p class="help">Read on this laptop. Open a row to see the rule behind it.</p>
         <div id="cl-people" class="people" role="radiogroup" aria-label="Sample traveller"></div>
         <p id="cl-busy" class="mono" hidden>Reading papers...</p>
         <p id="cl-empty" class="help">Choose a traveller to see the checklist.</p>
@@ -120,17 +133,17 @@
       </div>
       <aside class="col-5 side">
         <div id="cl-verdict" class="verdict" data-verdict="">
-          <p class="label">VERDICT</p>
+          <p class="label">PRE-FLIGHT VERDICT</p>
           <p id="cl-stamp" class="stamp">-</p>
-          <p class="label">READY</p>
-          <p class="big"><span id="cl-ready">0</span><small>%</small></p>
+          <p id="cl-note" class="cl-note"></p>
+          <p class="big"><span id="cl-ready">0</span><small>% ready</small></p>
           <div class="meter" aria-hidden="true"><span id="cl-fill"></span></div>
-          <p id="cl-note" class="help"></p>
+          <p id="cl-count" class="label"></p>
           <p id="cl-announce" class="sr" role="status"></p>
         </div>
         <div class="cl-docs" hidden>
-          <img id="cl-passport-img" alt="The passport photo page being checked">
-          <img id="cl-boarding-img" alt="The boarding pass being checked">
+          <figure><img id="cl-passport-img" alt="The passport photo page being checked"><figcaption>Passport, specimen</figcaption></figure>
+          <figure><img id="cl-boarding-img" alt="The boarding pass being checked"><figcaption>Boarding pass, specimen</figcaption></figure>
         </div>
         <div class="actions">
           <button type="button" id="cl-back" class="ghost">Back</button>
@@ -140,24 +153,32 @@
     </section>
 
     <section id="step-throw" class="grid" aria-labelledby="h-throw" hidden>
-      <div class="col-8">
-        <h2 id="h-throw">Throw the plane</h2>
-        <div class="stage">
-          <canvas id="map" width="1200" height="720" tabindex="0"
-            aria-label="Spinning globe. Throw the paper plane to land it: flick on screen, press Space for the single-switch throw, throw it past the camera, or throw the ESP32 board."></canvas>
-          <svg id="plane" class="plane" viewBox="0 0 64 64" aria-hidden="true" hidden>
-            <path d="M32 4 L58 58 L32 46 Z" fill="#f4f1e8"/>
-            <path d="M32 4 L6 58 L32 46 Z" fill="#cfd6e4"/>
-            <path d="M32 46 L32 60" stroke="#8b94a8" stroke-width="2"/>
-          </svg>
-        </div>
+      <div class="stage-col">
+      <div class="stage">
+        <canvas id="map" width="1200" height="720" tabindex="0"
+          aria-label="Spinning globe. Throw the paper plane to land it: flick on screen, press Space for the single-switch throw, throw it past the camera, or throw the ESP32 board."></canvas>
+        <svg id="plane-trail" class="plane-trail" aria-hidden="true" hidden><polyline points=""/></svg>
+        <svg id="plane" class="plane" viewBox="0 0 64 64" aria-hidden="true" hidden>
+          <path d="M32 4 L58 58 L32 46 Z" fill="#f4f1e8"/>
+          <path d="M32 4 L6 58 L32 46 Z" fill="#cfd6e4"/>
+          <path d="M32 46 L32 60" stroke="#8b94a8" stroke-width="2"/>
+        </svg>
+        <span class="landed-tag" aria-hidden="true">Landed</span>
       </div>
-      <div class="col-4 side">
+      <ul class="legend" aria-label="Globe colours">
+        <li><i class="sw" data-k="free"></i>Visa free</li>
+        <li><i class="sw" data-k="arrival"></i>On arrival / e-visa</li>
+        <li><i class="sw" data-k="needed"></i>Visa needed</li>
+        <li><i class="sw" data-k="landing"></i>Landing</li>
+      </ul>
+      </div>
+      <div class="rail">
+        <h2 id="h-throw">Throw the plane</h2>
         <div role="radiogroup" aria-label="Throw input" class="modes">
           <label><input type="radio" name="mode" value="flick" checked> Flick</label>
           <label><input type="radio" name="mode" value="camera"> Camera</label>
           <label><input type="radio" name="mode" value="switch"> One switch</label>
-          <label><input type="radio" name="mode" value="board"> ESP32 board</label>
+          <label><input type="radio" name="mode" value="board"> Board</label>
         </div>
         <p id="mode-help" class="help"></p>
         <div id="throw-finder" class="viewfinder small" hidden>
@@ -168,45 +189,56 @@
         <button type="button" id="switch-btn" class="primary" hidden>Lock (or press Space)</button>
         <p id="device" class="mono"></p>
         <div class="readout" aria-live="polite">
-          <p class="label">DISTANCE</p>
-          <p class="big"><span id="r-distance">---</span><small> km</small></p>
           <p class="label">LANDED IN</p>
           <p id="r-country" class="country">-</p>
-          <p id="r-stamp" class="route-stamp" data-status="" hidden></p>
+          <p class="dist"><span class="label">DISTANCE</span><span class="big"><span id="r-distance">---</span><small> km</small></span></p>
+          <div class="stamp-slot"><p id="r-stamp" class="route-stamp" data-status="" hidden></p></div>
           <p id="r-note" class="help"></p>
+        </div>
+        <div class="actions">
+          <button type="button" id="again" class="ghost" disabled>Throw again</button>
+          <button type="button" id="keep" class="primary" disabled>Keep this landing</button>
         </div>
         <section id="needs" class="needs" aria-labelledby="needs-h" hidden>
           <p id="needs-h" class="label">WHAT YOU NEED</p>
           <ul id="needs-list"></ul>
           <p id="needs-foot" class="help"></p>
         </section>
-        <section id="officer" class="duel" aria-labelledby="officer-h" hidden>
-          <p id="officer-h" class="label">ASK THE OFFICER</p>
-          <p id="officer-tag" class="help"></p>
-          <p id="officer-text" class="officer-text" aria-live="polite"></p>
-          <div id="officer-chips" class="duel-chips"></div>
-          <form id="officer-form" class="officer-form">
-            <input id="officer-q" type="text" maxlength="200" autocomplete="off" aria-label="Your question" placeholder="Ask about this landing">
-            <button type="submit" class="ghost">Ask</button>
-          </form>
-          <p id="officer-foot" class="help"></p>
+        <section id="officer" class="module" aria-labelledby="officer-h" hidden>
+          <details name="rail">
+            <summary id="officer-h">Ask the officer</summary>
+            <div class="module-body">
+              <p id="officer-tag" class="label"></p>
+              <p id="officer-text" class="officer-text" aria-live="polite"></p>
+              <div id="officer-chips" class="duel-chips"></div>
+              <form id="officer-form" class="officer-form">
+                <input id="officer-q" type="text" maxlength="200" autocomplete="off" aria-label="Your question" placeholder="Ask about this landing">
+                <button type="submit" class="ghost">Ask</button>
+              </form>
+              <p id="officer-foot" class="help"></p>
+            </div>
+          </details>
         </section>
-        <section id="duel" class="duel" aria-labelledby="duel-h" hidden>
-          <p id="duel-h" class="label">PASSPORT DUEL</p>
-          <p class="help">Hand the plane to a friend with a different passport. Same country, same rules.</p>
-          <div id="duel-chips" class="duel-chips" role="group" aria-label="Second passport"></div>
-          <div id="duel-out" aria-live="polite"></div>
+        <section id="duel" class="module" aria-labelledby="duel-h" hidden>
+          <details name="rail">
+            <summary id="duel-h">Passport duel</summary>
+            <div class="module-body">
+              <p class="help">Same country, a different passport.</p>
+              <div id="duel-chips" class="duel-chips" role="group" aria-label="Second passport"></div>
+              <div id="duel-out" aria-live="polite"></div>
+            </div>
+          </details>
         </section>
-        <section id="pick" class="duel" aria-labelledby="pick-h" hidden>
-          <p id="pick-h" class="label">WRONG-DOCUMENT PICK</p>
-          <p class="help">An officer's eye test: one of these three papers would get this traveller turned back. Tap it.</p>
-          <div id="pick-cards" class="pick-cards"></div>
-          <div id="pick-out" aria-live="polite"></div>
+        <section id="pick" class="module" aria-labelledby="pick-h" hidden>
+          <details name="rail">
+            <summary id="pick-h">Wrong-document pick</summary>
+            <div class="module-body">
+              <p class="help">One paper would get this traveller turned back. Tap it.</p>
+              <div id="pick-cards" class="pick-cards"></div>
+              <div id="pick-out" aria-live="polite"></div>
+            </div>
+          </details>
         </section>
-        <div class="actions">
-          <button type="button" id="again" class="ghost" disabled>Throw again</button>
-          <button type="button" id="keep" class="primary" disabled>Keep this landing</button>
-        </div>
       </div>
     </section>
 
@@ -264,14 +296,17 @@
 
   <footer class="foot">
     <p>Specimen demo. Informational only. Verify requirements with the official source before you travel.</p>
-    <p class="links">
-      <a href="/wall.html">Tonight's wall</a>
-      <a href="https://ryyansafar.site">Portfolio</a>
-      <a href="https://github.com/ryyansafar">GitHub</a>
-      <a href="https://buymeacoffee.com/ryyansafar">Buy me a coffee</a>
-      <a href="https://www.paypal.com/paypalme/ryyansafar">PayPal</a>
-      <a href="https://razorpay.me/@ryyansafar">Razorpay</a>
-    </p>
+    <details class="about">
+      <summary>About · Support</summary>
+      <ul class="links">
+        <li><a href="https://ryyansafar.site">Portfolio</a></li>
+        <li><a href="https://github.com/ryyansafar">GitHub</a></li>
+        <li><a href="https://buymeacoffee.com/ryyansafar">Buy me a coffee</a></li>
+        <li><a href="https://www.paypal.com/paypalme/ryyansafar">PayPal</a></li>
+        <li><a href="https://razorpay.me/@ryyansafar">Razorpay</a></li>
+        <li><a href="/wall.html">Tonight's wall</a></li>
+      </ul>
+    </details>
   </footer>
   <script type="module" src="/js/main.js"></script>
 </body>

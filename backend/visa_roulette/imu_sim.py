@@ -20,11 +20,14 @@ def synth_throw(
     land_s: float = 0.5,
     roll_deg: float = 0.0,
     tumble: float = 0.0,
+    gyro: bool = False,
+    spin_rad_s: float = 0.0,
 ) -> list:
     """Rest, a constant-acceleration push to `speed`, free flight, one impact spike, then rest.
 
     roll_deg tilts the board at rest (positive = right wing down). tumble is the steady reading (m/s^2) of a
     board that spins in flight, which starts 50 ms after release so the release itself still looks like free fall.
+    With gyro=True every row gains gx, gy, gz in rad/s (an MPU-6050 stream); spin_rad_s is the in-flight spin rate.
     """
     dt = 1.0 / hz
     roll = math.radians(roll_deg)
@@ -33,10 +36,10 @@ def synth_throw(
     direction = (math.cos(elev) * math.cos(head), math.cos(elev) * math.sin(head), math.sin(elev))
     rows, t = [], 0.0
 
-    def emit(count: int, reading) -> None:
+    def emit(count: int, reading, rates=(0.0, 0.0, 0.0)) -> None:
         nonlocal t
         for _ in range(count):
-            rows.append((round(t, 6), *reading))
+            rows.append((round(t, 6), *reading, *(rates if gyro else ())))
             t += dt
 
     emit(round(rest_s * hz), gravity)
@@ -45,10 +48,10 @@ def synth_throw(
         return rows
     push = speed / push_s
     emit(round(push_s * hz), (push * direction[0] + gravity[0], push * direction[1] + gravity[1], push * direction[2] + gravity[2]))
-    quiet = round(0.05 * hz) if tumble > 0 else round(flight_s * hz)
+    quiet = round(0.05 * hz) if tumble > 0 or spin_rad_s > 0 else round(flight_s * hz)
     emit(quiet, (0.0, 0.0, 0.0))
     for i in range(round(flight_s * hz) - quiet):
-        emit(1, (tumble * math.cos(i * 0.9), tumble * math.sin(i * 0.9), 0.0))
+        emit(1, (tumble * math.cos(i * 0.9), tumble * math.sin(i * 0.9), 0.0), (spin_rad_s * math.cos(i * 0.9), spin_rad_s * math.sin(i * 0.9), 0.0))
     emit(1, (0.0, 0.0, 4.5 * G))
     emit(round(land_s * hz), gravity)
     return rows

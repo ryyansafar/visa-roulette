@@ -228,3 +228,24 @@ def test_old_cards_are_forgotten_so_memory_stays_bounded():
     for _ in range(flow_api.MAX_CARDS + 1):
         client.post("/api/handoff", json=handoff_body())
     assert client.get(f"/api/handoff/{first}").status_code == 404
+
+
+def test_imu_batch_accepts_seven_column_mpu6050_rows():
+    res = client.post("/api/throw/imu", json={"samples": synth_throw(8.0, 45.0, 0.0, gyro=True)})
+    assert res.status_code == 200 and len(res.json()["pose"]) == len(res.json()["path"])
+
+
+def test_imu_batch_rejects_rows_with_a_partial_gyro():
+    rows = [list(row) + [0.0, 0.0] for row in synth_throw(8.0, 45.0, 0.0)]
+    assert client.post("/api/throw/imu", json={"samples": rows}).status_code == 422
+
+
+def test_esp32_mpu6050_stream_carries_the_attitude_for_the_animation():
+    with client.websocket_connect("/ws/throw") as viewer, client.websocket_connect("/ws/imu") as device:
+        viewer.receive_json()
+        viewer.receive_json()
+        rows = synth_throw(8.0, 45.0, 0.0, gyro=True)
+        for i in range(0, len(rows), 25):
+            device.send_json({"samples": rows[i : i + 25]})
+        event = viewer.receive_json()
+    assert event["type"] == "throw" and len(event["pose"]) == len(event["path"])

@@ -143,3 +143,29 @@ def test_switch_throw_uses_heading_and_power():
 def test_switch_throw_validates_input(heading, power):
     with pytest.raises(ThrowError):
         throw_from_power(heading, power)
+
+
+def test_a_throw_carries_the_attitude_samples_for_the_animation():
+    result = analyze_throw(samples(speed=6.0, elevation_deg=25.0, heading_deg=0.0))
+    assert len(result.pose) == len(result.path) > 10
+    assert result.pose[0][0] == pytest.approx(25.0, abs=1.0)
+
+
+def test_mpu6050_rows_with_gyro_channels_are_accepted():
+    rows = synth_throw(speed=8.0, elevation_deg=30.0, heading_deg=0.0, gyro=True)
+    assert all(len(row) == 7 for row in rows)
+    result = analyze_throw([Sample(*row) for row in rows])
+    assert result.speed_mps == pytest.approx(8.0, rel=0.1) and result.flutter == pytest.approx(0.0, abs=0.1)
+
+
+def test_a_spinning_board_reads_as_flutter_from_the_gyro_alone():
+    clean = analyze_throw([Sample(*row) for row in synth_throw(8.0, 30.0, 0.0, gyro=True)])
+    spinning = analyze_throw([Sample(*row) for row in synth_throw(8.0, 30.0, 0.0, gyro=True, spin_rad_s=16.0)])
+    assert spinning.flutter > 3.0 > clean.flutter
+    assert spinning.range_m < clean.range_m * 0.9
+
+
+def test_a_hard_throw_that_clips_the_accelerometer_still_registers():
+    rows = [(t, *(max(-156.9, min(156.9, a)) for a in (ax, ay, az))) for t, ax, ay, az in synth_throw(14.0, 30.0, 0.0, push_s=0.05)]
+    result = analyze_throw([Sample(*row) for row in rows])
+    assert 5.0 < result.speed_mps <= 25.0

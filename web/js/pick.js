@@ -1,4 +1,5 @@
 const $ = (id) => document.getElementById(id);
+const formatDate = (iso) => new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
 function card(doc, onPick) {
   const button = document.createElement("button");
@@ -33,7 +34,7 @@ function reveal(result, chosen) {
   const rule = document.createElement("p");
   rule.className = "help";
   const trust = result.rule.verified ? "" : "Demo rule, unverified. ";
-  rule.textContent = `Rule: ${result.rule.label}. ${trust}As of ${result.rule.as_of}. Source: ${result.rule.source_url}`;
+  rule.textContent = `Rule: ${result.rule.label}. ${trust}As of ${formatDate(result.rule.as_of)}. Source: ${result.rule.source_url}`;
   $("pick-out").replaceChildren(headline, why, rule);
 }
 
