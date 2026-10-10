@@ -3,9 +3,9 @@ from datetime import date
 from pathlib import Path
 
 import pytest
-
 from visa_roulette.bcbp import build_bcbp, parse_bcbp
 from visa_roulette.mrz import is_valid_for_months, parse_td3
+
 from tests.test_bcbp import sample
 
 MANIFEST = json.loads((Path(__file__).resolve().parents[2] / "fixtures" / "manifest.json").read_text())
@@ -50,5 +50,6 @@ def test_pdf417_barcode_scans_back_to_the_exact_string():
     pdf417gen = pytest.importorskip("pdf417gen")
     zxingcpp = pytest.importorskip("zxingcpp")
     data = build_bcbp(sample())
-    img = pdf417gen.render_image(pdf417gen.encode(data, columns=8, security_level=3), scale=4, ratio=3, padding=12)
+    codes = pdf417gen.encode(data, columns=8, security_level=3)
+    img = pdf417gen.render_image(codes, scale=4, ratio=3, padding=12)
     assert data in [r.text for r in zxingcpp.read_barcodes(img.convert("RGB"))]

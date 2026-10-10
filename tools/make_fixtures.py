@@ -12,12 +12,12 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "backend"))
 
 import zxingcpp  # noqa: E402
+from visa_roulette.bcbp import BoardingPass, build_bcbp  # noqa: E402
+from visa_roulette.mrz import build_td3, parse_td3  # noqa: E402
 
 from tools.fixtures.personas import FLIGHT_DATE, PERSONAS, RETURN_DATE  # noqa: E402
 from tools.fixtures.render import boarding_pass, fmt_date, passport_page, text_card  # noqa: E402
 from tools.fixtures.wallet import build_wallet  # noqa: E402
-from visa_roulette.bcbp import BoardingPass, build_bcbp  # noqa: E402
-from visa_roulette.mrz import build_td3, parse_td3  # noqa: E402
 
 OUT = ROOT / "fixtures"
 
@@ -88,6 +88,7 @@ def build_persona(p) -> dict:
         sex=p.sex,
         expiry_date=yymmdd(p.expiry),
         issuer="IND",
+        personal_number="SPECIMEN",
     )
     if not parse_td3(line1, line2).all_checks_pass:
         raise SystemExit(f"MRZ self-check failed for {p.key}")
@@ -135,7 +136,7 @@ def main() -> None:
     (OUT / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     (OUT / "wallet.html").write_text(build_wallet(PERSONAS))
     print(f"wrote {len(manifest)} personas to {OUT}")
-    print(f"phone: python3 -m http.server 8000 --directory fixtures --bind 0.0.0.0")
+    print("phone: python3 -m http.server 8000 --directory fixtures --bind 0.0.0.0")
     print(f"then open http://{lan_ip()}:8000/wallet.html on the same Wi-Fi")
 
 

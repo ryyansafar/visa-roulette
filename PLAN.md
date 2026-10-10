@@ -51,7 +51,7 @@ Rules decide; the agent cannot override verdicts. Keep manual buttons as fallbac
 | 3 | Destination report (RSS + Wikivoyage + LLM + score + links) | 2.5 |
 | 3.5 | WebMCP tools + voice | 1 |
 | 4 | Bag check (3 trap items), head-tilt input | 1.5 |
-| 5 | Skydive sprite, duel mode, VoIP boarding call, Malayalam voice | only if ahead |
+| 5 | Skydive sprite, duel mode, VoIP boarding call, Malayalam voice, QR morph: landing spot melts into a QR (destination report link + mock BCBP pass for the new route) | only if ahead |
 Feature freeze 4:30 AM. Then rehearse. Sleep in staggered 2-3 h shifts.
 
 ## Split (adjust freely)

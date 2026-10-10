@@ -1,7 +1,6 @@
 from datetime import date
 
 import pytest
-
 from visa_roulette.mrz import (
     build_td3,
     check_digit,

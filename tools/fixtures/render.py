@@ -2,8 +2,8 @@
 
 from datetime import date
 
-from PIL import Image, ImageDraw, ImageFont
 from pdf417gen import encode, render_image
+from PIL import Image, ImageDraw, ImageFont
 
 SANS = "/System/Library/Fonts/Helvetica.ttc"
 MONO = "/System/Library/Fonts/Menlo.ttc"
@@ -25,8 +25,8 @@ def _watermark(base: Image.Image, lines: tuple, region_height: int) -> Image.Ima
     layer = Image.new("RGBA", base.size, (0, 0, 0, 0))
     d = ImageDraw.Draw(layer)
     top = region_height // 3
-    d.text((120, top), lines[0], font=font(SANS, 120), fill=(180, 30, 30, 60))
-    d.text((150, top + 130), lines[1], font=font(SANS, 56), fill=(180, 30, 30, 60))
+    d.text((120, top), lines[0], font=font(SANS, 120), fill=(180, 30, 30, 90))
+    d.text((150, top + 130), lines[1], font=font(SANS, 56), fill=(180, 30, 30, 90))
     rotated = layer.rotate(12, resample=Image.BICUBIC)
     return Image.alpha_composite(base.convert("RGBA"), rotated).convert("RGB")
 

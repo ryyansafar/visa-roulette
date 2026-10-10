@@ -31,7 +31,8 @@ PAGE = """<!doctype html>
 <body>
 <header>
   <h1>Specimen Wallet</h1>
-  <div class="note">Fictional props for a hackathon demo. Not real documents. Max screen brightness helps scanners.</div>
+  <div class="note">Fictional props for a hackathon demo. Not real documents.
+  Max screen brightness helps scanners.</div>
 </header>
 <nav>{nav}</nav>
 {sections}

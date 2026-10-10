@@ -36,7 +36,7 @@ uv venv .venv-tools && uv pip install --python .venv-tools/bin/python -r tools/r
 .venv-tools/bin/python tools/make_fixtures.py          # writes fixtures/
 python3 -m http.server 8000 --directory fixtures --bind 0.0.0.0
 # open http://<laptop-ip>:8000/wallet.html on a phone on the same Wi-Fi
-cd backend && ../.venv-tools/bin/python -m pytest -q    # 25 tests
+cd backend && ../.venv-tools/bin/python -m pytest -q    # 54 tests
 ```
 
 | Persona | Trap | Expected |

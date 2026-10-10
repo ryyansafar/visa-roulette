@@ -1,7 +1,6 @@
 from datetime import date
 
 import pytest
-
 from visa_roulette.bcbp import BoardingPass, build_bcbp, parse_bcbp
 
 

@@ -3,7 +3,7 @@
     "key": "lakshmi",
     "mrz": [
       "P<INDNAIR<<LAKSHMI<AMMAL<<<<<<<<<<<<<<<<<<<<",
-      "Z1234567<1IND6403050F2703109<<<<<<<<<<<<<<04"
+      "Z1234567<1IND6403050F2703109SPECIMEN<<<<<<28"
     ],
     "bcbp": "M1NAIR/LAKSHMI AMMAL  ELAYOVLACCJDXBZZ 0123 284Y014A0007 100",
     "booking_name": "LAKSHMI AMMAL NAIR",
@@ -20,7 +20,7 @@
     "key": "arjun",
     "mrz": [
       "P<INDMENON<<ARJUN<<<<<<<<<<<<<<<<<<<<<<<<<<<",
-      "Z7654321<9IND0207142M3308154<<<<<<<<<<<<<<08"
+      "Z7654321<9IND0207142M3308154SPECIMEN<<<<<<22"
     ],
     "bcbp": "M1MENON/ARJUN         ELAYOVARCCJDXBZZ 0123 284Y022C0007 100",
     "booking_name": "ARJUN MENON",
@@ -36,7 +36,7 @@
     "key": "shafeeq",
     "mrz": [
       "P<INDMOHAMMED<<SHAFEEQ<<<<<<<<<<<<<<<<<<<<<<",
-      "Z2468135<8IND9011229M3006128<<<<<<<<<<<<<<04"
+      "Z2468135<8IND9011229M3006128SPECIMEN<<<<<<28"
     ],
     "bcbp": "M1MOHAMMED/SHAFEEQ    ELAYOVSHCCJDXBZZ 0123 284Y031F0007 100",
     "booking_name": "MOHAMED SHAFIQ",
