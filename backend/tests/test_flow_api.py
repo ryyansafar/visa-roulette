@@ -96,7 +96,7 @@ def test_handoff_returns_a_decodable_payload_a_matrix_and_a_phone_url():
     body = res.json()
     assert decode_handoff(body["text"]).landing_iso3 == "ARE"
     assert len(body["matrix"]) == body["size"] == len(body["matrix"][0])
-    assert body["url"].endswith("/phone.html#" + body["text"])
+    assert "/phone.html#" in body["url"] and body["text"] not in body["url"]
 
 
 def test_handoff_carries_the_rule_verdict_computed_by_the_server():
@@ -117,7 +117,7 @@ def test_handoff_keeps_the_preflight_summary_and_rejects_a_forged_verdict_shape(
 def test_handoff_url_swaps_localhost_for_the_lan_address(monkeypatch):
     monkeypatch.setattr(flow_api, "_lan_ip", lambda: "192.168.1.42")
     local = client.post("/api/handoff", json=handoff_body(), headers={"host": "localhost:8766"}).json()
-    assert local["url"].startswith("http://192.168.1.42:8766/phone.html#VR1.")
+    assert local["url"].startswith("http://192.168.1.42:8766/phone.html#") and "VR1." not in local["url"]
     remote = client.post("/api/handoff", json=handoff_body(), headers={"host": "booth.example:80"}).json()
     assert "192.168" not in remote["url"] and "booth.example" in remote["url"]
 
@@ -181,3 +181,51 @@ def test_visa_map_endpoint():
 
 def test_visa_endpoint_rejects_a_bad_country():
     assert client.post("/api/visa/requirement", json={"nationality": "IND", "destination": "XXX"}).status_code == 422
+
+
+def _scan(matrix):
+    import zxingcpp
+    from PIL import Image
+
+    scale, border = 6, 4
+    size = (len(matrix) + 2 * border) * scale
+    img = Image.new("L", (size, size), 255)
+    px = img.load()
+    for y, row in enumerate(matrix):
+        for x, on in enumerate(row):
+            if on:
+                for dy in range(scale):
+                    for dx in range(scale):
+                        px[(x + border) * scale + dx, (y + border) * scale + dy] = 0
+    return [r.text for r in zxingcpp.read_barcodes(img)]
+
+
+def test_the_qr_opens_the_phone_page_when_scanned_by_a_plain_camera_app():
+    body = client.post("/api/handoff", json=handoff_body()).json()
+    assert _scan(body["matrix"]) == [body["url"]]
+    assert body["url"].startswith("http")
+
+
+def test_the_qr_stays_sparse_enough_for_a_phone_to_read_off_a_screen():
+    body = client.post("/api/handoff", json=handoff_body(landing_iso3="BRA")).json()
+    assert body["size"] <= 41, "a short link, not the whole card"
+    assert len(body["url"]) < 90
+
+
+def test_the_phone_fetches_the_card_by_the_short_id_in_the_link():
+    body = client.post("/api/handoff", json=handoff_body()).json()
+    card_id = body["url"].rsplit("#", 1)[1]
+    fetched = client.get(f"/api/handoff/{card_id}")
+    assert fetched.status_code == 200 and fetched.json() == {"text": body["text"]}
+
+
+def test_an_unknown_or_malformed_card_id_is_a_clean_404():
+    assert client.get("/api/handoff/nope-nope").status_code == 404
+    assert client.get("/api/handoff/" + "x" * 80).status_code == 404
+
+
+def test_old_cards_are_forgotten_so_memory_stays_bounded():
+    first = client.post("/api/handoff", json=handoff_body()).json()["url"].rsplit("#", 1)[1]
+    for _ in range(flow_api.MAX_CARDS + 1):
+        client.post("/api/handoff", json=handoff_body())
+    assert client.get(f"/api/handoff/{first}").status_code == 404

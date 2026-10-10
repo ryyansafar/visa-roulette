@@ -3,12 +3,14 @@
 import dataclasses
 import json
 import re
+import secrets
 import socket
+from collections import OrderedDict
 from datetime import date
 from typing import Annotated, Literal, Optional
 
 from fastapi.concurrency import run_in_threadpool
-from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, HTTPException, Request, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, Field
 
 from visa_roulette import geo, operator as booth_operator, pick
@@ -34,6 +36,17 @@ MAX_BATCH_SAMPLES = 5000
 MAX_STREAM_SAMPLES = 500
 
 router = APIRouter()
+MAX_CARDS = 200
+_cards: "OrderedDict[str, str]" = OrderedDict()
+
+
+def _keep_card(text: str) -> str:
+    """Hold the trip card on the laptop so the QR only carries a short link a phone camera can read."""
+    card_id = secrets.token_urlsafe(6)
+    _cards[card_id] = text
+    while len(_cards) > MAX_CARDS:
+        _cards.popitem(last=False)
+    return card_id
 Reading = Annotated[list[float], Field(min_length=4, max_length=4)]
 
 
@@ -271,6 +284,14 @@ async def wall() -> dict:
     return build_wall(journal.all())
 
 
+@router.get("/api/handoff/{card_id}")
+async def handoff_card(card_id: str) -> dict:
+    text = _cards.get(card_id)
+    if text is None:
+        raise HTTPException(status_code=404, detail="That code has expired. Scan the screen again.")
+    return {"text": text}
+
+
 @router.post("/api/handoff")
 async def handoff(request: Request, body: HandoffIn) -> dict:
     if not body.consent:
@@ -284,8 +305,10 @@ async def handoff(request: Request, body: HandoffIn) -> dict:
         "stranger": stranger,
     })
     text = encode_handoff(card)
-    matrix = qr_matrix(text)
-    return {"stranger": card.stranger.model_dump(mode="json") if card.stranger else None, "text": text, "url": f"{_phone_origin(request)}/phone.html#{text}", "matrix": matrix, "size": len(matrix)}
+    card_id = _keep_card(text)
+    url = f"{_phone_origin(request)}/phone.html#{card_id}"
+    matrix = qr_matrix(url)
+    return {"stranger": card.stranger.model_dump(mode="json") if card.stranger else None, "text": text, "url": url, "matrix": matrix, "size": len(matrix)}
 
 
 def _samples_from(payload) -> list:

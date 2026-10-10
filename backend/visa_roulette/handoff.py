@@ -82,7 +82,7 @@ def decode_handoff(text: str) -> Handoff:
 
 def qr_matrix(text: str) -> list:
     """Module grid (True = dark, no quiet zone) so the browser can animate the plane into it."""
-    code = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_M, border=0)
+    code = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_L, border=0)
     code.add_data(text)
     code.make(fit=True)
     return code.get_matrix()

@@ -1,8 +1,10 @@
 """Booth scan API. Offline-first: nothing here needs the internet."""
 
+import asyncio
 import dataclasses
 import json
 import shutil
+from contextlib import asynccontextmanager
 from datetime import date
 from pathlib import Path
 from typing import Annotated, Optional
@@ -13,6 +15,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, StringConstraints, field_validator
 
+from visa_roulette import operator as booth_operator
 from visa_roulette.bcbp import parse_bcbp
 from visa_roulette.checklist import build_checklist
 from visa_roulette.errors import ScanError
@@ -79,7 +82,13 @@ def _mount(app: FastAPI, url: str, directory: Path, **kwargs) -> None:
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="Visa Roulette booth API", version="0.1.0")
+    @asynccontextmanager
+    async def lifespan(_: FastAPI):
+        warming = asyncio.create_task(asyncio.to_thread(booth_operator.warm))
+        yield
+        warming.cancel()
+
+    app = FastAPI(title="Visa Roulette booth API", version="0.1.0", lifespan=lifespan)
 
     @app.exception_handler(ScanError)
     async def scan_error_handler(_: Request, exc: ScanError) -> JSONResponse:

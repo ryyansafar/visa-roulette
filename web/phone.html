@@ -44,6 +44,12 @@
   </main>
   <script>
     const fail = (msg) => { const el = document.getElementById("route"); el.textContent = msg; el.className = "route bad"; };
+    async function cardText(hash) {
+      if (hash.startsWith("VR1.")) return hash;
+      const reply = await fetch(`/api/handoff/${encodeURIComponent(hash)}`);
+      if (!reply.ok) throw new Error("This code has expired. Scan the screen again.");
+      return (await reply.json()).text;
+    }
     async function decode(text) {
       if (!text.startsWith("VR1.")) throw new Error("Not a Visa Roulette code.");
       const body = text.slice(4).replace(/-/g, "+").replace(/_/g, "/");
@@ -53,7 +59,7 @@
     }
     (async () => {
       try {
-        const data = await decode(decodeURIComponent(location.hash.slice(1)));
+        const data = await decode(await cardText(decodeURIComponent(location.hash.slice(1))));
         const who = data.profile.name || "Traveller";
         document.getElementById("route").textContent = `${data.profile.origin} to ${data.landing_iso3}`;
         if (data.visa) {

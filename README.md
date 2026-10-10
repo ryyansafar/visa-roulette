@@ -34,6 +34,14 @@ Still planned: destination pros-and-cons reports, accessible input beyond mouse 
 ## Stack
 Python (FastAPI) backend, Tesseract OCR, zxing, OpenCV, a vanilla ES-module front end with a vendored three.js r170 globe, and an optional ESP32 + IMU board. Visa rules live in `rules/visa_rules.json` and `rules/checklist_rules.json`; both are unverified demo rules and the UI says so.
 
+## Running the booth and the phone handoff
+```bash
+.venv/bin/python -m uvicorn visa_roulette.api:app --app-dir backend --host 0.0.0.0 --port 8766
+```
+`--host 0.0.0.0` is required: the QR on the laptop opens a short link (`http://<laptop-LAN-ip>:8766/phone.html#<id>`) and the phone fetches the card from the laptop, so the phone must be on the same Wi-Fi. The QR holds only that short link (about 33x33 modules), so any camera app reads it. Cards live in memory (last 200) and expire on restart.
+
+The booth operator is a local Ollama model (`VISA_ROULETTE_MODEL`, default `gemma3n:e4b`). The server warms it at startup so the first answer is not a cold start; replies are trimmed to two plain sentences and fall back to a rules template if the model is slow, down or says anything the rules do not contain.
+
 ## Checklist engine
 `backend/visa_roulette/checklist.py` turns a passport, boarding pass, bookings and bag into a list of items. Every item carries its rule id, source link, "as of" date and a `verified` flag. All rules in `rules/checklist_rules.json` are currently unverified demo rules drawn from public articles, and the UI must say so.
 
@@ -48,7 +56,7 @@ uv venv .venv-tools && uv pip install --python .venv-tools/bin/python -r tools/r
 .venv-tools/bin/python tools/make_fixtures.py          # writes fixtures/
 python3 -m http.server 8000 --directory fixtures --bind 0.0.0.0
 # open http://<laptop-ip>:8000/wallet.html on a phone on the same Wi-Fi
-cd backend && ../.venv-tools/bin/python -m pytest -q    # 281 tests
+cd backend && ../.venv-tools/bin/python -m pytest -q    # 291 tests
 ```
 
 | Persona | Trap | Expected |

@@ -1,3 +1,5 @@
+import time
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -69,3 +71,35 @@ def test_the_ask_endpoint_answers_even_with_the_model_off(monkeypatch):
 def test_the_ask_endpoint_rejects_unknown_countries_and_empty_questions():
     assert client.post("/api/operator/ask", json={"question": "hi", "nationality": "IND", "destination": "ZZZ"}).status_code == 422
     assert client.post("/api/operator/ask", json={"question": "", "nationality": "IND", "destination": "THA"}).status_code == 422
+
+
+def test_warm_loads_the_model_with_a_tiny_prompt_and_reports_success():
+    seen = []
+    assert op.warm(chat=lambda messages: seen.append(messages) or "ok") is True
+    assert len(seen) == 1 and len(seen[0][-1]["content"]) < 20
+
+
+def test_warm_never_raises_when_ollama_is_off():
+    assert op.warm(chat=boom) is False
+
+
+def test_app_startup_warms_the_model_in_the_background(monkeypatch):
+    calls = []
+    monkeypatch.setattr(op, "warm", lambda *a, **k: calls.append(1) or True)
+    with TestClient(create_app()):
+        for _ in range(50):
+            if calls:
+                break
+            time.sleep(0.02)
+    assert calls == [1]
+
+
+def test_tidy_strips_markdown_and_keeps_two_sentences():
+    raw = "You need a visa. Apply early.\n\n**Verdict:** Visa needed, apply before you go.\n\n**Status:** Visa needed."
+    assert op.tidy(raw) == "You need a visa. Apply early."
+    assert op.tidy("**Bold** and `code` and # heading.") == "Bold and code and heading."
+
+
+def test_ask_returns_tidied_text():
+    reply = op.ask("what now?", "IND", "THA", [], chat=lambda m: "Apply online first. Bring your passport.\n\n**Verdict:** E-visa.")
+    assert reply["source"] == "ai" and reply["text"] == "Apply online first. Bring your passport."
