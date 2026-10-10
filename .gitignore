@@ -12,3 +12,4 @@ dist/
 # visitors' souvenir notes stay on the booth laptop
 data/souvenirs.jsonl
 phone_props/
+firmware/mpu6050_streamer/secrets.h
