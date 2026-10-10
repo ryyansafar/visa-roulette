@@ -228,6 +228,7 @@ function resetThrow() {
   state.globe?.resume();
   showPlane(false);
   $("needs").hidden = true;
+  $("r-photo").hidden = true;
   closeDuel();
   pickGame.close();
   officer.close();
@@ -403,6 +404,7 @@ async function land(result) {
     state.verdict = verdict;
     $("r-distance").textContent = Math.round(landing.distance_km).toLocaleString();
     $("r-country").textContent = landing.name;
+    showLandedPhoto(landing);
     const via = verdict.unlocked_by ? ` Unlocked by your ${verdict.unlocked_by} visa.` : "";
     const stamp = $("r-stamp");
     stamp.dataset.status = verdict.status;
@@ -571,6 +573,14 @@ async function onConsent(event) {
   } catch (err) {
     $("consent-error").textContent = err.message;
   }
+}
+
+function showLandedPhoto(landing) {
+  const photo = $("r-photo");
+  photo.hidden = true;
+  photo.onload = () => { photo.hidden = false; };
+  photo.alt = `${landing.name}`;
+  photo.src = `/assets/places/${landing.iso3}-1.jpg`;
 }
 
 function startAirportJourney() {

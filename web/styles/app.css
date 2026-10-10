@@ -147,3 +147,6 @@ canvas { display: block; width: 100%; height: auto; border: var(--hairline); bac
 .officer-text { margin: 0; font: 600 var(--t-18, 18px)/1.35 var(--font-display); }
 .officer-form { display: flex; gap: 8px; }
 .officer-form input { flex: 1; min-width: 0; }
+
+.place-photo-landed { width: 100%; max-height: 140px; object-fit: cover; display: block; border: var(--hairline); margin: 8px 0; }
+.place-photo-landed[hidden] { display: none; }

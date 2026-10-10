@@ -217,3 +217,8 @@ body {
 @media (min-width: 900px) {
   .journey-main { max-width: 760px; }
 }
+
+.highlight-list { display: grid; gap: 16px; }
+@media (min-width: 900px) { .highlight-list { grid-template-columns: repeat(3, 1fr); } }
+.highlight-list li { min-width: 0; }
+.place-photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; border: var(--hairline); margin-bottom: 8px; }

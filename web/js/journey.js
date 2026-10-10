@@ -276,11 +276,18 @@ async function renderOutdoors() {
   $("outdoors-title").textContent = `Welcome to ${dest.name}`;
   $("outdoors-season").textContent = dest.season || "";
   $("outdoors-tip").textContent = dest.tip || "";
-  $("outdoors-source").textContent = dest.source ? `Source: ${sourceHost(dest.source)}, as of ${dest.as_of}.` : "";
+  $("outdoors-source").textContent = (dest.source ? `Source: ${sourceHost(dest.source)}, as of ${dest.as_of}. ` : "") + "Photos: Wikimedia Commons, credits in assets/places/credits.json.";
   const list = $("outdoors-highlights");
   list.replaceChildren();
-  for (const item of dest.highlights || []) {
+  for (const [i, item] of (dest.highlights || []).entries()) {
     const li = document.createElement("li");
+    const photo = document.createElement("img");
+    photo.className = "place-photo";
+    photo.alt = item.title;
+    photo.loading = "lazy";
+    photo.addEventListener("error", () => photo.remove());
+    photo.src = `/assets/places/${dest.iso3}-${i + 1}.jpg`;
+    li.append(photo);
     const h3 = document.createElement("h3"); h3.textContent = item.title;
     const p = document.createElement("p"); p.textContent = item.blurb;
     li.append(h3, p);
