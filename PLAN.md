@@ -77,3 +77,6 @@ Feature freeze 4:30 AM. Sleep in staggered 2-3 h shifts.
 ## Risks
 Scope (biggest). Wrong visa rule on stage (show as_of + source). Venue Wi-Fi dropping mid-download.
 Use fake passports only; informational, "verify before travel".
+
+## After the base build
+Design polish pass with an independent critic: see docs/DESIGN_CRITIC_LOOP.md. Not before beats 1-5 work end to end.

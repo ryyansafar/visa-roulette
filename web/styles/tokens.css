@@ -1,0 +1,118 @@
+/* Gate Board design tokens. See docs/DESIGN.md for the reasoning. */
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("../../assets/fonts/space-grotesk-latin-500-normal.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("../../assets/fonts/space-grotesk-latin-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("../../assets/fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("../../assets/fonts/ibm-plex-mono-latin-600-normal.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Barrio";
+  src: url("../../assets/fonts/barrio-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  /* ground: deep steel-blue ink, never pure black */
+  --ink: hsl(219 40% 8%);
+  --ink-2: hsl(219 32% 12%);
+  --rule: hsl(219 22% 24%);
+  --muted: hsl(219 14% 62%);
+  --text: hsl(46 20% 92%);
+
+  /* wayfinding signal + status */
+  --signal: hsl(56 94% 58%);
+  --go: hsl(144 46% 52%);
+  --held: hsl(8 78% 58%);
+  --warn: hsl(32 90% 56%);
+
+  /* boarding-pass paper (phone page, printed props) */
+  --paper: hsl(46 30% 92%);
+  --paper-ink: hsl(219 40% 10%);
+
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, monospace;
+  --font-stamp: "Barrio", "Space Grotesk", sans-serif;
+
+  /* scale stepped around 12 */
+  --t-12: 12px;
+  --t-14: 14px;
+  --t-18: 18px;
+  --t-28: 28px;
+  --t-48: 48px;
+  --t-96: 96px;
+
+  --grid-cols: 12;
+  --gutter: 12px;
+  --radius: 0;
+  --hairline: 1px solid var(--rule);
+
+  --tick: 120ms; /* split-flap step */
+  --thud: 380ms; /* stamp landing */
+  --ease-mech: cubic-bezier(0.2, 0.9, 0.1, 1);
+}
+
+@media (prefers-color-scheme: light) {
+  :root[data-theme="auto"] {
+    --ink: var(--paper);
+    --ink-2: hsl(46 24% 86%);
+    --text: var(--paper-ink);
+    --rule: hsl(219 14% 70%);
+    --muted: hsl(219 14% 38%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --tick: 0ms;
+    --thud: 0ms;
+  }
+}
+
+html {
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: var(--t-14);
+  font-variant-numeric: tabular-nums;
+}
+
+.label {
+  font-family: var(--font-data);
+  font-size: var(--t-12);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.numeral {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--t-96);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+}
+.stamp {
+  font-family: var(--font-stamp);
+  border: 4px solid currentColor;
+  border-radius: 50%;
+  transform: rotate(-9deg);
+}

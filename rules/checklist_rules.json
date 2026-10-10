@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "note": "Demo ruleset. Every entry is UNVERIFIED until a person checks the official source. Sources listed are the pages these rules were drawn from.",
+  "rules": {
+    "R-PP-CHECKS": {
+      "label": "Passport machine-readable zone is intact",
+      "source_url": null,
+      "source_kind": "standard",
+      "source_note": "ICAO Doc 9303 check-digit algorithm, tested against the published ICAO specimen",
+      "as_of": "2026-10-10",
+      "verified": true
+    },
+    "R-PP-VALIDITY-6M": {
+      "label": "Passport valid for at least 6 months on the travel date",
+      "source_url": "https://visa2fly.com/blog/Dubai-Visa-Rejection-Reasons-for-Indians",
+      "source_kind": "third-party",
+      "as_of": "2026-10-10",
+      "verified": false
+    },
+    "R-NAME-BP": {
+      "label": "Boarding pass name matches the passport",
+      "source_url": "https://visa2fly.com/blog/Dubai-Visa-Rejection-Reasons-for-Indians",
+      "source_kind": "third-party",
+      "as_of": "2026-10-10",
+      "verified": false
+    },
+    "R-NAME-RET": {
+      "label": "Return ticket name matches the passport",
+      "source_url": "https://visa2fly.com/blog/Dubai-Visa-Rejection-Reasons-for-Indians",
+      "source_kind": "third-party",
+      "as_of": "2026-10-10",
+      "verified": false
+    },
+    "R-NAME-HOTEL": {
+      "label": "Hotel booking name matches the passport",
+      "source_url": "https://visa2fly.com/blog/Dubai-Visa-Rejection-Reasons-for-Indians",
+      "source_kind": "third-party",
+      "as_of": "2026-10-10",
+      "verified": false
+    },
+    "R-RETURN-TICKET": {
+      "label": "Return ticket present",
+      "source_url": "https://visa2fly.com/blog/Dubai-Visa-Rejection-Reasons-for-Indians",
+      "source_kind": "third-party",
+      "as_of": "2026-10-10",
+      "verified": false
+    },
+    "R-BAG-FOOD": {
+      "label": "Food items allowed",
+      "source_url": "https://www.businesstoday.in/india/story/from-coconut-to-jackfruit-heres-the-full-list-of-banned-items-indian-travellers-should-avoid-carrying-to-the-uae-546892-2026-08-03",
+      "source_kind": "news",
+      "as_of": "2026-10-10",
+      "verified": false
+    },
+    "R-BAG-MEDS": {
+      "label": "Medicines allowed",
+      "source_url": "https://gulfnews.com/uae/indians-told-not-to-bring-in-medicines-banned-in-the-uae-1.1367708",
+      "source_kind": "news",
+      "as_of": "2026-10-10",
+      "verified": false
+    },
+    "R-MAN-INSURANCE": {
+      "label": "Travel insurance arranged",
+      "source_url": null,
+      "source_kind": "advice",
+      "as_of": "2026-10-10",
+      "verified": false
+    },
+    "R-MAN-RX-COPY": {
+      "label": "Prescription copy for any medicines",
+      "source_url": "https://gulfnews.com/uae/indians-told-not-to-bring-in-medicines-banned-in-the-uae-1.1367708",
+      "source_kind": "news",
+      "as_of": "2026-10-10",
+      "verified": false
+    },
+    "R-MAN-FUNDS": {
+      "label": "Proof of funds ready",
+      "source_url": "https://visa2fly.com/blog/Dubai-Visa-Rejection-Reasons-for-Indians",
+      "source_kind": "third-party",
+      "as_of": "2026-10-10",
+      "verified": false
+    },
+    "R-BAG-GENERAL": {
+      "label": "Other items: not covered by the demo ruleset",
+      "source_url": null,
+      "source_kind": "scope",
+      "as_of": "2026-10-10",
+      "verified": false
+    }
+  },
+  "bag_items": [
+    {
+      "terms": [
+        "coconut",
+        "copra"
+      ],
+      "status": "warn",
+      "rule_id": "R-BAG-FOOD",
+      "note": "Dried coconut appears on lists of foods restricted for UAE travellers. Verify with Dubai Customs before packing."
+    },
+    {
+      "terms": [
+        "tablet",
+        "medicine",
+        "capsule",
+        "tramadol"
+      ],
+      "status": "manual",
+      "rule_id": "R-BAG-MEDS",
+      "note": "Carry the prescription. Some medicines (for example tramadol) are banned in the UAE and controlled ones need prior approval."
+    },
+    {
+      "terms": [
+        "chips",
+        "snack"
+      ],
+      "status": "pass",
+      "rule_id": "R-BAG-FOOD",
+      "note": "No restriction found in the demo ruleset."
+    }
+  ]
+}

@@ -31,6 +31,12 @@ A travel booth you can play. You scan a (sample) passport, the booth checks it w
 ## Stack
 Python (FastAPI) backend, three.js globe frontend, Ollama LLM, mlx-whisper, ocrmac, sentence-transformers, MediaPipe, optional ESP32 + IMU.
 
+## Checklist engine
+`backend/visa_roulette/checklist.py` turns a passport, boarding pass, bookings and bag into a list of items. Every item carries its rule id, source link, "as of" date and a `verified` flag. All rules in `rules/checklist_rules.json` are currently unverified demo rules drawn from public articles, and the UI must say so.
+
+## Design
+Direction and tokens: [docs/DESIGN.md](docs/DESIGN.md), `web/styles/tokens.css`.
+
 ## Specimen props (fake passport, boarding pass, bookings)
 Three fictional travellers with a SPECIMEN watermark, a made-up airline, and checksum-valid passport MRZs and IATA boarding-pass barcodes. They exist only to demo the booth.
 
@@ -39,7 +45,7 @@ uv venv .venv-tools && uv pip install --python .venv-tools/bin/python -r tools/r
 .venv-tools/bin/python tools/make_fixtures.py          # writes fixtures/
 python3 -m http.server 8000 --directory fixtures --bind 0.0.0.0
 # open http://<laptop-ip>:8000/wallet.html on a phone on the same Wi-Fi
-cd backend && ../.venv-tools/bin/python -m pytest -q    # 54 tests
+cd backend && ../.venv-tools/bin/python -m pytest -q    # 68 tests
 ```
 
 | Persona | Trap | Expected |
@@ -49,7 +55,8 @@ cd backend && ../.venv-tools/bin/python -m pytest -q    # 54 tests
 | Shafeeq | hotel booking name differs from passport | HELD |
 
 ## Data and credits
-- Earth textures: NASA Blue Marble (via the [globe.gl](https://github.com/vasturiano/globe.gl) examples)
+- Earth textures: NASA Blue Marble Next Generation (5400x2700 topography and bathymetry) and NASA cloud composite; night lights and bump map from the [globe.gl](https://github.com/vasturiano/globe.gl) examples
+- Fonts via [Fontsource](https://fontsource.org): Space Grotesk, IBM Plex Mono, Barrio (open-source fonts; confirm licences before any public release)
 - Country polygons: [Natural Earth](https://www.naturalearthdata.com/) (public domain)
 - Destination guides: [Wikivoyage](https://en.wikivoyage.org) (CC BY-SA 4.0, attribution required)
 - Advisories: UK FCDO and US State Department public feeds
