@@ -19,11 +19,14 @@ A travel booth you can play. You scan a (sample) passport, the booth checks it w
 ## Planned features
 - Boarding-pass barcode (IATA format) and passport MRZ parsing with check-digit validation
 - Visa-free / on-arrival globe for the scanned nationality, plus "unlocked by other visas" rules
+- Interactive pre-flight checklist: each item ticks from a cited rule and opens its evidence
 - Dart-throw globe game with budget and continent filters
 - Destination report: verified pros and cons, advisory level and an explainable Outlook score
 - Accessible input: single switch, head tilt, voice, IMU dart with tremor filtering, mouse
 - WebMCP tools so a browser agent can drive the booth
-- Local AI only (Ollama, MLX Whisper, Apple Vision OCR, sentence-transformers)
+- Offline-first: the core flow needs no internet; live news falls back to cached reports
+- QR hand-off: the landing spot becomes a QR that opens a mock boarding pass on your phone
+- Local AI only (Ollama, Tesseract/Apple Vision OCR, sentence-transformers)
 
 ## Stack
 Python (FastAPI) backend, three.js globe frontend, Ollama LLM, mlx-whisper, ocrmac, sentence-transformers, MediaPipe, optional ESP32 + IMU.

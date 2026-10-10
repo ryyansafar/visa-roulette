@@ -1,72 +1,79 @@
 # VISA ROULETTE — LAYOVER 2026 plan
 
-Build 6 PM–6 AM. Judging 7–9:30 AM (booth round, then ~2 min finalist pitch).
+Build 6 PM–6 AM. Judging 7–9:30 AM: booth round (judges walk the floor), then ~2 min finalist pitch.
 Rubric (50): What was built 20 · Creativity 10 · Travel connection 10 · Execution 5 · Demo 5.
 
-**Pitch:** Clear the border, earn your throw, land anywhere your passport can take you, and the booth
-reads the world's news about it. Playable by anyone, including people who can't throw.
-AI sees. Rules decide. Every verdict cites its source. Passport data never leaves the laptop.
+**Rule for this plan:** a feature only stays if a judge can SEE it earn a specific mark.
+**Pitch:** Check in, pass your pre-flight checklist, earn your throw, land anywhere your passport allows,
+and take the result home as a QR. Works with no internet. AI sees, rules decide, every verdict cites its source.
 
-## Flow (90 s)
-1. Judge gets a generated boarding pass (CCJ->DXB, their name, IATA-format barcode). Scan it -> greeted by name.
-2. Passport scan (fake/sample): MRZ check digits, validity, nationality -> globe lights up (green/amber/red, blue = unlocked by other visas).
-3. Optional bag check (3 trap items) -> CLEARED/HELD stamp with cited rule.
-4. Throw: dart, skydive sprite, or accessible input. Lands on a country; filtered by visa + budget; continent selectable.
-5. Destination report: verified pros/cons from news + Wikivoyage + advisories, Outlook score with breakdown, "confirm" -> booking links.
-6. Passport stamp added; stamped boarding pass out.
+## The judge flow (booth loop, about 90 s) mapped to the rubric
+| Beat | What the judge does / sees | Marks it earns |
+|---|---|---|
+| 1. Check in (10 s) | Scans their own generated boarding pass; real IATA barcode decoded; greeted by name | Built (BCBP decode), Travel (a boarding pass), Demo (their own pass) |
+| 2. Pre-flight checklist (25 s) | Puts passport on the pad; MRZ read by OCR and validated; checklist ticks live, each item tappable for its rule + source; a red item shows how to fix it | Built (OCR-tolerant MRZ, cited rules engine), Execution (deterministic, offline), Travel |
+| 3. Earn the throw (20 s) | Checklist clear -> stamp -> throw a dart (single key, head tilt, flick) at the spinning globe; budget + continent filters | Creativity, Travel, Demo; accessible input = Creativity + Travel (accessibility lane) |
+| 4. Landing report (20 s) | Country report: pros/cons with verbatim quotes + links, advisory level, Outlook score breakdown, LIVE or CACHED badge | Built (local LLM with quote verification), Travel |
+| 5. Take it with you (15 s) | The landing spot melts into a QR; phone opens a mock boarding pass for the new route + the checklist + the report | Creativity, Demo, Travel |
 
-## Accessibility (core, not a bolt-on)
-All inputs emit the same event `{yaw, pitch, power}` behind one `ThrowInput` interface.
-- Single switch (Space/big button): aim sweeps automatically, press to throw (switch scanning).
-- Head tilt: MediaPipe face landmarks via webcam, with dead zone + smoothing.
-- Voice: "throw", "left", "warmer" via mlx-whisper and/or WebMCP agent.
-- IMU dart (ESP32) with tremor low-pass filter. Mouse flick as baseline.
-- App: keyboard operable, large targets, aria-live results, captions, honour prefers-reduced-motion (no shake).
-Claim "designed with switch-access principles", NOT clinically validated. Ask a mentor/participant to try it.
+**2-minute pitch:** problem (30 s) -> run beats 1-5 live (60 s) -> how it's built: local AI, rules decide, offline (20 s)
+-> accessibility + who it helps (10 s). Say the rubric words out loud: built, creative, travel, executed, demoed.
+
+## Interactive checklist (the spine of the booth)
+Auto items (ticked by the engine, each with rule id, source_url, as_of, fix hint):
+- Passport check digits valid · valid for 6+ months on travel date · name matches boarding pass, return ticket, hotel
+- Return ticket present · bag items allowed (3 demo items only)
+Manual items (judge taps): travel insurance, prescription copy, travel funds proof.
+UI: role="checklist", keyboard toggle, aria-live announcements, evidence drawer per item.
+State updates create new objects; keep a copy in localStorage so a refresh doesn't lose it.
+
+## Offline-first design (no internet must never break the demo)
+- Tier A, zero internet: beats 1, 2, 3, 5. Boarding pass, MRZ, checklist, rules, globe, throw, QR, phone page.
+- Tier B, better with internet: live news refresh, booking links (shown greyed "online only" when offline).
+- Vendor everything: three.js, globe.gl, QR lib, MediaPipe wasm + model files. No CDN anywhere.
+- Models local: Ollama (gemma3n:e4b present), Tesseract eng present. Whisper weights NOT cached yet.
+- Pre-cache reports for ~20 destinations with fetched_at; 2 s network timeout then fall back to cache; badge "CACHED (as of ...)".
+- Phone page is static and served from the laptop over a hotspot (needs no internet). QR payload is self-contained.
+- WebMCP agent mode needs a cloud agent, so keep manual buttons as the offline path.
+- Pitch it: "Built for the layover. No signal at the gate? Still works."
+
+## Triage
+KEEP: beats 1-5, accessible throw inputs (switch + mouse first, head tilt if time).
+FLOURISH, only after beats 1-5 run end to end twice: WebMCP agent mode (20 s), voice commands.
+CUT: skydive sprite, duel mode, VoIP, face match, Malayalam voice, local-LLM officer persona.
 
 ## Local AI stack (M2 / 16 GB)
-- LLM: qwen3.5:4b via Ollama (fallback gemma3n:e4b, already installed). JSON output, each pro/con carries a verbatim quote; code drops any quote not found in the source.
-- ASR: mlx-whisper large-v3-turbo (fallback faster-whisper). Malayalam untested; English is the reliable path.
-- OCR: Apple Vision via ocrmac, Tesseract fallback.
-- Embeddings: sentence-transformers for mood ranking.
-- Hand/face: MediaPipe in browser. Do not run two LLMs at once.
+LLM gemma3n:e4b now (qwen3.5:4b if the pull ever finishes). JSON out, every pro/con carries a verbatim quote and
+code drops quotes not found in the source. OCR: Tesseract (works) + Apple Vision via ocrmac if installed.
+ASR: only if Whisper weights get downloaded. Embeddings: sentence-transformers for mood ranking.
 
 ## Data sources (cache before demo)
-- Visa: passport-index-dataset (archived Jan 2025, stale; patch India row) + verified combo rules (US/UK/Schengen visa unlocks). Each rule: id, source_url, as_of. Verify against official sites.
-- Articles: Google News RSS (headlines, redirect links), Wikivoyage API (CC BY-SA, credit it), UK FCDO Atom, US State Dept RSS.
-- Geometry: assets/globe (NASA-derived textures, Natural Earth countries with ISO + CONTINENT).
-- Affiliate: deep-link templates with AFFILIATE_ID env var, labelled "affiliate link"; IDs pending.
-- Prices: curated estimate bands labelled "estimate, as of date". No live fares.
-
-## WebMCP tools (register via @mcp-b polyfill; feature-detect navigator/document.modelContext)
-set_budget, select_continent, list_allowed_destinations, throw_dart, get_destination_report,
-open_booking_link (requires on-screen confirmation). Never expose passport data; return nationality code + visa status only.
-Rules decide; the agent cannot override verdicts. Keep manual buttons as fallback.
+Visa: passport-index-dataset (archived Jan 2025, patch India) + verified combo rules, each with source_url + as_of.
+Articles: Google News RSS (headlines), Wikivoyage API (CC BY-SA, credit), UK FCDO Atom, US State Dept RSS.
+Prices: curated estimate bands labelled "estimate, as of date". Affiliate: deep links with AFFILIATE_ID env, labelled.
 
 ## Tiers and hours (H0 = 6 PM)
-| Tier | Scope | Hours |
-|---|---|---|
-| 1 | Boarding pass + passport MRZ + rules + stamp | 3 |
-| 2 | Globe + dart + visa/budget filter + switch/mouse input | 3.5 |
-| 3 | Destination report (RSS + Wikivoyage + LLM + score + links) | 2.5 |
-| 3.5 | WebMCP tools + voice | 1 |
-| 4 | Bag check (3 trap items), head-tilt input | 1.5 |
-| 5 | Skydive sprite, duel mode, VoIP boarding call, Malayalam voice, QR morph: landing spot melts into a QR (destination report link + mock BCBP pass for the new route) | only if ahead |
-Feature freeze 4:30 AM. Then rehearse. Sleep in staggered 2-3 h shifts.
+| Tier | Scope | Hours | Status |
+|---|---|---|---|
+| 1 | Boarding pass + passport engines, props, tests | 3 | DONE (54 tests, props, wallet page) |
+| 1b | Booth spine: scan loop + interactive checklist + stamp | 2.5 | todo |
+| 2 | Globe + dart + visa/budget filter + switch/mouse input | 3.5 | todo |
+| 3 | Destination report (cached first, live refresh) | 2.5 | todo |
+| 4 | QR morph + phone page (mock pass, checklist, report) | 1 | todo |
+| 5 | Offline hardening + rehearsal | 1.5 | todo |
+Feature freeze 4:30 AM. Sleep in staggered 2-3 h shifts.
 
 ## Split (adjust freely)
-- Ryyan: pipeline (MRZ, rules engine, LLM report), WebMCP, inputs, caching.
-- Fathima: globe visuals + dart animation, UI/accessibility, verified visa/destination data, photos, pitch.
+- Ryyan: scan loop, rules engine + checklist logic, report pipeline, caching, offline.
+- Fathima: globe visuals + dart animation, checklist UI + accessibility, QR morph, phone page, pitch.
 
-## Fallbacks
-Simulated booth (BOOTH=sim), mouse throw, cached reports for ~20 demo destinations, cached feeds, manual buttons if WebMCP flag fails.
+## Offline readiness (audit)
+- [x] ollama + gemma3n:e4b, Tesseract eng, MRZ/BCBP engines, fixtures, globe textures + country polygons
+- [ ] npm: three, globe.gl, QR lib, MediaPipe wasm/models vendored into the repo
+- [ ] Whisper weights + mlx-whisper/ocrmac (install failed on a network timeout; retry with UV_HTTP_TIMEOUT=120)
+- [ ] ~20 destination reports cached; 8-10 combo rules verified with sources
+- [ ] 90-second booth script + 2-minute pitch rehearsed against the table above
 
 ## Risks
-Scope (biggest). Wrong visa rule on stage (show as_of + source). Venue Wi-Fi. Phones need HTTPS for sensors/mic.
+Scope (biggest). Wrong visa rule on stage (show as_of + source). Venue Wi-Fi dropping mid-download.
 Use fake passports only; informational, "verify before travel".
-
-## Before building
-- [ ] qwen3.5:4b pulled; mlx-whisper + ocrmac import OK (project .venv)
-- [ ] Chrome WebMCP check in console: 'modelContext' in navigator, and in document
-- [ ] Cache ~20 destination reports; verify 8-10 combo rules from official sites
-- [ ] 90-second script written and timed
