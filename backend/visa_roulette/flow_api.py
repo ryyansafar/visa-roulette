@@ -10,6 +10,7 @@ from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, Field
 
 from visa_roulette import geo
+from visa_roulette.duel import duel
 from visa_roulette.errors import ScanError
 from visa_roulette.souvenirs import JOURNAL_PATH, Journal, Souvenir, clean, DEFAULT_NICKNAME, DEFAULT_NOTE, MAX_NICKNAME, MAX_NOTE
 from visa_roulette.handoff import Handoff, VisaVerdict, encode_handoff, qr_matrix
@@ -153,6 +154,20 @@ async def visa_requirement(body: VisaRequirementIn) -> dict:
         raise ScanError("bad_country", "That country is not known.", 422)
     verdict = requirement(body.nationality, body.destination, body.visas)
     return {**dataclasses.asdict(verdict), "needs": needs(verdict.status, body.destination)}
+
+
+class DuelIn(BaseModel):
+    destination: Iso3
+    a: VisaIn
+    b: VisaIn
+
+
+@router.post("/api/duel")
+async def passport_duel(body: DuelIn) -> dict:
+    for code in (body.destination, body.a.nationality, body.b.nationality):
+        if not geo.is_country(code):
+            raise ScanError("bad_country", "That country is not known.", 422)
+    return duel(body.a.nationality, body.b.nationality, body.destination, body.a.visas, body.b.visas)
 
 
 @router.post("/api/visa/map")

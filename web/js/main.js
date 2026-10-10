@@ -1,6 +1,7 @@
 import { acceptPassport, enterChecklist, initChecklist, preflightSummary, ruleStatus, startSample } from "/js/checklist.js";
 import { closeCamera, openCamera, scanLoop, watchThrow } from "/js/camera.js";
 import { createGlobe } from "/js/globe.js";
+import { closeDuel, initDuel, openDuel } from "/js/duel.js";
 const $ = (id) => document.getElementById(id);
 const STEPS = ["profile", "checklist", "throw", "consent", "handoff"];
 const W = 1200;
@@ -220,6 +221,7 @@ function resetThrow() {
   state.globe?.resume();
   showPlane(false);
   $("needs").hidden = true;
+  closeDuel();
   $("r-distance").textContent = "---";
   $("r-country").textContent = "-";
   $("r-stamp").hidden = true;
@@ -320,6 +322,7 @@ async function land(result) {
     stamp.hidden = false;
     $("r-note").textContent = `${verdict.status === "unknown" ? "" : `${verdict.label}. `}${verdict.note}${via}${trust} As of ${verdict.as_of}.`;
     renderNeeds(verdict);
+    openDuel(state.profile.nationality);
     $("keep").disabled = false;
     setStatus(`Landed in ${landing.name}.`);
   } catch (err) {
@@ -529,6 +532,7 @@ async function init() {
   $("scan-file").addEventListener("change", onScan);
   $("desk-start").addEventListener("click", startDeskCamera);
   renderDeskPeople();
+  initDuel({ api, setStatus, getContext: () => ({ profile: state.profile, landing: state.landing }) });
   $("again").addEventListener("click", resetThrow);
   $("keep").addEventListener("click", enterConsent);
   $("back-throw").addEventListener("click", () => show("throw"));

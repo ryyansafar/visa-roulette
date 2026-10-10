@@ -141,3 +141,13 @@ canvas { display: block; width: 100%; height: auto; border: var(--hairline); bac
 .chip-note { font: 500 var(--t-18)/1.35 var(--font-display); margin: 0; }
 .chip-by, .chip-visa { font: 400 var(--t-12)/1.4 var(--font-data); letter-spacing: 0.08em; color: var(--muted); margin: 0; }
 .chip-visa[data-tone="free"], .chip-visa[data-tone="home"] { color: var(--go); }
+
+.duel { border-top: var(--hairline); padding-top: 12px; display: grid; gap: 8px; }
+.duel[hidden] { display: none; }
+.duel-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.duel-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.duel-side { border: var(--hairline); padding: 10px 12px; display: grid; gap: 4px; align-content: start; }
+.duel-side[data-stronger="true"] { border: 2px solid var(--go); }
+.duel-code { margin: 0; font: 700 var(--t-28)/1 var(--font-display); }
+.duel-badge { margin: 0; color: var(--go); font: 600 var(--t-12)/1.4 var(--font-data); letter-spacing: .08em; }
+.duel-headline { margin: 0; font: 700 var(--t-18)/1.2 var(--font-display); }
