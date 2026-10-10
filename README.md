@@ -2,7 +2,7 @@
   <img src="assets/logo.svg" alt="Logo" width="96">
 </p>
 
-<h1 align="center">THUNA</h1>
+<h1 align="center">VISA VERSA</h1>
 
 <p align="center">
   Clear the border, earn your throw, land anywhere your passport can take you.<br>
