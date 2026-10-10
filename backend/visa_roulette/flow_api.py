@@ -13,7 +13,7 @@ from fastapi.concurrency import run_in_threadpool
 from fastapi import APIRouter, HTTPException, Request, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, Field
 
-from visa_roulette import geo, operator as booth_operator, pick
+from visa_roulette import geo, officer_flow, operator as booth_operator, pick
 from visa_roulette.camera_throw import throw_from_camera
 from visa_roulette.duel import duel
 from visa_roulette.errors import ScanError
@@ -232,6 +232,31 @@ async def operator_ask(body: AskIn) -> dict:
     if not (geo.is_country(body.nationality) and geo.is_country(body.destination)):
         raise ScanError("bad_country", "That country is not known.", 422)
     return await run_in_threadpool(booth_operator.ask, body.question, body.nationality, body.destination, body.visas)
+
+
+class OfficerStartIn(VisaIn):
+    destination: Iso3
+
+
+class OfficerTurnIn(BaseModel):
+    session_id: str = Field(min_length=1, max_length=64)
+    said: str = Field(max_length=2000)
+
+
+@router.post("/api/officer/start")
+async def officer_start(body: OfficerStartIn) -> dict:
+    try:
+        return await run_in_threadpool(officer_flow.start, body.nationality, body.destination, body.visas)
+    except ValueError:
+        raise ScanError("bad_country", "That country is not known.", 422)
+
+
+@router.post("/api/officer/turn")
+async def officer_turn(body: OfficerTurnIn) -> dict:
+    try:
+        return await run_in_threadpool(officer_flow.turn, body.session_id, body.said)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="That interview is over or unknown.")
 
 
 @router.post("/api/visa/map")

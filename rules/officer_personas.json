@@ -1,0 +1,67 @@
+{
+  "note": "Interview style per destination. Strictness 1-5 is a hand-made synthesis of public traveller reports, not official data; it only changes how many questions the officer asks. The stamp always comes from visa_rules.json. No figures here on purpose: the officer never quotes an amount.",
+  "default": {"title": "Immigration Officer", "strictness": 3, "tone": "brisk", "voice": "en-neutral"},
+  "destinations": {
+    "ARE": {"title": "Immigration Officer", "strictness": 3, "tone": "formal", "voice": "en-gulf"},
+    "THA": {"title": "Immigration Officer", "strictness": 3, "tone": "brisk", "voice": "en-neutral"},
+    "SGP": {"title": "Immigration Officer", "strictness": 3, "tone": "formal", "voice": "en-sg"},
+    "JPN": {"title": "Immigration Inspector", "strictness": 2, "tone": "formal", "voice": "en-neutral"},
+    "GBR": {"title": "Border Force Officer", "strictness": 4, "tone": "warm", "voice": "en-gb"},
+    "USA": {"title": "CBP Officer", "strictness": 4, "tone": "terse", "voice": "en-us"},
+    "FRA": {"title": "Border Guard", "strictness": 3, "tone": "formal", "voice": "en-neutral"},
+    "DEU": {"title": "Border Guard", "strictness": 3, "tone": "formal", "voice": "en-neutral"},
+    "AUS": {"title": "Border Force Officer", "strictness": 2, "tone": "warm", "voice": "en-au"},
+    "MYS": {"title": "Immigration Officer", "strictness": 3, "tone": "brisk", "voice": "en-neutral"},
+    "RUS": {"title": "Border Control Officer", "strictness": 4, "tone": "terse", "voice": "en-neutral"}
+  },
+  "tones": {
+    "brisk": {
+      "greeting": "Next, please. Passport.",
+      "purpose": "What is the purpose of your visit?",
+      "duration": "How long will you stay?",
+      "accommodation": "Where will you be staying?",
+      "funds_and_return": "Do you have a ticket out, and how are you paying for the trip?",
+      "ties_home": "What is waiting for you back home?",
+      "documents_check": "Put your papers on the desk, please.",
+      "steer": "Let us keep to the questions.",
+      "ack": ["Okay.", "Noted.", "Right."],
+      "concern": "I will note that."
+    },
+    "formal": {
+      "greeting": "Good day. Passport, please.",
+      "purpose": "May I ask the purpose of your visit?",
+      "duration": "How long do you intend to stay?",
+      "accommodation": "Where will you be staying during your visit?",
+      "funds_and_return": "Do you hold a return or onward ticket, and how will you fund your stay?",
+      "ties_home": "What commitments do you have in your home country?",
+      "documents_check": "Please present your supporting documents.",
+      "steer": "Please answer the question I asked.",
+      "ack": ["Thank you.", "I see.", "Understood."],
+      "concern": "That is noted on your record for this visit."
+    },
+    "warm": {
+      "greeting": "Hello there. Passport, please.",
+      "purpose": "What brings you here today?",
+      "duration": "How long are you planning to stay?",
+      "accommodation": "And where will you be staying?",
+      "funds_and_return": "Have you got a ticket home, and how are you covering the trip?",
+      "ties_home": "What will you be going back to at home?",
+      "documents_check": "Pop your papers on the desk for me.",
+      "steer": "Let us stick to the questions, please.",
+      "ack": ["Lovely.", "Thanks.", "Good to know."],
+      "concern": "I will make a note of that."
+    },
+    "terse": {
+      "greeting": "Passport.",
+      "purpose": "Purpose of the visit?",
+      "duration": "How long are you staying?",
+      "accommodation": "Where are you staying?",
+      "funds_and_return": "Return ticket? Who is paying for this trip?",
+      "ties_home": "What do you do back home?",
+      "documents_check": "Papers on the desk.",
+      "steer": "Answer the question.",
+      "ack": ["Okay.", "Mm-hm.", "Right."],
+      "concern": "I am noting that."
+    }
+  }
+}
