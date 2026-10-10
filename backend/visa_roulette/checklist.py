@@ -198,3 +198,9 @@ def build_checklist(
     verdict = "HELD" if "fail" in statuses else "REVIEW" if "warn" in statuses else "CLEARED"
     readiness = sum(i.status == "pass" for i in items) / len(items)
     return Checklist(items=items, verdict=verdict, readiness=readiness)
+
+
+def rule_info(rule_id: str) -> dict:
+    """The cited rule behind a check: label, source and whether a person has verified it."""
+    rule = _rules()["rules"][rule_id]
+    return {"id": rule_id, **{key: rule.get(key) for key in ("label", "source_url", "source_note", "as_of", "verified")}}

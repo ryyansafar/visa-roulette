@@ -2,14 +2,15 @@
 
 import dataclasses
 import json
+import re
 import socket
 from datetime import date
-from typing import Annotated, Optional
+from typing import Annotated, Literal, Optional
 
 from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, Field
 
-from visa_roulette import geo
+from visa_roulette import geo, pick
 from visa_roulette.duel import duel
 from visa_roulette.errors import ScanError
 from visa_roulette.souvenirs import JOURNAL_PATH, Journal, Souvenir, clean, DEFAULT_NICKNAME, DEFAULT_NOTE, MAX_NICKNAME, MAX_NOTE
@@ -168,6 +169,26 @@ async def passport_duel(body: DuelIn) -> dict:
         if not geo.is_country(code):
             raise ScanError("bad_country", "That country is not known.", 422)
     return duel(body.a.nationality, body.b.nationality, body.destination, body.a.visas, body.b.visas)
+
+
+class PickIn(BaseModel):
+    choice: Literal["passport", "hotel", "return"]
+
+
+def _known_destination(iso3: str) -> str:
+    if not (re.fullmatch(r"[A-Z]{3}", iso3) and geo.is_country(iso3)):
+        raise ScanError("bad_country", "That country is not known.", 422)
+    return iso3
+
+
+@router.get("/api/pick/{iso3}")
+async def pick_deal(iso3: str) -> dict:
+    return {"destination": _known_destination(iso3), "documents": pick.deal(iso3)}
+
+
+@router.post("/api/pick/{iso3}/answer")
+async def pick_answer(iso3: str, body: PickIn) -> dict:
+    return pick.answer(_known_destination(iso3), body.choice)
 
 
 @router.post("/api/visa/map")

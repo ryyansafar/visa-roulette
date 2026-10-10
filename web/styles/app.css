@@ -151,3 +151,12 @@ canvas { display: block; width: 100%; height: auto; border: var(--hairline); bac
 .duel-code { margin: 0; font: 700 var(--t-28)/1 var(--font-display); }
 .duel-badge { margin: 0; color: var(--go); font: 600 var(--t-12)/1.4 var(--font-data); letter-spacing: .08em; }
 .duel-headline { margin: 0; font: 700 var(--t-18)/1.2 var(--font-display); }
+
+.pick-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.pick-card { text-align: left; border: var(--hairline); background: transparent; color: inherit; padding: 10px 12px; display: grid; gap: 4px; align-content: start; cursor: pointer; font: inherit; }
+.pick-card:hover:not(:disabled) { border-color: var(--go); }
+.pick-card:disabled { cursor: default; }
+.pick-card[data-flawed="true"] { border: 2px solid var(--go); }
+.pick-card[data-wrong="true"] { opacity: .55; }
+.pick-line { margin: 0; font: 600 var(--t-14, 14px)/1.3 var(--font-data); }
+@media (max-width: 640px) { .pick-cards { grid-template-columns: 1fr; } }
