@@ -29,6 +29,8 @@
     .chip p { margin: 0; }
     .chip .quote { font-size: 20px; }
     .src a { color: #9aa3b5; word-break: break-all; }
+    .start-journey { font: 700 16px system-ui, sans-serif; text-transform: uppercase; letter-spacing: .04em; background: #f5e642; color: #0b1220; border: none; padding: 16px 18px; cursor: pointer; justify-self: stretch; text-align: center; }
+    .start-journey[hidden] { display: none; }
   </style>
 </head>
 <body>
@@ -40,6 +42,7 @@
     <dl id="facts"></dl>
     <section id="needs-box" hidden><h2>What you need</h2><ul id="needs" class="needs"></ul></section>
     <section id="chip" class="chip" hidden><h2>Souvenir from a stranger</h2><p id="chip-route"></p><p id="chip-note" class="quote"></p><p id="chip-by" class="note"></p></section>
+    <button id="start-journey" class="start-journey" type="button" hidden>Start my journey</button>
     <p class="note">Specimen demo. Informational only. Verify requirements with the official source before you travel. This page works with no internet.</p>
   </main>
   <script>
@@ -97,10 +100,14 @@
           const dd = document.createElement("dd"); dd.textContent = value;
           document.getElementById("facts").append(dt, dd);
         }
+        document.getElementById("start-journey").hidden = false;
       } catch (err) {
         fail("This code is damaged or incomplete. Scan it again.");
       }
     })();
+    document.getElementById("start-journey").addEventListener("click", () => {
+      window.location.href = `/journey.html${location.hash}`;
+    });
   </script>
 </body>
 </html>

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your journey - Visa Roulette</title>
+  <link rel="stylesheet" href="/styles/tokens.css">
+  <link rel="stylesheet" href="/styles/journey.css">
+</head>
+<body>
+  <main class="journey-main" aria-live="polite">
+    <div class="journey-bar">
+      <p id="journey-step" class="journey-step">Step 1 of 6</p>
+      <button id="journey-skip" class="journey-skip" type="button">Skip</button>
+    </div>
+
+    <section class="scene" id="scene-checkin" data-scene="checkin">
+      <h2>Boarding-pass check-in</h2>
+      <p>Photograph your boarding pass, or use the demo pass to continue.</p>
+      <div class="scan-frame">Camera preview (demo mode)</div>
+      <button class="btn-primary" id="checkin-demo" type="button">Use the demo pass</button>
+      <dl class="fields" id="checkin-fields" hidden></dl>
+      <button class="btn-primary" id="checkin-confirm" type="button" hidden>That's me &ndash; continue</button>
+    </section>
+
+    <section class="scene" id="scene-security" data-scene="security" hidden>
+      <h2>Security &amp; papers</h2>
+      <p class="help">Tap what you already have. Missing items are fine &ndash; the officer will just ask.</p>
+      <ul class="need-list" id="need-list"></ul>
+      <button class="btn-primary" id="security-continue" type="button">Head to the desk</button>
+    </section>
+
+    <section class="scene" id="scene-desk" data-scene="desk" hidden>
+      <div class="desk-header">
+        <p class="desk-title" id="desk-title">Immigration Officer</p>
+        <p class="strictness-dial" id="desk-strictness">How thorough this desk usually is: &#9679;&#9679;&#9679;&#9675;&#9675;</p>
+      </div>
+      <svg class="officer-face" id="officer-face" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="var(--rule)" stroke-width="2"></circle>
+        <ellipse class="eye" cx="36" cy="42" rx="4" ry="6" fill="var(--text)"></ellipse>
+        <ellipse class="eye" cx="64" cy="42" rx="4" ry="6" fill="var(--text)"></ellipse>
+        <rect class="mouth" x="38" y="64" width="24" height="6" fill="var(--signal)"></rect>
+      </svg>
+      <p class="desk-state" id="desk-state">Speaking</p>
+      <div class="caption-box officer" id="officer-caption" role="status"></div>
+      <div class="caption-box visitor" id="visitor-caption" hidden></div>
+      <p class="concerns" id="desk-concerns" hidden></p>
+      <button class="btn-primary" id="desk-next" type="button">Continue</button>
+      <p class="help"><button class="journey-skip" id="desk-typed-toggle" type="button">Type instead of speaking</button></p>
+      <form id="desk-typed-form" hidden>
+        <input id="desk-typed-input" type="text" maxlength="200" aria-label="Your answer" placeholder="Say your answer">
+        <button class="btn-secondary" type="submit">Send</button>
+      </form>
+    </section>
+
+    <section class="scene" id="scene-papers" data-scene="papers" hidden>
+      <h2>Papers on the desk</h2>
+      <p class="help">The officer asked to see these. Tap each one you can place on the desk.</p>
+      <ul class="paper-cards" id="paper-cards"></ul>
+      <button class="btn-primary" id="papers-continue" type="button">Papers handed over</button>
+    </section>
+
+    <section class="scene" id="scene-gate" data-scene="gate" hidden>
+      <h2>Arrivals</h2>
+      <div class="arrivals-board">
+        <p class="journey-step">Now arriving</p>
+        <div class="flap-row" id="country-flaps"></div>
+        <p class="stamp" id="gate-stamp" hidden></p>
+        <p id="gate-note"></p>
+        <p class="source-line" id="gate-source"></p>
+      </div>
+      <button class="btn-primary" id="gate-continue" type="button">Step outside</button>
+    </section>
+
+    <section class="scene" id="scene-outdoors" data-scene="outdoors" hidden>
+      <h2 id="outdoors-title">Welcome</h2>
+      <p class="season-tip" id="outdoors-season"></p>
+      <ul class="highlight-list" id="outdoors-highlights"></ul>
+      <p class="season-tip" id="outdoors-tip"></p>
+      <p class="source-line" id="outdoors-source"></p>
+      <button class="btn-primary" id="outdoors-done" type="button">Get my souvenir</button>
+    </section>
+  </main>
+  <script type="module" src="/js/journey.js"></script>
+</body>
+</html>
