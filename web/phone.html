@@ -112,7 +112,8 @@
           nationality: window._vrTripData.profile.nationality,
           destination: window._vrTripData.landing_iso3,
           visas: window._vrTripData.profile.visas || [],
-          destinationName: window._vrTripData.landing_iso3,
+          name: window._vrTripData.profile.name || "",
+          needs: window._vrTripData.needs || [],
         }));
       }
       window.location.href = `/journey.html${location.hash}`;

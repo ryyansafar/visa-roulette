@@ -90,14 +90,16 @@ body {
 .btn-secondary:hover, .btn-secondary:focus-visible { border-color: var(--signal); color: var(--signal); }
 
 /* --- Boarding-pass check-in --- */
-.scan-frame {
-  border: var(--hairline);
-  padding: 24px;
-  text-align: center;
-  color: var(--muted);
-  font-family: var(--font-data);
-  font-size: var(--t-14);
+.scan-button { display: block; text-align: center; }
+.scan-status { min-height: 1.4em; font-family: var(--font-data); font-size: var(--t-12); color: var(--muted); letter-spacing: 0.06em; }
+.scan-status[data-tone="bad"] { color: var(--held, var(--signal)); }
+#desk-typed-form { display: flex; gap: 8px; }
+#desk-typed-input {
+  flex: 1; min-width: 0; background: transparent; color: var(--text); border: var(--hairline); border-radius: 0;
+  padding: 12px 14px; font: 400 var(--t-14)/1.2 var(--font-data);
 }
+#desk-typed-input::placeholder { color: var(--muted); }
+#desk-typed-input:focus-visible { outline: 2px solid var(--signal); outline-offset: 1px; }
 .fields dt { font-family: var(--font-data); font-size: var(--t-12); color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
 .fields dd { margin: 0 0 8px; font: 700 var(--t-18)/1.2 var(--font-display); }
 
@@ -207,3 +209,11 @@ body {
 .highlight-list p { color: var(--muted); font-size: var(--t-14); }
 
 .season-tip { font-family: var(--font-data); font-size: var(--t-14); color: var(--muted); }
+
+.scan-frame { border: var(--hairline); background: var(--bg, #000); aspect-ratio: 16 / 9; overflow: hidden; }
+.scan-frame[hidden] { display: none; }
+.scan-frame video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.scan-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (min-width: 900px) {
+  .journey-main { max-width: 760px; }
+}

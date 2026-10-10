@@ -16,9 +16,16 @@
 
     <section class="scene" id="scene-checkin" data-scene="checkin">
       <h2>Boarding-pass check-in</h2>
-      <p>Photograph your boarding pass, or use the demo pass to continue.</p>
-      <div class="scan-frame">Camera preview (demo mode)</div>
-      <button class="btn-primary" id="checkin-demo" type="button">Use the demo pass</button>
+      <p>Open your boarding pass in your phone wallet and hold the phone up to this screen's camera.</p>
+      <div class="scan-frame" id="checkin-frame">
+        <video id="checkin-video" playsinline muted></video>
+      </div>
+      <p class="scan-status" id="checkin-status" role="status"></p>
+      <div class="scan-actions">
+        <label class="btn-secondary scan-button" for="checkin-file">Upload a photo instead</label>
+        <input id="checkin-file" type="file" accept="image/*" hidden>
+        <button class="btn-secondary" id="checkin-demo" type="button">Use the demo pass</button>
+      </div>
       <dl class="fields" id="checkin-fields" hidden></dl>
       <button class="btn-primary" id="checkin-confirm" type="button" hidden>That's me &ndash; continue</button>
     </section>

@@ -1,7 +1,6 @@
-// Mock fixtures still used by the scenes that aren't wired to the real backend yet (check-in OCR,
-// security/papers listing - see "How to work" step 2 in
-// docs/FATHIMA_AIRPORT_EXPERIENCE_PROMPT.md). The desk, gate and outdoors scenes now call the real
-// API (web/js/officer_api.js, web/js/desk.js) and no longer use mock data.
+// Offline fallbacks only: the demo boarding pass (when no photo is scanned), the demo profile (when
+// the journey is opened without a trip card) and the demo papers list (when /api/visa/requirement
+// is unreachable). Every scene calls the real backend first.
 
 export const MOCK_PROFILE = {
   name: "Arjun Kumar",
