@@ -110,9 +110,3 @@ html {
   line-height: 0.9;
   letter-spacing: -0.03em;
 }
-.stamp {
-  font-family: var(--font-stamp);
-  border: 4px solid currentColor;
-  border-radius: 50%;
-  transform: rotate(-9deg);
-}

@@ -1,0 +1,175 @@
+/* Form primitives, yellow discipline, button styles */
+
+/* Override global yellow links to use text color with underline treatment */
+a { color: var(--text); text-decoration: underline; }
+a:hover { opacity: 0.8; }
+
+/* Focus ring: text color instead of signal yellow */
+:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+/* Select dropdown: custom styling */
+select {
+  appearance: none;
+  background-color: var(--ink-2);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23baa078' d='M1 1l5 5 5-5' stroke='%23baa078' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+  min-height: 44px;
+}
+
+/* Text and number inputs */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="email"],
+input[type="tel"],
+input[type="password"] {
+  min-height: 44px;
+}
+
+/* Custom radio and checkbox styling */
+input[type="radio"],
+input[type="checkbox"] {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  min-height: 22px;
+  border: var(--hairline);
+  background: var(--ink-2);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text);
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--text);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230a0a0a'%3E%3Cpath d='M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 11-1.06-1.06l7.25-7.25a.75.75 0 011.06 0Z'/%3E%3C/svg%3E");
+  background-size: 14px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+input[type="radio"] {
+  border-radius: 50%;
+}
+
+input[type="radio"]:checked {
+  background-color: var(--text);
+  background-image: radial-gradient(circle, var(--ink-2) 30%, transparent 30%);
+}
+
+/* File input button styling */
+input[type="file"]::file-selector-button {
+  font: 700 var(--t-14)/1 var(--font-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid var(--text);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  margin-right: 12px;
+}
+
+/* Button styles: three levels */
+button {
+  font: 700 var(--t-14)/1 var(--font-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 0;
+  cursor: pointer;
+  border: 1px solid var(--text);
+  background: transparent;
+  color: var(--text);
+}
+
+button.primary {
+  background: var(--signal);
+  border-color: var(--signal);
+  color: var(--ink);
+}
+
+button.secondary {
+  border: 1px solid var(--text);
+  background: transparent;
+  color: var(--text);
+}
+
+button.ghost {
+  border: none;
+  background: transparent;
+}
+
+button.ghost:hover {
+  text-decoration: underline;
+}
+
+button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Override nav step active state: use text color instead of yellow */
+.steps li[aria-current="step"] {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+/* Override progress meter: use text color instead of yellow */
+.meter span {
+  background: var(--text);
+}
+
+/* Override person/people selector checked state: use text color */
+.person:has(input:checked) {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+/* Override viewfinder guide: use text color instead of yellow */
+.viewfinder .guide {
+  border: 2px dashed var(--text);
+}
+
+/* Override viewfinder moving state: use text color */
+.viewfinder[data-moving="true"] {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+/* Override chip border (but not inside .stamp per brief exception) */
+.chip {
+  border: 2px dashed var(--text);
+}
+
+/* Footer links: use text color with underline */
+.links a {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.links a:hover {
+  opacity: 0.8;
+}
+
+/* Disclosures: native triangle never shows; every summary gets the same + / minus as the throw accordions. */
+summary { list-style: none; display: flex; align-items: center; gap: 12px; }
+summary::-webkit-details-marker { display: none; }
+summary::marker { content: ""; }
+summary::after { content: "+"; flex: none; font: 400 var(--t-28)/1 var(--font-data); color: var(--muted); }
+details[open] > summary::after { content: "\2212"; }
+summary:hover::after { color: var(--text); }
+.own summary { justify-content: space-between; }
+
+/* Traveller chips: native radio is hidden, selected is inverted ink on paper. */
+.people .person { position: relative; gap: 0; }
+.people .person input[type="radio"] { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; margin: 0; opacity: 0; cursor: pointer; }
+.people .person:has(input:checked) { background: var(--text); border-color: var(--text); color: var(--ink); }
+.people .person:has(input:focus-visible) { outline: 2px solid var(--text); outline-offset: 2px; }

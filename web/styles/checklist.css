@@ -1,0 +1,100 @@
+/* Pre-flight rows have two states: done (filled go square, dark check) or not yet (hairline square), same as the needs list. The row itself opens the evidence. */
+#step-checklist .cl-list { margin: 16px 0; }
+#step-checklist .cl-item { padding: 0; }
+#step-checklist .cl-head { display: grid; grid-template-columns: 16px 1fr; gap: 16px; align-items: start; padding: 14px 0; }
+
+#step-checklist .cl-mark {
+  --mark-line: var(--muted);
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  min-height: 16px;
+  margin: 4px 0 0;
+  padding: 0;
+  border: 1px solid var(--mark-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+}
+#step-checklist .cl-item[data-status="fail"] .cl-mark { --mark-line: var(--held); }
+#step-checklist .cl-item[data-status="warn"] .cl-mark { --mark-line: var(--warn); }
+#step-checklist .cl-item[data-status="pass"] .cl-mark,
+#step-checklist input.cl-mark:checked { --mark-line: var(--go); background-color: var(--go); background-image: none; }
+#step-checklist input.cl-mark { cursor: pointer; }
+#step-checklist .cl-item[data-status="pass"] .cl-mark::after,
+#step-checklist input.cl-mark:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid var(--ink);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+#step-checklist .cl-item .cl-row {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  min-height: 0;
+  padding: 0 28px 0 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+  position: relative;
+}
+#step-checklist .cl-row::after {
+  content: "+";
+  position: absolute;
+  right: 0;
+  top: -2px;
+  font: 400 var(--t-28)/1 var(--font-data);
+  color: var(--muted);
+}
+#step-checklist .cl-row[aria-expanded="true"]::after { content: "\2212"; }
+#step-checklist .cl-row:hover::after { color: var(--text); }
+#step-checklist .cl-row:hover .cl-label { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+#step-checklist .cl-label { font-weight: 700; font-size: var(--t-18); line-height: 1.25; }
+#step-checklist .cl-detail { font: 400 var(--t-14)/1.4 var(--font-display); color: var(--muted); }
+#step-checklist .cl-item[data-status="fail"] .cl-detail { color: var(--held); }
+#step-checklist .cl-item[data-status="warn"] .cl-detail { color: var(--warn); }
+
+#step-checklist .evidence { font: 400 var(--t-14)/1.5 var(--font-display); margin: 0 0 14px 32px; padding: 10px 14px; border-left: 1px solid var(--rule); }
+#step-checklist .evidence[hidden] { display: none; }
+#step-checklist .evidence dt, #step-checklist .evidence .ev-data { font-family: var(--font-data); }
+#step-checklist .help, #step-checklist #cl-empty { font-family: var(--font-display); font-size: var(--t-14); }
+
+#step-checklist .verdict { padding: 20px 24px 24px; gap: 10px; overflow: visible; }
+#step-checklist .verdict .stamp { --stamp-size: clamp(28px, 2.4vw + 10px, 56px); margin: 14px 12px 8px 6px; }
+#step-checklist .cl-note { font: 500 var(--t-18)/1.35 var(--font-display); }
+#step-checklist .verdict .big { order: 1; display: flex; align-items: baseline; gap: 2px; font-size: var(--t-48); line-height: 1; margin-top: 6px; }
+#step-checklist .verdict .big small { font: 700 calc(var(--t-48) * 0.4)/1 var(--font-display); color: var(--text); letter-spacing: 0; }
+#step-checklist .verdict #cl-count { order: 2; margin: 0; }
+#step-checklist .verdict .meter { order: 3; }
+#step-checklist .verdict .meter { height: 6px; }
+#step-checklist .verdict .meter span { background: var(--muted); }
+#step-checklist .verdict[data-verdict="CLEARED"] .meter span { background: var(--go); }
+#step-checklist .verdict[data-verdict="REVIEW"] .meter span { background: var(--warn); }
+#step-checklist .verdict[data-verdict="HELD"] .meter span { background: var(--held); }
+
+/* Specimen papers: one frame, one ratio, mono caption. The red SPECIMEN watermark is baked into the images. */
+#step-checklist .cl-docs { display: flex; gap: 16px; align-items: flex-start; }
+#step-checklist .cl-docs[hidden] { display: none; }
+#step-checklist .cl-docs figure { margin: 0; display: grid; gap: 6px; justify-items: start; }
+#step-checklist .cl-docs img { display: block; height: 104px; width: auto; max-width: 100%; border: var(--hairline); }
+#step-checklist .cl-docs figcaption { font: 400 var(--t-12)/1.2 var(--font-data); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+@media (max-width: 600px) {
+  #step-checklist .cl-head { grid-template-columns: 16px 1fr; gap: 12px; }
+  #step-checklist .evidence { margin-left: 0; }
+}

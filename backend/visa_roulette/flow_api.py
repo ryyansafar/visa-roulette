@@ -11,7 +11,7 @@ from typing import Annotated, Literal
 
 from fastapi import APIRouter, HTTPException, Request, Response, WebSocket, WebSocketDisconnect
 from fastapi.concurrency import run_in_threadpool
-from pydantic import BaseModel, Field
+from pydantic import AfterValidator, BaseModel, Field
 
 from visa_roulette import destination as destination_info
 from visa_roulette import geo, officer_flow, pick, stt, tts
@@ -58,7 +58,13 @@ def _keep_card(text: str) -> str:
     while len(_cards) > MAX_CARDS:
         _cards.popitem(last=False)
     return card_id
-Reading = Annotated[list[float], Field(min_length=4, max_length=4)]
+def _accel_or_accel_and_gyro(row: list) -> list:
+    if len(row) not in (4, 7):
+        raise ValueError("a row is [t, ax, ay, az] or [t, ax, ay, az, gx, gy, gz]")
+    return row
+
+
+Reading = Annotated[list[float], Field(min_length=4, max_length=7), AfterValidator(_accel_or_accel_and_gyro)]
 
 
 class Hub:
@@ -396,7 +402,7 @@ async def handoff(request: Request, body: HandoffIn) -> dict:
 def _samples_from(payload) -> list:
     rows = payload.get("samples") if isinstance(payload, dict) else None
     if not isinstance(rows, list) or len(rows) > MAX_STREAM_SAMPLES:
-        raise ValueError("expected {\"samples\": [[t, ax, ay, az], ...]} with at most 500 rows")
+        raise ValueError("expected {\"samples\": [[t, ax, ay, az, (gx, gy, gz)], ...]} with at most 500 rows")
     return [Sample(*ImuIn(samples=[row]).samples[0]) for row in rows]
 
 

@@ -1,5 +1,6 @@
 const PASSPORTS = ["IND", "GBR", "USA", "ARE"];
 const WORDS = { free: "VISA-FREE", on_arrival: "ON ARRIVAL", evisa: "E-VISA", required: "VISA NEEDED", held: "VISA HELD", home: "HOME", unknown: "NO RULE" };
+const formatDate = (iso) => new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
 const $ = (id) => document.getElementById(id);
 
@@ -32,7 +33,7 @@ export function renderDuel(result) {
   const footer = document.createElement("p");
   footer.className = "help";
   const { verdict } = result.a;
-  footer.textContent = `Same plane, same country, different luck. Demo rules, unverified, as of ${verdict.as_of}. Source: ${verdict.source_url}`;
+  footer.textContent = `Demo rules, unverified, as of ${formatDate(verdict.as_of)}. Source: ${verdict.source_url}`;
   const headline = document.createElement("p");
   headline.className = "duel-headline";
   headline.textContent = result.winner ? `${result[result.winner].nationality} wins this landing.` : "A draw. Same entry rules for both.";

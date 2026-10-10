@@ -34,6 +34,7 @@ DEFAULT_ELEVATION_DEG = 25.0
 MAX_IMU_BANK_DEG = 20.0
 BANK_DEADBAND_DEG = 2.0
 FLUTTER_WINDOW_S = (0.06, 0.5)
+FLUTTER_PER_RAD_S = 0.5  # a board spinning at 16 rad/s (about 2.5 turns a second) counts as a full tumble
 
 
 class ThrowError(ValueError):
@@ -48,6 +49,13 @@ class Sample:
     ax: float
     ay: float
     az: float
+    gx: float = 0.0  # gyro rates in rad/s; an accelerometer-only board leaves these at zero
+    gy: float = 0.0
+    gz: float = 0.0
+
+    @property
+    def spin(self) -> float:
+        return math.sqrt(self.gx**2 + self.gy**2 + self.gz**2)
 
     @property
     def vector(self) -> np.ndarray:
@@ -72,6 +80,7 @@ class ThrowResult:
     flutter: float = 0.0
     lateral_m: float = 0.0
     path: tuple = ()
+    pose: tuple = ()
 
 
 @dataclass(frozen=True)
@@ -103,6 +112,7 @@ def make_result(
         flutter=flutter,
         lateral_m=flight.lateral_m,
         path=flight.path,
+        pose=flight.pose,
     )
 
 
@@ -186,6 +196,7 @@ class ThrowDetector:
         self._low_since: float | None = None
         self._pending: Launch | None = None
         self._flutter: list = []
+        self._spin: list = []
         self._release_t = 0.0
         self._quiet_since: float | None = None
 
@@ -236,6 +247,7 @@ class ThrowDetector:
         in_air = sample.t - self._release_t
         if FLUTTER_WINDOW_S[0] < in_air <= FLUTTER_WINDOW_S[1]:
             self._flutter.append(sample.magnitude)
+            self._spin.append(sample.spin)
         if sample.magnitude > LAUNCH_READING and in_air > FREEFALL_HOLD_S:
             return self._complete()
         if abs(sample.magnitude - G) < 1.5 and in_air > 0.2:
@@ -247,7 +259,10 @@ class ThrowDetector:
         return self._complete() if in_air >= MAX_FLIGHT_S else None
 
     def _complete(self) -> ThrowResult:
-        launch, flutter = self._pending, float(np.median(self._flutter)) if self._flutter else 0.0
+        launch = self._pending
+        shaken = float(np.median(self._flutter)) if self._flutter else 0.0
+        spun = float(np.median(self._spin)) * FLUTTER_PER_RAD_S if self._spin else 0.0
+        flutter = max(shaken, spun)
         self._reset()
         return make_result(launch.speed, launch.elevation_deg, launch.heading_deg, "imu", launch.bank_deg, flutter)
 

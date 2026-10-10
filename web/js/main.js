@@ -4,6 +4,7 @@ import { createGlobe } from "/js/globe.js";
 import { closeDuel, initDuel, openDuel } from "/js/duel.js";
 import { initOfficer } from "/js/officer.js";
 import { initPick } from "/js/pick.js";
+import { buildTrail, easeFlight, flightDurationMs, sampleFlight } from "/js/planeflight.js";
 const $ = (id) => document.getElementById(id);
 const STEPS = ["profile", "checklist", "throw", "consent", "handoff"];
 const W = 1200;
@@ -124,6 +125,7 @@ function stopDesk() {
   closeCamera($("desk-video"));
   $("desk-start").textContent = "Start camera";
   $("desk-hint").textContent = "Camera is off.";
+  $("desk-video").closest(".viewfinder").dataset.live = "false";
 }
 
 async function acceptDeskPassport(blob, scan) {
@@ -144,6 +146,7 @@ async function startDeskCamera() {
     return;
   }
   $("desk-start").textContent = "Stop camera";
+  $("desk-video").closest(".viewfinder").dataset.live = "true";
   $("desk-hint").textContent = "Hold the photo page flat in the frame.";
   $("scan-result").textContent = "";
   state.stopDesk = scanLoop($("desk-video"), async (blob) => {
@@ -263,7 +266,7 @@ function renderNeeds(verdict) {
     })
   );
   const foot = $("needs-foot");
-  foot.replaceChildren(document.createTextNode(`${note ?? ""} `));
+  foot.replaceChildren(document.createTextNode(`${(note ?? "").replace(/,?\s*UNVERIFIED demo data\.?/i, ".")} `));
   if (official) {
     const link = document.createElement("a");
     link.href = official;
@@ -275,45 +278,108 @@ function renderNeeds(verdict) {
 }
 
 const planeEl = () => $("plane");
-const showPlane = (on) => planeEl().toggleAttribute("hidden", !on);
+const trailEl = () => $("plane-trail");
 let planeRest = "none";
+let flight = null; // { raf, done } while a rAF flight is running
+
+function cancelFlight() {
+  if (!flight) return;
+  cancelAnimationFrame(flight.raf);
+  flight.done();
+  flight = null;
+}
+
+function clearTrail() {
+  const trail = trailEl();
+  trail.classList.remove("is-fading");
+  trail.firstElementChild.setAttribute("points", "");
+  trail.toggleAttribute("hidden", true);
+}
+
+const showPlane = (on) => {
+  if (!on) {
+    cancelFlight();
+    clearTrail();
+  }
+  planeEl().toggleAttribute("hidden", !on);
+};
+
+// Sub-60 fps tilt is clamped so the cue stays a hint, not a roll: 0.6 of the physical angle, max 35 deg.
+const tilt = (deg) => Math.max(-35, Math.min(35, deg * 0.6));
 
 function flyPlane(result) {
+  cancelFlight();
   const plane = planeEl();
+  const trail = trailEl();
+  plane.getAnimations().forEach((a) => a.cancel());
   const heading = result.heading_deg ?? 0;
   const rad = (heading * Math.PI) / 180;
   const box = $("map").getBoundingClientRect();
   const reach = Math.min(box.width, box.height) * 0.7;
   const ahead = { x: Math.sin(rad), y: -Math.cos(rad) };
   const right = { x: Math.cos(rad), y: Math.sin(rad) };
-  const path = result.path?.length > 2 ? result.path : null;
   const range = Math.max(result.range_m || 1, 1);
-  const lastLateral = path ? path.at(-1)[2] : 0;
-  const at = (fwd, lateral, height) => {
-    const behind = (1 - fwd / range) * reach;
-    const bow = ((lateral - lastLateral) / range) * reach;
-    const x = -ahead.x * behind + right.x * bow;
-    const y = -ahead.y * behind + right.y * bow;
-    return `translate(${x}px, ${y}px) rotate(${heading}deg) scale(${0.7 + Math.min(height, 6) * 0.14})`;
+  const path = result.path?.length > 2 ? result.path : [[0, 0, 0, 1.5], [1, range, 0, 0]];
+  const pose = result.pose;
+  const lastLateral = path.at(-1)[2];
+  // Same screen mapping as before: (forward, lateral) metres -> px offset from the stage centre.
+  const project = (s) => {
+    const behind = (1 - s.forward / range) * reach;
+    const bow = ((s.lateral - lastLateral) / range) * reach;
+    return { x: -ahead.x * behind + right.x * bow, y: -ahead.y * behind + right.y * bow };
   };
-  planeRest = `translate(0px, 0px) rotate(${heading}deg) scale(0.2)`;
+  const place = (s, p, opacity) => {
+    const scale = 0.7 + Math.min(s.height, 6) * 0.14;
+    plane.style.transform =
+      `translate3d(${p.x.toFixed(2)}px, ${p.y.toFixed(2)}px, 0) rotate(${(heading + s.yawDeg).toFixed(2)}deg) ` +
+      `perspective(520px) rotateX(${(-tilt(s.pitchDeg)).toFixed(2)}deg) rotateY(${tilt(s.bankDeg).toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+    plane.style.opacity = opacity;
+  };
+  planeRest = `translate3d(0px, 0px, 0) rotate(${heading}deg) scale(0.2)`;
+  clearTrail();
   showPlane(true);
-  const total = path ? path.at(-1)[0] : 1;
-  const frames = path
-    ? path.map((p) => ({ transform: at(p[1], p[2], p[3]), opacity: 1, offset: Math.min(p[0] / total, 1) }))
-    : [{ transform: at(0, 0, 1.5), opacity: 1 }, { transform: at(range, 0, 0), opacity: 1 }];
-  frames[0].opacity = 0;
+  trail.removeAttribute("hidden");
+  const line = trail.firstElementChild;
+  const trailPts = buildTrail(path, pose, 80).map((s) => project(s));
+  const trailStr = trailPts.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`);
+  const drawTrail = (u, head) => {
+    const k = Math.floor(u * (trailStr.length - 1));
+    line.setAttribute("points", `${trailStr.slice(0, k + 1).join(" ")} ${head.x.toFixed(1)},${head.y.toFixed(1)}`);
+  };
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    plane.style.transform = frames.at(-1).transform;
+    const end = sampleFlight(path, pose, 1);
+    const p = project(end);
+    place(end, p, 1);
+    drawTrail(1, p);
     return Promise.resolve();
   }
-  const duration = Math.min(Math.max((result.flight_s || 1) * 450, 900), 2600);
-  return plane.animate(frames, { duration, easing: "linear", fill: "forwards" }).finished;
+  const duration = flightDurationMs(result.flight_s);
+  return new Promise((resolve) => {
+    const started = performance.now();
+    const state = { raf: 0, done: resolve };
+    flight = state;
+    const frame = (now) => {
+      const r = Math.min((now - started) / duration, 1);
+      const u = easeFlight(r);
+      const s = sampleFlight(path, pose, u);
+      const p = project(s);
+      place(s, p, Math.min(u / 0.06, 1)); // fade in over the first ~6% so launch does not pop
+      drawTrail(u, p);
+      if (r < 1) {
+        state.raf = requestAnimationFrame(frame);
+      } else {
+        flight = null;
+        resolve();
+      }
+    };
+    state.raf = requestAnimationFrame(frame);
+  });
 }
 
 function landPlane() {
   const plane = planeEl();
   if (plane.hasAttribute("hidden")) return;
+  trailEl().classList.add("is-fading");
   plane.animate([{ opacity: 1 }, { opacity: 0, transform: planeRest }], { duration: 450, fill: "forwards" }).finished.finally(() => {
     showPlane(false);
     plane.getAnimations().forEach((a) => a.cancel());
@@ -338,12 +404,11 @@ async function land(result) {
     $("r-distance").textContent = Math.round(landing.distance_km).toLocaleString();
     $("r-country").textContent = landing.name;
     const via = verdict.unlocked_by ? ` Unlocked by your ${verdict.unlocked_by} visa.` : "";
-    const trust = verdict.verified ? "" : " Unverified demo rule.";
     const stamp = $("r-stamp");
     stamp.dataset.status = verdict.status;
     stamp.textContent = STAMP_TEXT[verdict.status] ?? verdict.label.toUpperCase();
     stamp.hidden = false;
-    $("r-note").textContent = `${verdict.status === "unknown" ? "" : `${verdict.label}. `}${verdict.note}${via}${trust} As of ${verdict.as_of}.`;
+    $("r-note").textContent = `${verdict.status === "unknown" ? "" : `${verdict.label}. `}${verdict.note}${via} As of ${new Date(verdict.as_of + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}.`;
     renderNeeds(verdict);
     openDuel(state.profile.nationality);
     pickGame.open();
@@ -409,10 +474,10 @@ async function syncThrowCamera() {
 const currentMode = () => document.querySelector('input[name="mode"]:checked').value;
 
 const MODE_HELP = {
-  flick: "The globe is spinning. Flick the plane across the screen with your mouse or finger. A faster, longer flick throws farther. Up is north.",
-  camera: "Allow the camera, then throw the paper plane straight at the lens, nose first, from 2 to 4 metres away. A harder throw lands farther; drift to your right to aim east. The globe slows and stops where it would have landed.",
-  switch: "Press Space (or the button) once to lock the heading, again to lock the power.",
-  board: "Throw the ESP32 board. Hold it still first, then throw.",
+  flick: "Flick the plane across the globe. Up is north.",
+  camera: "Allow the camera, then throw from 2 to 4 metres away.",
+  switch: "Press Space to lock the heading, again to lock the power.",
+  board: "Hold the board still, then throw.",
 };
 
 function initSwitch() {

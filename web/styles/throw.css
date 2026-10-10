@@ -1,0 +1,145 @@
+/* throw: the globe is the instrument, the rail is its readout */
+#step-throw {
+  --throw-chrome: 150px; /* header + main padding; keeps the globe inside one viewport */
+  --rail: clamp(380px, 26vw, 480px);
+  max-width: none;
+  grid-template-columns: minmax(0, 1fr) var(--rail);
+  gap: 0 40px;
+  align-items: start;
+}
+
+#step-throw .stage-col {
+  position: sticky; top: 80px; height: calc(100vh - 104px); min-width: 0;
+  display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px;
+}
+#step-throw .stage {
+  position: relative;
+  flex: 0 1 auto;
+  width: min(100%, calc((100svh - var(--throw-chrome)) * 5 / 3));
+  border: var(--hairline);
+  background: #05080f;
+}
+#step-throw .stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--text), var(--text)) 50% 0 / 1px 14px no-repeat,
+    linear-gradient(var(--text), var(--text)) 50% 100% / 1px 14px no-repeat,
+    linear-gradient(var(--text), var(--text)) 0 50% / 14px 1px no-repeat,
+    linear-gradient(var(--text), var(--text)) 100% 50% / 14px 1px no-repeat;
+}
+#step-throw canvas { border: 0; width: 100%; height: auto; aspect-ratio: 5 / 3; cursor: grab; }
+#step-throw canvas:focus-visible { outline-offset: -3px; }
+#step-throw .plane { width: 96px; height: 96px; margin: -48px 0 0 -48px; filter: none; z-index: 2; }
+
+#step-throw .legend {
+  list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 24px;
+  font: 400 var(--t-12)/1 var(--font-data); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+}
+#step-throw .legend li { display: flex; align-items: center; gap: 8px; }
+#step-throw .legend .sw { width: 12px; height: 12px; border: 1px solid var(--rule); }
+#step-throw .legend .sw[data-k="free"] { background: var(--go); border-color: var(--go); }
+#step-throw .legend .sw[data-k="arrival"] { background: var(--warn); border-color: var(--warn); }
+#step-throw .legend .sw[data-k="needed"] { background: var(--held); border-color: var(--held); }
+#step-throw .legend .sw[data-k="landing"] { border: 2px solid var(--signal); border-radius: 50%; background: transparent; }
+
+/* the landed pin faces the camera, so it sits at the canvas centre; the tag shows only after a landing */
+#step-throw .landed-tag { display: none; }
+#step-throw:has(#r-stamp:not([hidden])) .landed-tag {
+  display: block; position: absolute; left: calc(50% + 34px); top: calc(50% - 52px); z-index: 2; pointer-events: none;
+  padding: 4px 8px; background: rgba(5, 8, 15, 0.85); border: 1px solid var(--signal); color: var(--text);
+  font: 600 var(--t-12)/1 var(--font-data); letter-spacing: 0.14em; text-transform: uppercase;
+}
+#step-throw:has(#r-stamp:not([hidden])) .landed-tag::before {
+  content: ""; position: absolute; right: 100%; top: 100%; width: 24px; height: 1px; background: var(--signal); transform-origin: right center; transform: rotate(-45deg) translate(-4px, 4px);
+}
+
+#step-throw .rail { container-type: inline-size; display: grid; align-content: start; min-width: 0; }
+#step-throw .rail > [hidden] { display: none; }
+#step-throw .rail h2 { font: 400 var(--t-12)/1 var(--font-data); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; }
+#step-throw .rail a { color: var(--text); text-decoration-color: var(--muted); text-underline-offset: 3px; }
+
+#step-throw .modes { display: flex; border: var(--hairline); gap: 0; }
+#step-throw .modes label {
+  position: relative; flex: 1 1 auto; display: flex; align-items: center; justify-content: center;
+  min-height: 48px; padding: 0 10px; cursor: pointer; text-align: center; white-space: nowrap;
+  font: 600 var(--t-12)/1 var(--font-data); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text);
+}
+#step-throw .modes label + label { border-left: var(--hairline); }
+#step-throw .modes input { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; margin: 0; padding: 0; opacity: 0; cursor: pointer; }
+#step-throw .modes label:has(input:checked) { background: var(--paper); color: var(--paper-ink); }
+#step-throw .modes label:has(input:focus-visible) { outline: 3px solid var(--signal); outline-offset: -3px; }
+#step-throw .modes label:not(:has(input:checked)):hover { background: var(--ink-2); }
+
+#mode-help { margin-top: 12px; font: 500 var(--t-18)/1.35 var(--font-display); color: var(--text); }
+.rail:has(#r-stamp:not([hidden])) #mode-help { font: 400 var(--t-14)/1.5 var(--font-data); color: var(--muted); }
+#device { display: none; }
+.rail:has(input[value="board"]:checked) #device { display: block; }
+#step-throw .viewfinder { margin: 14px 0 0; }
+#step-throw .meter { margin-top: 14px; }
+#step-throw #switch-btn { margin-top: 12px; width: 100%; }
+#device { margin-top: 10px; }
+
+#step-throw .readout { margin-top: 24px; padding-top: 16px; border-top: var(--hairline); display: grid; }
+#step-throw .country {
+  margin-top: 6px; color: var(--text); text-wrap: balance; overflow-wrap: break-word; hyphens: auto;
+  font: 700 clamp(44px, 15.5cqi, 96px)/0.95 var(--font-display); letter-spacing: -0.035em;
+}
+#step-throw .readout:not(:has(#r-stamp:not([hidden]))) .country { color: var(--rule); }
+#step-throw .dist { display: flex; align-items: baseline; gap: 12px; margin-top: 14px; }
+#step-throw .dist .big { font: 600 var(--t-18)/1 var(--font-data); letter-spacing: 0; }
+#step-throw .dist .big small { font: 400 var(--t-14) var(--font-data); color: var(--muted); }
+#step-throw .stamp-slot { padding: 28px 20px 14px; overflow: visible; }
+#step-throw .stamp-slot:has(> [hidden]) { display: none; }
+#r-note:not(:empty) { margin-top: 6px; }
+
+#step-throw .needs { margin-top: 28px; display: grid; gap: 8px; }
+#step-throw .needs ul { gap: 0; }
+#step-throw .needs li { grid-template-columns: 16px 1fr; gap: 2px 12px; align-items: start; padding: 8px 0; border-top: var(--hairline); }
+#step-throw .needs .need-tag {
+  position: relative; width: 16px; height: 16px; margin-top: 3px; padding: 0; background: transparent;
+  border: 1px solid var(--muted); font-size: 0; line-height: 0; overflow: hidden;
+}
+#step-throw .needs li[data-state="pass"] .need-tag { background: var(--go); border-color: var(--go); }
+#step-throw .needs li[data-state="pass"] .need-tag::after {
+  content: ""; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px;
+  border: solid var(--ink); border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+#step-throw .needs li[data-state="fail"] .need-tag { border-color: var(--held); }
+#step-throw .needs .need-detail { grid-column: 2; font-size: var(--t-14); line-height: 1.4; }
+#step-throw .needs-foot, #needs-foot { margin-top: 4px; }
+
+#step-throw .module { margin-top: 0; border-top: var(--hairline); }
+#step-throw .module:last-of-type { border-bottom: var(--hairline); }
+#step-throw .needs + .module { margin-top: 24px; }
+#step-throw .module summary {
+  display: flex; align-items: center; justify-content: space-between; min-height: 56px; cursor: pointer; list-style: none;
+  font: 700 var(--t-14)/1 var(--font-display); letter-spacing: 0.1em; text-transform: uppercase;
+}
+#step-throw .module summary::-webkit-details-marker { display: none; }
+#step-throw .module summary::after { content: "+"; font: 400 var(--t-28)/1 var(--font-data); color: var(--muted); }
+#step-throw .module details[open] > summary::after { content: "\2212"; }
+#step-throw .module summary:hover { text-decoration: underline; text-underline-offset: 4px; }
+#step-throw .module-body { display: grid; gap: 12px; padding-bottom: 18px; }
+#step-throw .pick-cards { grid-template-columns: 1fr; }
+
+#step-throw .actions { margin: 20px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 12px; }
+#step-throw .actions button { white-space: nowrap; }
+
+@media (max-width: 900px) {
+  #step-throw { grid-template-columns: 1fr; gap: 24px; }
+  #step-throw .stage-col { position: static; height: auto; }
+  #step-throw .stage { width: 100%; }
+}
+
+#step-throw .actions button:disabled { background: transparent; border-color: var(--rule); color: var(--muted); opacity: 1; }
+
+/* Paper-plane flight: rAF-driven, so keep it compositor friendly and flat (no glow, blur or shadow). */
+#step-throw .plane { will-change: transform, opacity; transform-origin: 50% 50%; }
+.plane-trail { position: absolute; left: 50%; top: 50%; width: 1px; height: 1px; overflow: visible; pointer-events: none; z-index: 1; opacity: 1; }
+.plane-trail[hidden] { display: none; }
+.plane-trail polyline { fill: none; stroke: var(--signal); stroke-width: 1.5; stroke-opacity: 0.45; stroke-linejoin: round; stroke-linecap: round; }
+.plane-trail.is-fading { opacity: 0; transition: opacity 600ms linear; }

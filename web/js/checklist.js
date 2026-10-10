@@ -3,7 +3,13 @@ import { openCamera, closeCamera, scanLoop } from "/js/camera.js";
 
 const $ = (id) => document.getElementById(id);
 const STORE_KEY = "vr.checklist.v1";
-const STATUS_TAG = { pass: "PASS", fail: "FAIL", warn: "CHECK", manual: "TAP", pending: "WAIT" };
+const MARK_WORD = { pass: "Done", fail: "Failed", warn: "Needs a look" };
+const BOILERPLATE = new Set(["Tap to confirm.", "Confirmed by the traveller."]);
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** ISO dates read badly in prose: 2026-10-10 becomes 10 Oct 2026. */
+const prettyDates = (text) =>
+  String(text ?? "").replace(/\b(\d{4})-(\d{2})-(\d{2})\b/g, (whole, y, m, d) => (MONTHS[Number(m) - 1] ? `${Number(d)} ${MONTHS[Number(m) - 1]} ${y}` : whole));
 const VERDICT_NOTE = {
   CLEARED: "Every rule passes. Take your throw.",
   REVIEW: "Something needs a second look, but you can still throw.",
@@ -38,9 +44,9 @@ const el = (tag, className, text) => {
 function evidence(item) {
   const box = el("div", "evidence");
   box.id = `ev-${item.rule_id}`;
-  const rows = [["RULE", item.rule_id], ["KIND", item.source_kind], ["AS OF", item.as_of]];
+  const rows = [["RULE", item.rule_id, "ev-data"], ["KIND", item.source_kind.replace(/_/g, " "), ""], ["AS OF", prettyDates(item.as_of), "ev-data"]];
   const list = el("dl");
-  for (const [term, value] of rows) list.append(el("dt", "", term), el("dd", "", value));
+  for (const [term, value, cls] of rows) list.append(el("dt", "", term), el("dd", cls, value));
   const source = el("dd");
   if (item.source_url) {
     const link = el("a", "", item.source_url.replace(/^https?:\/\//, "").slice(0, 60));
@@ -54,7 +60,7 @@ function evidence(item) {
   list.append(el("dt", "", "SOURCE"), source);
   list.append(el("dt", "", "TRUST"), el("dd", item.verified ? "ok" : "unverified", item.verified ? "Verified" : "Unverified demo rule. Check the official source."));
   box.append(list);
-  if (item.fix) box.append(el("p", "fix", `Fix: ${item.fix}`));
+  if (item.fix) box.append(el("p", "fix", `Fix: ${prettyDates(item.fix)}`));
   return box;
 }
 
@@ -63,32 +69,33 @@ function renderItem(item) {
   li.dataset.status = item.status;
   li.dataset.rule = item.rule_id;
   const head = el("div", "cl-head");
-  head.append(el("span", "tag", STATUS_TAG[item.status] ?? item.status.toUpperCase()));
-
-  const copy = el("div", "cl-copy");
-  copy.append(el("p", "cl-label", item.label), el("p", "cl-detail", item.detail));
-  head.append(copy);
 
   if (item.status === "manual" || model.ticked.includes(item.rule_id)) {
-    const box = el("input");
+    const box = el("input", "cl-mark");
     box.type = "checkbox";
     box.checked = item.status === "pass";
     box.setAttribute("aria-label", `I confirm: ${item.label}`);
     box.addEventListener("change", () => toggleManual(item.rule_id, box.checked));
     head.append(box);
+  } else {
+    const mark = el("span", "cl-mark");
+    mark.append(el("span", "sr", MARK_WORD[item.status] ?? "Not yet"));
+    head.append(mark);
   }
 
-  const toggle = el("button", "ghost why", "Why?");
-  toggle.type = "button";
   const open = model.open.has(item.rule_id);
-  toggle.setAttribute("aria-expanded", String(open));
-  toggle.setAttribute("aria-controls", `ev-${item.rule_id}`);
-  toggle.addEventListener("click", () => {
+  const row = el("button", "cl-row");
+  row.type = "button";
+  row.setAttribute("aria-expanded", String(open));
+  row.setAttribute("aria-controls", `ev-${item.rule_id}`);
+  row.append(el("span", "cl-label", item.label));
+  if (!BOILERPLATE.has(item.detail)) row.append(el("span", "cl-detail", prettyDates(item.detail)));
+  row.addEventListener("click", () => {
     model.open.has(item.rule_id) ? model.open.delete(item.rule_id) : model.open.add(item.rule_id);
     render();
     $("cl-items").querySelector(`[aria-controls="ev-${item.rule_id}"]`)?.focus();
   });
-  head.append(toggle);
+  head.append(row);
   li.append(head);
 
   const drawer = evidence(item);
@@ -108,7 +115,11 @@ function renderVerdict(result) {
   const percent = Math.round(result.readiness * 100);
   $("cl-ready").textContent = `${percent}`;
   $("cl-fill").style.width = `${percent}%`;
-  $("cl-note").textContent = VERDICT_NOTE[result.verdict];
+  const done = result.items.filter((i) => i.status === "pass").length;
+  const pending = result.items.length - done;
+  $("cl-note").textContent = result.verdict === "CLEARED" && pending > 0 ? `No rule blocks you. ${pending} ${pending === 1 ? "paper" : "papers"} still to confirm.` : VERDICT_NOTE[result.verdict];
+  $("cl-ready").nextElementSibling.textContent = "%";
+  $("cl-count").textContent = `ready, ${done} of ${result.items.length} checks done`;
   $("cl-go").disabled = result.verdict === "HELD";
   const bad = result.items.filter((i) => i.status === "fail").length;
   const announce = `${result.verdict}. ${percent} percent ready.${bad ? ` ${bad} item${bad > 1 ? "s" : ""} failed.` : ""}`;
@@ -193,6 +204,7 @@ export async function startSample(person) {
 }
 
 async function useSample(person) {
+  for (const radio of $("cl-people").querySelectorAll('input[type="radio"]')) radio.checked = radio.value === person.key;
   model.ticked = model.persona === person.key ? model.ticked : [];
   const [passportBlob, boardingBlob] = await Promise.all([fetchBlob(person.images.passport), fetchBlob(person.images.boarding_pass)]);
   $("cl-passport-img").src = person.images.passport;
