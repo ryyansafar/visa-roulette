@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+httpx
+opencv-python-headless
+numpy
+pillow
+pdf417gen
+qrcode
+zxing-cpp
+pytest
+websockets

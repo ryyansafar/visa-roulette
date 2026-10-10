@@ -55,11 +55,11 @@ Prices: curated estimate bands labelled "estimate, as of date". Affiliate: deep 
 ## Tiers and hours (H0 = 6 PM)
 | Tier | Scope | Hours | Status |
 |---|---|---|---|
-| 1 | Boarding pass + passport engines, props, tests | 3 | DONE (54 tests, props, wallet page) |
-| 1b | Booth spine: scan loop + interactive checklist + stamp | 2.5 | todo |
-| 2 | Globe + dart + visa/budget filter + switch/mouse input | 3.5 | todo |
+| 1 | Boarding pass + passport engines, props, tests | 3 | DONE (191 tests, props, wallet page) |
+| 1b | Booth spine: camera desk (passport OCR) + interactive checklist + stamp | 2.5 | DONE |
+| 2 | Spinning globe + paper-plane throw (camera/ESP32/mouse) + visa map + "what you need" list | 3.5 | DONE |
 | 3 | Destination report (cached first, live refresh) | 2.5 | todo |
-| 4 | QR morph + phone page (mock pass, checklist, report) | 1 | todo |
+| 4 | QR morph + phone page (route, traveller, budget) | 1 | partial (richer card todo) |
 | 5 | Offline hardening + rehearsal | 1.5 | todo |
 Feature freeze 4:30 AM. Sleep in staggered 2-3 h shifts.
 
@@ -69,7 +69,7 @@ Feature freeze 4:30 AM. Sleep in staggered 2-3 h shifts.
 
 ## Offline readiness (audit)
 - [x] ollama + gemma3n:e4b, Tesseract eng, MRZ/BCBP engines, fixtures, globe textures + country polygons
-- [ ] npm: three, globe.gl, QR lib, MediaPipe wasm/models vendored into the repo
+- [x] three.js r170 vendored in web/vendor (globe.gl and MediaPipe dropped: camera throw uses a frame-diff tracker)
 - [ ] Whisper weights + mlx-whisper/ocrmac (install failed on a network timeout; retry with UV_HTTP_TIMEOUT=120)
 - [ ] ~20 destination reports cached; 8-10 combo rules verified with sources
 - [ ] 90-second booth script + 2-minute pitch rehearsed against the table above

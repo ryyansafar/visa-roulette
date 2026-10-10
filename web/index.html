@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Visa Roulette</title>
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles/tokens.css">
+  <link rel="stylesheet" href="/styles/app.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="board">
+    <h1 class="mark">VISA ROULETTE</h1>
+    <ol class="steps" aria-label="Progress">
+      <li data-step="profile">01 Immigration</li>
+      <li data-step="checklist">02 Pre-flight</li>
+      <li data-step="throw">03 Throw</li>
+      <li data-step="consent">04 Consent</li>
+      <li data-step="handoff">05 Hand-off</li>
+    </ol>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+  </header>
+
+  <main id="main">
+    <section id="step-profile" class="grid" aria-labelledby="h-profile">
+      <div class="col-7">
+        <h2 id="h-profile">Immigration desk</h2>
+        <p class="help">Show your passport photo page to the camera. A printed prop or a picture on your phone both work. It is read on this laptop and goes nowhere else.</p>
+        <div class="viewfinder">
+          <video id="desk-video" playsinline muted></video>
+          <div class="guide" aria-hidden="true"></div>
+          <p id="desk-hint" class="hint" role="status">Camera is off.</p>
+        </div>
+        <div class="actions">
+          <button type="button" id="desk-start" class="primary">Start camera</button>
+          <label class="file ghost-label">Upload a photo instead
+            <input id="scan-file" type="file" accept="image/*"></label>
+        </div>
+        <p id="scan-result" class="mono" aria-live="polite"></p>
+      </div>
+
+      <aside class="col-5 side" aria-labelledby="h-sample">
+        <div class="card">
+          <h2 id="h-sample">No passport on you?</h2>
+          <p class="help">Pick a sample traveller. We run their passport and boarding pass through the same scanner.</p>
+          <div id="desk-people" class="people"></div>
+        </div>
+        <details class="own">
+          <summary>Type the details in instead</summary>
+          <form id="profile-form" novalidate>
+            <div class="fields">
+              <label>Where are you now
+                <select id="f-origin" required></select></label>
+              <label>Nationality
+                <select id="f-nationality" required></select></label>
+              <label>Age
+                <input id="f-age" type="number" min="0" max="120" inputmode="numeric" required></label>
+              <label>Gender <span class="opt">optional</span>
+                <select id="f-gender">
+                  <option value="undisclosed">Prefer not to say</option>
+                  <option value="female">Female</option>
+                  <option value="male">Male</option>
+                  <option value="nonbinary">Non-binary</option>
+                </select></label>
+              <label class="wide">Name <span class="opt">optional</span>
+                <input id="f-name" type="text" maxlength="80" autocomplete="name"></label>
+              <label>Passport
+                <select id="f-passport">
+                  <option value="">No passport yet</option>
+                  <option value="ordinary" selected>Ordinary</option>
+                  <option value="diplomatic">Diplomatic</option>
+                  <option value="official">Official / service</option>
+                  <option value="emergency">Emergency travel document</option>
+                  <option value="refugee">Refugee travel document</option>
+                </select></label>
+            </div>
+            <fieldset id="visas">
+              <legend>Visas you already hold <span class="opt">optional</span></legend>
+              <ul id="visa-list"></ul>
+              <button type="button" id="add-visa" class="ghost">+ Add a visa</button>
+            </fieldset>
+            <p id="profile-error" class="error" role="alert"></p>
+            <button type="submit" class="primary">Continue to pre-flight</button>
+          </form>
+        </details>
+      </aside>
+    </section>
+
+    <section id="step-checklist" class="grid" aria-labelledby="h-checklist" hidden>
+      <div class="col-7">
+        <h2 id="h-checklist">Pre-flight check</h2>
+        <p class="help">Your papers are read on this laptop. Every line cites its rule.</p>
+        <div id="cl-people" class="people" role="radiogroup" aria-label="Sample traveller"></div>
+        <p id="cl-busy" class="mono" hidden>Reading papers...</p>
+        <p id="cl-empty" class="help">Choose a traveller to see the checklist.</p>
+        <ul id="cl-items" class="cl-list"></ul>
+        <details class="own" id="cl-own">
+          <summary>Use your own papers</summary>
+          <div class="viewfinder" id="cl-finder" hidden>
+            <video id="cl-video" playsinline muted></video>
+            <div class="guide" aria-hidden="true"></div>
+            <p id="cl-hint" class="hint" role="status"></p>
+          </div>
+          <button type="button" id="cl-cam" class="ghost">Show your boarding pass to the camera</button>
+          <form id="cl-own-form" class="fields" novalidate>
+            <label id="cl-passport-field">Passport photo page
+              <input id="cl-own-passport" type="file" accept="image/*"></label>
+            <label>Boarding pass image
+              <input id="cl-own-boarding" type="file" accept="image/*"></label>
+            <label>Name on return ticket <span class="opt">optional</span>
+              <input id="cl-own-return" type="text" maxlength="80"></label>
+            <label>Name on hotel booking <span class="opt">optional</span>
+              <input id="cl-own-hotel" type="text" maxlength="80"></label>
+            <label class="wide">In your bag, comma separated <span class="opt">optional</span>
+              <input id="cl-own-bag" type="text" maxlength="200" placeholder="chips, tablets, coconut"></label>
+            <button type="submit" class="primary wide">Check my papers</button>
+          </form>
+        </details>
+      </div>
+      <aside class="col-5 side">
+        <div id="cl-verdict" class="verdict" data-verdict="">
+          <p class="label">VERDICT</p>
+          <p id="cl-stamp" class="stamp">-</p>
+          <p class="label">READY</p>
+          <p class="big"><span id="cl-ready">0</span><small>%</small></p>
+          <div class="meter" aria-hidden="true"><span id="cl-fill"></span></div>
+          <p id="cl-note" class="help"></p>
+          <p id="cl-announce" class="sr" role="status"></p>
+        </div>
+        <div class="cl-docs" hidden>
+          <img id="cl-passport-img" alt="The passport photo page being checked">
+          <img id="cl-boarding-img" alt="The boarding pass being checked">
+        </div>
+        <div class="actions">
+          <button type="button" id="cl-back" class="ghost">Back</button>
+          <button type="button" id="cl-go" class="primary" disabled>Earn the throw</button>
+        </div>
+      </aside>
+    </section>
+
+    <section id="step-throw" class="grid" aria-labelledby="h-throw" hidden>
+      <div class="col-8">
+        <h2 id="h-throw">Throw the plane</h2>
+        <div class="stage">
+          <canvas id="map" width="1200" height="720" tabindex="0"
+            aria-label="Spinning globe. Throw the paper plane to land it: flick on screen, press Space for the single-switch throw, throw it past the camera, or throw the ESP32 board."></canvas>
+          <svg id="plane" class="plane" viewBox="0 0 64 64" aria-hidden="true" hidden>
+            <path d="M32 4 L58 58 L32 46 Z" fill="#f4f1e8"/>
+            <path d="M32 4 L6 58 L32 46 Z" fill="#cfd6e4"/>
+            <path d="M32 46 L32 60" stroke="#8b94a8" stroke-width="2"/>
+          </svg>
+        </div>
+      </div>
+      <div class="col-4 side">
+        <div role="radiogroup" aria-label="Throw input" class="modes">
+          <label><input type="radio" name="mode" value="flick" checked> Flick</label>
+          <label><input type="radio" name="mode" value="camera"> Camera</label>
+          <label><input type="radio" name="mode" value="switch"> One switch</label>
+          <label><input type="radio" name="mode" value="board"> ESP32 board</label>
+        </div>
+        <p id="mode-help" class="help"></p>
+        <div id="throw-finder" class="viewfinder small" hidden>
+          <video id="throw-video" playsinline muted></video>
+          <p id="throw-hint" class="hint" role="status"></p>
+        </div>
+        <div id="meter" class="meter" aria-hidden="true"><span id="meter-fill"></span></div>
+        <button type="button" id="switch-btn" class="primary" hidden>Lock (or press Space)</button>
+        <p id="device" class="mono"></p>
+        <div class="readout" aria-live="polite">
+          <p class="label">DISTANCE</p>
+          <p class="big"><span id="r-distance">---</span><small> km</small></p>
+          <p class="label">LANDED IN</p>
+          <p id="r-country" class="country">-</p>
+          <p id="r-stamp" class="route-stamp" data-status="" hidden></p>
+          <p id="r-note" class="help"></p>
+        </div>
+        <section id="needs" class="needs" aria-labelledby="needs-h" hidden>
+          <p id="needs-h" class="label">WHAT YOU NEED</p>
+          <ul id="needs-list"></ul>
+          <p id="needs-foot" class="help"></p>
+        </section>
+        <div class="actions">
+          <button type="button" id="again" class="ghost" disabled>Throw again</button>
+          <button type="button" id="keep" class="primary" disabled>Keep this landing</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="step-consent" class="grid" aria-labelledby="h-consent" hidden>
+      <form id="consent-form" class="col-7" novalidate>
+        <h2 id="h-consent">Are you in?</h2>
+        <p id="trip-line" class="trip"></p>
+        <div class="fields">
+          <label>Budget for the trip
+            <input id="f-budget" type="number" min="1" max="10000000" inputmode="numeric" required></label>
+          <label>Currency
+            <select id="f-currency">
+              <option>USD</option><option>EUR</option><option>GBP</option><option>INR</option><option>AED</option>
+            </select></label>
+        </div>
+        <fieldset class="swap">
+          <legend>Souvenir swap</legend>
+          <p class="hint">Leave a tip about where you landed and get a stranger's back. Only a nickname, the two countries and your note are shared. No passport data.</p>
+          <label class="check"><input id="f-swap" type="checkbox" checked><span>Swap souvenirs with a stranger</span></label>
+          <div class="fields" id="swap-fields">
+            <label>Nickname <span class="opt">optional</span>
+              <input id="f-nick" maxlength="20" autocomplete="off" placeholder="A traveller"></label>
+            <label>Your tip <span class="opt">optional, 80 characters</span>
+              <input id="f-note" maxlength="80" autocomplete="off" placeholder="Eat where the locals queue"></label>
+          </div>
+        </fieldset>
+        <label class="check"><input id="f-consent" type="checkbox">
+          <span id="consent-text">I agree to this trip and budget.</span></label>
+        <p id="consent-error" class="error" role="alert"></p>
+        <div class="actions">
+          <button type="button" id="back-throw" class="ghost">Throw again</button>
+          <button type="submit" class="primary" id="confirm" disabled>Yes, send me</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="step-handoff" class="grid" aria-labelledby="h-handoff" hidden>
+      <div class="col-6"><canvas id="qr" width="640" height="640" aria-label="QR code for your phone"></canvas></div>
+      <div class="col-6">
+        <h2 id="h-handoff">Take it with you</h2>
+        <p>Scan this with your phone. The trip card works with no internet.</p>
+        <article id="stranger" class="chip" hidden aria-labelledby="chip-title">
+          <p class="label" id="chip-title">SOUVENIR FROM A STRANGER</p>
+          <p id="chip-route" class="chip-route"></p>
+          <p id="chip-note" class="chip-note"></p>
+          <p id="chip-by" class="chip-by"></p>
+          <p id="chip-visa" class="chip-visa"></p>
+        </article>
+        <p class="label">OR OPEN</p>
+        <p id="phone-url" class="mono url"></p>
+        <button type="button" id="restart" class="ghost">Start over</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Specimen demo. Informational only. Verify requirements with the official source before you travel.</p>
+    <p class="links">
+      <a href="https://ryyansafar.site">Portfolio</a>
+      <a href="https://github.com/ryyansafar">GitHub</a>
+      <a href="https://buymeacoffee.com/ryyansafar">Buy me a coffee</a>
+      <a href="https://www.paypal.com/paypalme/ryyansafar">PayPal</a>
+      <a href="https://razorpay.me/@ryyansafar">Razorpay</a>
+    </p>
+  </footer>
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>

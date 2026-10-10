@@ -9,27 +9,26 @@
   Built for <a href="https://github.com/jasimcm/layover-2026">LAYOVER 2026</a> at TinkerSpace Calicut, 10–11 Oct 2026.
 </p>
 
-> **Status:** work in progress, being built during the hackathon. The feature list below is the plan, not a claim that everything is finished. See [PLAN.md](PLAN.md) for tiers and progress.
+> **Status:** work in progress, being built during the hackathon. The features below are built and tested; the "still planned" line is not. See [PLAN.md](PLAN.md) for tiers and progress.
 
 ## What it is
-A travel booth you can play. You scan a (sample) passport, the booth checks it with deterministic rules, and a globe lights up with where that passport can go. You throw a dart at the globe, it lands on a country, and the booth reads recent news and travel guides about that place and gives you an honest pros-and-cons report. Every verdict cites its source.
+A travel booth you can play. You walk up to an immigration desk and show a (sample) passport to the camera; OCR reads it and the booth checks it against deterministic rules. A fast-spinning 3D globe lights up with where that passport can go. You throw a paper plane, by webcam flick or an ESP32 board, and the globe slows and lands on a country. The booth then tells you what that passport needs for that destination: visa status, the documents to prepare, and which of them your pre-flight check already covers. Every verdict cites its source.
 
 **Principle:** AI sees. Rules decide. Every verdict cites its source. Passport data stays on the laptop.
 
-## Planned features
-- Boarding-pass barcode (IATA format) and passport MRZ parsing with check-digit validation
-- Visa-free / on-arrival globe for the scanned nationality, plus "unlocked by other visas" rules
+## Features
+- Immigration desk: show a passport or boarding pass to the webcam (a prop, a fake on a phone, or a QR); Tesseract OCR reads the MRZ, zxing reads the IATA barcode, both with check-digit validation
 - Interactive pre-flight checklist: each item ticks from a cited rule and opens its evidence
-- Dart-throw globe game with budget and continent filters
-- Destination report: verified pros and cons, advisory level and an explainable Outlook score
-- Accessible input: single switch, head tilt, voice, IMU dart with tremor filtering, mouse
-- WebMCP tools so a browser agent can drive the booth
-- Offline-first: the core flow needs no internet; live news falls back to cached reports
-- QR hand-off: the landing spot becomes a QR that opens a mock boarding pass on your phone
-- Local AI only (Ollama, Tesseract/Apple Vision OCR, sentence-transformers)
+- Visa-aware globe: countries coloured by visa-free / on-arrival / e-visa / visa required for the scanned nationality, plus "unlocked by other visas" rules. Demo rules cover Indian (~110 destinations), US, UK and UAE passports; they are unverified and every verdict links its source and date
+- Paper-plane throw: webcam motion tracking or an ESP32 IMU board flicks a plane across the map; a fast spinning three.js globe slows and lands with a pin
+- "What you need": for the landing country, the visa status and the documents to prepare, each linked to the matching pre-flight rule and an official-source link
+- QR hand-off: the landing spot becomes a QR (laptop LAN address, no internet needed on the phone) that opens a trip card with the visa verdict, its source and date, pre-flight status and the documents to carry
+- Offline-first: the core flow needs no internet; three.js and all assets are vendored
+
+Still planned: destination pros-and-cons reports, accessible input beyond mouse and camera, WebMCP tools. See [PLAN.md](PLAN.md).
 
 ## Stack
-Python (FastAPI) backend, three.js globe frontend, Ollama LLM, mlx-whisper, ocrmac, sentence-transformers, MediaPipe, optional ESP32 + IMU.
+Python (FastAPI) backend, Tesseract OCR, zxing, OpenCV, a vanilla ES-module front end with a vendored three.js r170 globe, and an optional ESP32 + IMU board. Visa rules live in `rules/visa_rules.json` and `rules/checklist_rules.json`; both are unverified demo rules and the UI says so.
 
 ## Checklist engine
 `backend/visa_roulette/checklist.py` turns a passport, boarding pass, bookings and bag into a list of items. Every item carries its rule id, source link, "as of" date and a `verified` flag. All rules in `rules/checklist_rules.json` are currently unverified demo rules drawn from public articles, and the UI must say so.
@@ -45,7 +44,7 @@ uv venv .venv-tools && uv pip install --python .venv-tools/bin/python -r tools/r
 .venv-tools/bin/python tools/make_fixtures.py          # writes fixtures/
 python3 -m http.server 8000 --directory fixtures --bind 0.0.0.0
 # open http://<laptop-ip>:8000/wallet.html on a phone on the same Wi-Fi
-cd backend && ../.venv-tools/bin/python -m pytest -q    # 68 tests
+cd backend && ../.venv-tools/bin/python -m pytest -q    # 191 tests
 ```
 
 | Persona | Trap | Expected |

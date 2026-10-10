@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your trip card - Visa Roulette</title>
+  <style>
+    body { margin: 0; padding: 20px; background: #0b1220; color: #f1efe6; font: 18px/1.45 system-ui, sans-serif; }
+    .card { max-width: 420px; margin: 0 auto; border: 1px solid #2b3446; padding: 20px; display: grid; gap: 14px; }
+    h1 { margin: 0; font-size: 14px; letter-spacing: .22em; }
+    .route { font-size: 44px; font-weight: 700; line-height: 1.05; }
+    dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; }
+    dt { color: #9aa3b5; font: 12px ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase; align-self: center; }
+    dd { margin: 0; }
+    .note { color: #9aa3b5; font-size: 14px; }
+    .bad { color: #e0553f; }
+    .stamp { justify-self: start; border: 3px solid currentColor; padding: 2px 12px; font: 700 22px ui-monospace, monospace; letter-spacing: .08em; transform: rotate(-3deg); }
+    .stamp[data-tone="free"], .stamp[data-tone="CLEARED"] { color: #5fd38d; }
+    .stamp[data-tone="on_arrival"], .stamp[data-tone="evisa"], .stamp[data-tone="REVIEW"] { color: #f5e642; }
+    .stamp[data-tone="required"], .stamp[data-tone="HELD"] { color: #e0553f; }
+    .stamp[data-tone="held"], .stamp[data-tone="home"] { color: #6aa7ff; }
+    .stamp[data-tone="unknown"] { color: #9aa3b5; }
+    .note a { color: #9aa3b5; word-break: break-all; }
+    .needs { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 16px; }
+    .needs li::before { content: "\2610  "; color: #9aa3b5; }
+    h2 { margin: 0; font: 12px ui-monospace, monospace; letter-spacing: .14em; color: #9aa3b5; text-transform: uppercase; }
+    .chip { border: 2px dashed #f5e642; padding: 12px 14px; display: grid; gap: 4px; }
+    .chip[hidden] { display: none; }
+    .chip p { margin: 0; }
+    .chip .quote { font-size: 20px; }
+    .src a { color: #9aa3b5; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <main class="card" aria-live="polite">
+    <h1>VISA ROULETTE</h1>
+    <p id="route" class="route">Reading your code...</p>
+    <p id="verdict" class="stamp" hidden></p>
+    <p id="verdict-note" class="note" hidden></p>
+    <dl id="facts"></dl>
+    <section id="needs-box" hidden><h2>What you need</h2><ul id="needs" class="needs"></ul></section>
+    <section id="chip" class="chip" hidden><h2>Souvenir from a stranger</h2><p id="chip-route"></p><p id="chip-note" class="quote"></p><p id="chip-by" class="note"></p></section>
+    <p class="note">Specimen demo. Informational only. Verify requirements with the official source before you travel. This page works with no internet.</p>
+  </main>
+  <script>
+    const fail = (msg) => { const el = document.getElementById("route"); el.textContent = msg; el.className = "route bad"; };
+    async function decode(text) {
+      if (!text.startsWith("VR1.")) throw new Error("Not a Visa Roulette code.");
+      const body = text.slice(4).replace(/-/g, "+").replace(/_/g, "/");
+      const bytes = Uint8Array.from(atob(body + "=".repeat((4 - (body.length % 4)) % 4)), (c) => c.charCodeAt(0));
+      const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate"));
+      return JSON.parse(await new Response(stream).text());
+    }
+    (async () => {
+      try {
+        const data = await decode(decodeURIComponent(location.hash.slice(1)));
+        const who = data.profile.name || "Traveller";
+        document.getElementById("route").textContent = `${data.profile.origin} to ${data.landing_iso3}`;
+        if (data.visa) {
+          const stamp = document.getElementById("verdict");
+          stamp.textContent = data.visa.label;
+          stamp.dataset.tone = data.visa.status;
+          stamp.hidden = false;
+          const note = document.getElementById("verdict-note");
+          note.textContent = `Rule as of ${data.visa.as_of}. Demo rule, unverified: confirm with the official source before you travel.`;
+          if (data.visa.source_url && /^https:\/\//.test(data.visa.source_url)) {
+            note.append(" ");
+            const link = document.createElement("a");
+            link.href = data.visa.source_url;
+            link.textContent = data.visa.source_url.replace(/^https:\/\//, "");
+            link.rel = "noopener noreferrer";
+            note.append(link);
+          }
+          note.hidden = false;
+        }
+        if (Array.isArray(data.needs) && data.needs.length) {
+          document.getElementById("needs").append(...data.needs.map((text) => { const li = document.createElement("li"); li.textContent = text; return li; }));
+          document.getElementById("needs-box").hidden = false;
+        }
+        if (data.stranger) {
+          const c = data.stranger;
+          document.getElementById("chip-route").textContent = `${c.origin} to ${c.landing_iso3}`;
+          document.getElementById("chip-note").textContent = `\u201c${c.note}\u201d`;
+          document.getElementById("chip-by").textContent = `${c.nickname}${c.seeded ? " (demo traveller)" : ""}`;
+          document.getElementById("chip").hidden = false;
+        }
+        const rows = [["Traveller", who], ["Nationality", data.profile.nationality], ["Budget", `${data.budget.toLocaleString()} ${data.currency}`], ["Issued", data.issued]];
+        if (data.preflight) rows.splice(2, 0, ["Pre-flight", `${data.preflight.verdict}, ${data.preflight.readiness}% ready`]);
+        for (const [label, value] of rows) {
+          const dt = document.createElement("dt"); dt.textContent = label;
+          const dd = document.createElement("dd"); dd.textContent = value;
+          document.getElementById("facts").append(dt, dd);
+        }
+      } catch (err) {
+        fail("This code is damaged or incomplete. Scan it again.");
+      }
+    })();
+  </script>
+</body>
+</html>
