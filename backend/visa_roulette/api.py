@@ -16,6 +16,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, StringConstraints, field_validator
 
 from visa_roulette import operator as booth_operator
+from visa_roulette import stt
 from visa_roulette.bcbp import parse_bcbp
 from visa_roulette.checklist import build_checklist
 from visa_roulette.errors import ScanError
@@ -85,9 +86,10 @@ def _mount(app: FastAPI, url: str, directory: Path, **kwargs) -> None:
 def create_app() -> FastAPI:
     @asynccontextmanager
     async def lifespan(_: FastAPI):
-        warming = asyncio.create_task(asyncio.to_thread(booth_operator.warm))
+        warming = [asyncio.create_task(asyncio.to_thread(warm)) for warm in (booth_operator.warm, stt.warm)]
         yield
-        warming.cancel()
+        for task in warming:
+            task.cancel()
 
     app = FastAPI(title="Visa Roulette booth API", version="0.1.0", lifespan=lifespan)
 

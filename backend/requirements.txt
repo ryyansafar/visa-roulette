@@ -9,3 +9,6 @@ qrcode
 zxing-cpp
 pytest
 websockets
+faster-whisper
+av==15.1.0
+python-multipart

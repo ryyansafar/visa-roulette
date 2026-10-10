@@ -2,6 +2,7 @@ import time
 
 from fastapi.testclient import TestClient
 from visa_roulette import operator as op
+from visa_roulette import stt
 from visa_roulette.api import create_app
 
 client = TestClient(create_app())
@@ -84,12 +85,13 @@ def test_warm_never_raises_when_ollama_is_off():
 def test_app_startup_warms_the_model_in_the_background(monkeypatch):
     calls = []
     monkeypatch.setattr(op, "warm", lambda *a, **k: calls.append(1) or True)
+    monkeypatch.setattr(stt, "warm", lambda: calls.append(2) or True)
     with TestClient(create_app()):
         for _ in range(50):
-            if calls:
+            if len(calls) == 2:
                 break
             time.sleep(0.02)
-    assert calls == [1]
+    assert sorted(calls) == [1, 2]
 
 
 def test_tidy_strips_markdown_and_keeps_two_sentences():

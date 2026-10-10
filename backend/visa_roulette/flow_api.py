@@ -9,12 +9,12 @@ from collections import OrderedDict
 from datetime import date
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, HTTPException, Request, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, HTTPException, Request, Response, WebSocket, WebSocketDisconnect
 from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel, Field
 
 from visa_roulette import destination as destination_info
-from visa_roulette import geo, officer_flow, pick
+from visa_roulette import geo, officer_flow, pick, stt, tts
 from visa_roulette import operator as booth_operator
 from visa_roulette.camera_throw import throw_from_camera
 from visa_roulette.duel import duel
@@ -268,6 +268,44 @@ async def officer_turn(body: OfficerTurnIn) -> dict:
         return await run_in_threadpool(officer_flow.turn, body.session_id, body.said)
     except KeyError:
         raise HTTPException(status_code=404, detail="That interview is over or unknown.")
+
+
+@router.post("/api/officer/listen")
+async def officer_listen(request: Request, session_id: str | None = None) -> dict:
+    data = await request.body()
+    if not data:
+        raise ScanError("no_audio", "No audio was received.", 422)
+    if len(data) > stt.MAX_BYTES:
+        raise HTTPException(status_code=413, detail="That recording is too long.")
+    try:
+        heard = await run_in_threadpool(stt.transcribe, data)
+    except stt.SttUnavailable:
+        raise ScanError("stt_unavailable", "Speech recognition is not installed on this booth.", 503)
+    except (stt.SttError, ValueError):
+        raise ScanError("bad_audio", "That audio could not be read.", 422)
+    if session_id is None:
+        return {"text": heard}
+    try:
+        return {**await run_in_threadpool(officer_flow.turn, session_id, heard), "heard": heard}
+    except KeyError:
+        raise HTTPException(status_code=404, detail="That interview is over or unknown.")
+
+
+class SpeakIn(BaseModel):
+    text: str = Field(min_length=1, max_length=tts.MAX_TEXT)
+    voice: str = Field(default="en-neutral", max_length=20)
+
+
+@router.post("/api/officer/speak")
+async def officer_speak(body: SpeakIn) -> Response:
+    spoken = tts.clean(body.text)
+    if not spoken:
+        raise ScanError("no_text", "Nothing to say.", 422)
+    try:
+        audio = await run_in_threadpool(tts.synthesize, spoken, body.voice)
+    except tts.TtsUnavailable:
+        raise ScanError("tts_unavailable", "Speech output is not available on this machine.", 503)
+    return Response(content=audio, media_type="audio/wav")
 
 
 @router.get("/api/destination/{iso3}")
