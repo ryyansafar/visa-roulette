@@ -6,16 +6,16 @@
     "source": "https://commons.wikimedia.org/wiki/File:Downtown_Burj_Dubai_and_Business_Bay,_seen_from_Safa_Park.jpg"
   },
   "ARE-2": {
-    "title": "Dubai Desert Safari.jpg",
-    "author": "Heba Hashem",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Dubai_Desert_Safari.jpg"
+    "title": "Desert Safari - Dubai.JPG",
+    "author": ":en:Siddeshindia (talk | contribs)",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Desert_Safari_-_Dubai.JPG"
   },
   "ARE-3": {
-    "title": "Gold Souk in Deira Dubai.JPG",
-    "author": "HighKing",
-    "license": "Public domain",
-    "source": "https://commons.wikimedia.org/wiki/File:Gold_Souk_in_Deira_Dubai.JPG"
+    "title": "Dubai's Spice Souks -3 (5373673363).jpg",
+    "author": "McKay Savage from Cusco, Peru",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Dubai%27s_Spice_Souks_-3_(5373673363).jpg"
   },
   "AUS-1": {
     "title": "Sydney Opera House and Harbour Bridge, southeast view 20230224 1.jpg",
@@ -24,10 +24,10 @@
     "source": "https://commons.wikimedia.org/wiki/File:Sydney_Opera_House_and_Harbour_Bridge,_southeast_view_20230224_1.jpg"
   },
   "AUS-2": {
-    "title": "Great Barrier Reef Queensland Ank Kumar.jpg",
-    "author": "Ank Kumar",
+    "title": "The heart reef, part of the Great Barrier Reef near Airlie Beach, Whitsunday Islands, Queensland.jpg",
+    "author": "Ayanadak123",
     "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Great_Barrier_Reef_Queensland_Ank_Kumar.jpg"
+    "source": "https://commons.wikimedia.org/wiki/File:The_heart_reef,_part_of_the_Great_Barrier_Reef_near_Airlie_Beach,_Whitsunday_Islands,_Queensland.jpg"
   },
   "AUS-3": {
     "title": "Uluru sunset glow.jpg",
@@ -48,10 +48,10 @@
     "source": "https://commons.wikimedia.org/wiki/File:Neuschwanstein_Castle_2024.jpg"
   },
   "DEU-3": {
-    "title": "Rhine Marksburg Castle above Braubach (10574809714).jpg",
-    "author": "Gary Todd from Xinzheng, China",
-    "license": "CC0",
-    "source": "https://commons.wikimedia.org/wiki/File:Rhine_Marksburg_Castle_above_Braubach_(10574809714).jpg"
+    "title": "Lorch, vineyards in the south with Rhine.jpg",
+    "author": "Gerda Arendt",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Lorch,_vineyards_in_the_south_with_Rhine.jpg"
   },
   "FRA-1": {
     "title": "Paris - The Eiffel Tower in spring - 2307.jpg",
@@ -78,10 +78,10 @@
     "source": "https://commons.wikimedia.org/wiki/File:London,_Tower_Bridge_--_2016_--_4676.jpg"
   },
   "GBR-2": {
-    "title": "Scottish Highlands near Glencoe by Stephen Powell 10.jpg",
-    "author": "Copowell472",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Scottish_Highlands_near_Glencoe_by_Stephen_Powell_10.jpg"
+    "title": "The Three Sisters, Glencoe, Scotland.jpg",
+    "author": "rboed*",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:The_Three_Sisters,_Glencoe,_Scotland.jpg"
   },
   "GBR-3": {
     "title": "Royal Crescent, Bath 2014 10.jpg",
@@ -96,10 +96,10 @@
     "source": "https://commons.wikimedia.org/wiki/File:20181110_Fushimi_Inari_Torii_12.jpg"
   },
   "JPN-2": {
-    "title": "Senso-ji, Asakusa, Tokyo.jpg",
-    "author": ". Ray in Manila",
-    "license": "CC BY 2.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Senso-ji,_Asakusa,_Tokyo.jpg"
+    "title": "Tokyo Tower, Minato City.jpg",
+    "author": "David Kernan",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Tokyo_Tower,_Minato_City.jpg"
   },
   "JPN-3": {
     "title": "Mount Fuji and Shinkansen N700.jpg",
@@ -114,10 +114,10 @@
     "source": "https://commons.wikimedia.org/wiki/File:KLCC_Park_Petronas_Twin_Towers_(53331134437).jpg"
   },
   "MYS-2": {
-    "title": "Langkawi Island (22116706554).jpg",
-    "author": "Marufish from Alor Setar, Malaysia",
-    "license": "CC BY-SA 2.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Langkawi_Island_(22116706554).jpg"
+    "title": "Cenang Beach view, Langkawi.jpg",
+    "author": "NickLubushko",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Cenang_Beach_view,_Langkawi.jpg"
   },
   "MYS-3": {
     "title": "Street Art of George Town, Penang.JPG",
@@ -137,6 +137,12 @@
     "license": "CC BY-SA 4.0",
     "source": "https://commons.wikimedia.org/wiki/File:Winter_Palace_Panorama_3.jpg"
   },
+  "RUS-3": {
+    "title": "Vostok Train.jpg",
+    "author": "takwing.kwong",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Vostok_Train.jpg"
+  },
   "SGP-1": {
     "title": "Supertree Grove, Gardens by the Bay, Singapore1.jpg",
     "author": "Mustang Joe",
@@ -144,10 +150,10 @@
     "source": "https://commons.wikimedia.org/wiki/File:Supertree_Grove,_Gardens_by_the_Bay,_Singapore1.jpg"
   },
   "SGP-2": {
-    "title": "Maxwell Food Centre, 2025.jpg",
-    "author": "Actuall7",
-    "license": "CC0",
-    "source": "https://commons.wikimedia.org/wiki/File:Maxwell_Food_Centre,_2025.jpg"
+    "title": "Lau Pa Sat (Former Telok Ayer Market), October 2024.jpg",
+    "author": "GoAheadFan95",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Lau_Pa_Sat_(Former_Telok_Ayer_Market),_October_2024.jpg"
   },
   "SGP-3": {
     "title": "Marina Bays Sands Hotel and skyline of the Central Business District Singapore.jpg",
@@ -156,10 +162,10 @@
     "source": "https://commons.wikimedia.org/wiki/File:Marina_Bays_Sands_Hotel_and_skyline_of_the_Central_Business_District_Singapore.jpg"
   },
   "THA-1": {
-    "title": "20171201 Wat Arun Bangkok 6443 DxO.jpg",
-    "author": "Jakub Hałun",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:20171201_Wat_Arun_Bangkok_6443_DxO.jpg"
+    "title": "Templo Wat Arun, Bangkok, Tailandia, 2013-08-22, DD 30.jpg",
+    "author": "Diego Delso",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Templo_Wat_Arun,_Bangkok,_Tailandia,_2013-08-22,_DD_30.jpg"
   },
   "THA-2": {
     "title": "Maya Bay enclosed limestone cliffs and turquoise water Ko Phi Phi Le.jpg",
