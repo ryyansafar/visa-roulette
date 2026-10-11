@@ -1,0 +1,38 @@
+<section id="qa" data-transition="fade" style="background:#0C1220;color:#EFECE3;font-family:'Space Grotesk', Arial, sans-serif;padding:88px 128px 140px;display:flex;flex-direction:column;gap:40px">
+<p style="font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;color:#98A3B8">Q AND A PREP</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.05;letter-spacing:-1px;color:#EFECE3">Hard questions, honest answers.</h2>
+<div style="display:flex;flex-direction:row;flex-wrap:wrap;gap:24px">
+<div style="width:538px;background:#151D2E;border-top:4px solid #F7E92F;padding:28px;display:flex;flex-direction:column;gap:12px"><p style="font-size:34px;font-weight:700;line-height:1.15;color:#F7E92F">Is the AI deciding visas?</p><p style="font-size:28px;line-height:1.35;color:#EFECE3">No. Rules decide. AI only reads and explains.</p></div>
+<div style="width:538px;background:#151D2E;border-top:4px solid #F7E92F;padding:28px;display:flex;flex-direction:column;gap:12px"><p style="font-size:34px;font-weight:700;line-height:1.15;color:#F7E92F">How accurate is the rules data?</p><p style="font-size:28px;line-height:1.35;color:#EFECE3">Demo rules, unverified, dated 2026-10-10. Cited.</p></div>
+<div style="width:538px;background:#151D2E;border-top:4px solid #F7E92F;padding:28px;display:flex;flex-direction:column;gap:12px"><p style="font-size:34px;font-weight:700;line-height:1.15;color:#F7E92F">What if OCR fails?</p><p style="font-size:28px;line-height:1.35;color:#EFECE3">Check digits flag it. Retake hint, or a sample traveller.</p></div>
+<div style="width:538px;background:#151D2E;border-top:4px solid #F7E92F;padding:28px;display:flex;flex-direction:column;gap:12px"><p style="font-size:34px;font-weight:700;line-height:1.15;color:#F7E92F">Does it work offline?</p><p style="font-size:28px;line-height:1.35;color:#EFECE3">Core flow yes. Local model, voice, QR hand-off.</p></div>
+<div style="width:538px;background:#151D2E;border-top:4px solid #F7E92F;padding:28px;display:flex;flex-direction:column;gap:12px"><p style="font-size:34px;font-weight:700;line-height:1.15;color:#F7E92F">Real passports? Privacy?</p><p style="font-size:28px;line-height:1.35;color:#EFECE3">Sample or fake only. Data stays on the laptop.</p></div>
+<div style="width:538px;background:#151D2E;border-top:4px solid #F7E92F;padding:28px;display:flex;flex-direction:column;gap:12px"><p style="font-size:34px;font-weight:700;line-height:1.15;color:#F7E92F">What if the hardware dies?</p><p style="font-size:28px;line-height:1.35;color:#EFECE3">Webcam flick, Space key, or the video.</p></div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:900px;font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">VISA ROULETTE · LAYOVER 2026</p>
+<p style="position:absolute;right:128px;bottom:64px;width:300px;text-align:right;font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">B3 / B3</p>
+<aside>Q AND A PREP. Full answers, say them in this order of confidence.
+
+1. Is the AI deciding visas?
+No. Vision and OCR only read the document. A deterministic rules engine reads JSON rule files and produces the verdict, with a source link and an as-of date. A local LLM may rephrase an explanation in two plain sentences; if it says anything the rules do not contain, a template replaces it. A destination with no rule is reported as unknown, never guessed.
+
+2. How accurate is the rules data?
+These are demo rules: visa_rules.json has as_of 2026-10-10 and verified false, and the UI says so. They are curated from public information with a source URL per rule. They are not legal advice. The design makes verification a data task: check each rule, flip its verified flag. That is our first next step.
+
+3. What if OCR fails?
+The MRZ has check digits, so a bad read is caught rather than trusted, and the booth shows a retake hint. If the room is bad, tap a sample traveller: the sample passports are known to the system, so the flow never dead-ends. Arbitrary photo scans are a local-booth feature; the hosted demo uses sample travellers only.
+
+4. Does it work offline?
+The core flow is offline-first: local Tesseract and zxing, local rules, a local Ollama model with a template fallback, local faster-whisper voice, and a QR hand-off served from the laptop over its LAN. The hosted demo needs internet by nature and has no hardware.
+
+5. Do you handle real passports? What about privacy?
+The booth is built for sample or fake passports. We say so on screen. Data stays on the laptop for the local flow; we do not send passport data to a cloud model. Do not ask judges to scan real documents.
+
+6. What if the throw is unreliable or the hardware dies?
+The detector rejects ambiguous throws with a reason instead of guessing (no_rest, too_weak, mount_angle, straight_up). Fallbacks feed the same flight model: webcam flick, single-switch Space key, and the recorded hardware video.
+
+BONUS (if asked): Who built what? Ryyan Safar: backend, rules, hardware, integration. Fathima: airport UI. Is Lakshmi real? No, a specimen traveller. Is this a game or a tool? Both, deliberately.
+
+TIME: BACKUP. Outside the 2 minute pitch. Use only if a judge asks.
+</aside>
+</section>

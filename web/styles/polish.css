@@ -91,3 +91,71 @@ body .label { font-family: var(--font-display); letter-spacing: 0.01em; text-tra
 #step-throw .legend .sw[data-k="arrival"] { background: var(--globe-arrival); border-color: var(--globe-arrival); }
 #step-throw .legend .sw[data-k="needed"] { background: var(--globe-held); border-color: var(--globe-held); }
 #step-throw .dist .label { font-weight: 500; }
+
+/* round-5: flat typographic stamps, CTA hierarchy, sans for prose, light-mode primary */
+.stamp, .route-stamp {
+  filter: none; -webkit-mask-image: none; mask-image: none; opacity: 1;
+  outline: 0; border-width: 3px; box-shadow: inset 0 0 0 5px var(--ink), inset 0 0 0 7px currentColor;
+  padding: 0.4em 0.8em 0.34em; letter-spacing: 0.1em; transform: rotate(-4deg);
+}
+.stamp.thud { animation-name: stamp-thud-flat; }
+@keyframes stamp-thud-flat { from { transform: rotate(-4deg) scale(1.35); opacity: 0; } to { transform: rotate(-4deg) scale(1); opacity: 1; } }
+#step-checklist .verdict .stamp { --stamp-size: clamp(32px, 3vw + 8px, 60px); transform: rotate(-4deg); }
+.route-stamp { transform: rotate(-4deg); }
+
+#step-profile #desk-start { background: transparent; border-color: var(--text); color: var(--text); }
+#step-profile .desk-submit button { background: var(--signal); border-color: var(--signal); color: var(--on-signal); }
+
+#step-profile .viewfinder .hint, #desk-hint, footer, footer .about, .sample, #mode-help, .rail:has(#r-stamp:not([hidden])) #mode-help {
+  font-family: var(--font-display); letter-spacing: 0;
+}
+#step-profile .viewfinder .hint { font-size: var(--t-14); }
+.steps li { color: var(--muted); }
+.steps li[aria-current="step"] { color: var(--text); }
+#step-checklist li input[type="checkbox"], .checklist li .box { border-width: 2px; }
+.checklist li:hover, #step-checklist li:hover { padding-left: 0; padding-right: 0; transform: none; }
+#mode-help { font-size: var(--t-18); }
+
+:root[data-theme="light"] button.primary, :root[data-theme="light"] #step-profile .desk-submit button {
+  background: var(--text); border-color: var(--text); color: var(--signal);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) button.primary, :root:not([data-theme="dark"]) #step-profile .desk-submit button {
+    background: var(--text); border-color: var(--text); color: var(--signal);
+  }
+}
+
+/* pre-throw route card fills the rail until a landing */
+#mode-help { font-weight: 400; font-size: var(--t-14); line-height: 1.5; color: var(--muted); }
+.route-card { list-style: none; counter-reset: r; margin: 28px 0 0; padding: 0; border-top: 1px solid var(--rule); }
+.route-card li { counter-increment: r; display: grid; grid-template-columns: 56px 1fr; grid-template-rows: auto auto; column-gap: 12px; padding: 18px 0; border-bottom: 1px solid var(--rule); }
+.route-card li::before { content: counter(r, decimal-leading-zero); grid-row: 1 / 3; font: 700 var(--t-28)/1 var(--font-display); color: var(--muted); letter-spacing: -0.02em; }
+.route-card b { font: 700 var(--t-18)/1.2 var(--font-display); }
+.route-card span { color: var(--muted); font-size: var(--t-14); line-height: 1.45; margin-top: 4px; }
+.rail:has(#r-stamp:not([hidden])) .route-card { display: none; }
+body .sample, body .sample *:not(button), body footer, body footer * { font-family: var(--font-display); letter-spacing: 0; text-transform: none; }
+body footer summary, body footer a { text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+
+/* round-6: landed rail leads with the result, no decorative ticks, one action colour, plainer route card */
+.rail:has(#r-stamp:not([hidden])) .modes, .rail:has(#r-stamp:not([hidden])) #mode-help { display: none; }
+.rail:has(#r-stamp:not([hidden])) > h2 { display: none; }
+#step-throw .stage::before { content: none; }
+.route-card li { grid-template-columns: 1fr; }
+.route-card li::before { content: none; }
+.route-card b { font-size: var(--t-14); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); }
+:root { --globe-ocean: hsl(219 36% 17%); --globe-edge: hsl(219 26% 38%); }
+:root[data-theme="light"] button.primary, :root[data-theme="light"] #step-profile .desk-submit button {
+  background: var(--signal); border-color: var(--text); color: var(--text);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) button.primary, :root:not([data-theme="dark"]) #step-profile .desk-submit button {
+    background: var(--signal); border-color: var(--text); color: var(--text);
+  }
+}
+
+.photo-credit { margin: 4px 0 0; font: 400 10px/1.3 var(--font-mono, "IBM Plex Mono", monospace); color: var(--muted); }
+.places-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+.places-list li { display: grid; gap: 2px; padding-left: 10px; border-left: 2px solid var(--signal); }
+.places-list b { font: 700 13px/1.2 var(--font-sans, "Space Grotesk", sans-serif); color: var(--text); }
+.places-list span { font-size: 12px; line-height: 1.35; color: var(--muted); }
+.places-list[hidden], .photo-credit[hidden] { display: none; }

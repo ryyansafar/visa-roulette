@@ -7,6 +7,7 @@ import { initOfficer } from "/js/officer.js";
 import { initPick } from "/js/pick.js";
 import { buildTrail, easeFlight, flightDurationMs, sampleFlight } from "/js/planeflight.js";
 import { createPlane3d, flightScale } from "/js/plane3d.js";
+import { fetchDestination } from "/js/officer_api.js";
 const $ = (id) => document.getElementById(id);
 const STEPS = ["profile", "checklist", "throw", "consent", "handoff"];
 const W = 1200;
@@ -233,6 +234,8 @@ function resetThrow() {
   showPlane(false);
   $("needs").hidden = true;
   $("r-photo").hidden = true;
+  $("r-credit").hidden = true;
+  $("r-places").hidden = true;
   closeDuel();
   pickGame.close();
   officer.close();
@@ -620,12 +623,43 @@ async function onConsent(event) {
   }
 }
 
+let creditsPromise = null;
+const loadCredits = () => (creditsPromise ||= fetch("/assets/places/credits.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})));
+
+function renderPlaces(list, highlights) {
+  list.replaceChildren(...highlights.slice(0, 3).map((h) => {
+    const li = document.createElement("li");
+    const title = document.createElement("b");
+    title.textContent = h.title;
+    const blurb = document.createElement("span");
+    blurb.textContent = h.blurb || "";
+    li.append(title, blurb);
+    return li;
+  }));
+  list.hidden = !list.children.length;
+}
+
 function showLandedPhoto(landing) {
   const photo = $("r-photo");
+  const credit = $("r-credit");
+  const places = $("r-places");
   photo.hidden = true;
-  photo.onload = () => { photo.hidden = false; };
+  credit.hidden = true;
+  places.hidden = true;
+  photo.onload = () => {
+    photo.hidden = false;
+    loadCredits().then((all) => {
+      const c = all[`${landing.iso3}-1`];
+      if (!c || state.landing?.iso3 !== landing.iso3) return;
+      credit.textContent = ["Photo", [c.author, c.license].filter(Boolean).join(", ")].join(": ");
+      credit.hidden = !credit.textContent;
+    });
+  };
   photo.alt = `${landing.name}`;
   photo.src = `/assets/places/${landing.iso3}-1.jpg`;
+  fetchDestination(landing.iso3).then((dest) => {
+    if (state.landing?.iso3 === landing.iso3) renderPlaces(places, dest?.highlights || []);
+  }).catch(() => {});
 }
 
 function startAirportJourney() {

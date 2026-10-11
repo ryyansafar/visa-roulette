@@ -9,9 +9,15 @@
   Built for <a href="https://github.com/jasimcm/layover-2026">LAYOVER 2026</a> at TinkerSpace Calicut, 10–11 Oct 2026.
 </p>
 
+<p align="center">
+  <b>🏆 Winner of LAYOVER 2026. Off to Dubai! ✈️</b>
+</p>
+
+**Hardware demo video (air mouse, ESP32 + MPU6050 throw):** [Google Drive folder](https://drive.google.com/drive/folders/1GI7xbai_IOR7WgsS33aDdSw5bK51CltM?usp=sharing)
+
 **Live demo:** https://layoverhackathon.vercel.app (hosted mode: sample travellers only, no hardware or live camera scans; see [docs/DEPLOY_VERCEL.md](docs/DEPLOY_VERCEL.md)).
 
-> **Status:** work in progress, being built during the hackathon. The features below are built and tested; the "still planned" line is not. See [PLAN.md](PLAN.md) for tiers and progress.
+> **Status:** won LAYOVER 2026 (TinkerHub x The Visa Guy). Built in one night; the features below are built and tested, the "still planned" line is not. See [PLAN.md](PLAN.md) for tiers and progress.
 
 ## What it is
 A travel booth you can play. You walk up to an immigration desk and show a (sample) passport to the camera; OCR reads it and the booth checks it against deterministic rules. A fast-spinning 3D globe lights up with where that passport can go. You throw a paper plane, by webcam flick or an ESP32 board, and the globe slows and lands on a country. The booth then tells you what that passport needs for that destination: visa status, the documents to prepare, and which of them your pre-flight check already covers. Every verdict cites its source.
@@ -19,7 +25,7 @@ A travel booth you can play. You walk up to an immigration desk and show a (samp
 **Principle:** AI sees. Rules decide. Every verdict cites its source. Passport data stays on the laptop.
 
 ## Features
-- Immigration desk: show a passport or boarding pass to the webcam (a prop, a fake on a phone, or a QR); Tesseract OCR reads the MRZ, zxing reads the IATA barcode, both with check-digit validation
+- Immigration desk: show a passport or flight ticket to the webcam (a prop, a fake on a phone, or a QR); Tesseract OCR reads the MRZ, zxing reads the IATA barcode, both with check-digit validation
 - Interactive pre-flight checklist: each item ticks from a cited rule and opens its evidence
 - Visa-aware globe: countries coloured by visa-free / on-arrival / e-visa / visa required for the scanned nationality, plus "unlocked by other visas" rules. Demo rules cover Indian (~110 destinations), US, UK and UAE passports; they are unverified and every verdict links its source and date
 - Paper-plane throw with flight physics fitted to measured paper-dart data (`flight.py`: a 5 g point mass, Polhamus leading-edge-suction lift that stalls near 30 degrees, damped pitch dynamics and a banked turn; cruise lift-to-drag about 5, 4-6 m/s trim). The backend returns the path plus a per-step pitch/bank `pose`, which the browser plays back with a monotone-spline requestAnimationFrame player (`web/js/planeflight.js`). Hardware: an ESP32 + MPU-6050 streams `[t, ax, ay, az, gx, gy, gz]` rows (`firmware/mpu6050_streamer`, `docs/HARDWARE_MPU6050.md`); the gyro measures tumble and lowers the range. Throw the plane straight at the webcam, nose first: the booth tracks the blob, reads the approach speed from how fast it grows, aims by sideways drift and sets the launch angle from the climb (`POST /api/throw/camera`). The ESP32 IMU board also shapes the flight: tilt it when held to bank the plane and its in-flight tumbling (flutter) costs range. Flick and single-switch inputs fly the same model. A fast spinning three.js globe slows and lands with a pin
@@ -48,13 +54,13 @@ Python (FastAPI) backend, Tesseract OCR, zxing, OpenCV, a vanilla ES-module fron
 The booth operator is a local Ollama model (`VISA_ROULETTE_MODEL`, default `gemma3n:e4b`). The server warms it at startup so the first answer is not a cold start; replies are trimmed to two plain sentences and fall back to a rules template if the model is slow, down or says anything the rules do not contain.
 
 ## Checklist engine
-`backend/visa_roulette/checklist.py` turns a passport, boarding pass, bookings and bag into a list of items. Every item carries its rule id, source link, "as of" date and a `verified` flag. All rules in `rules/checklist_rules.json` are currently unverified demo rules drawn from public articles, and the UI must say so.
+`backend/visa_roulette/checklist.py` turns a passport, flight ticket, bookings and bag into a list of items. Every item carries its rule id, source link, "as of" date and a `verified` flag. All rules in `rules/checklist_rules.json` are currently unverified demo rules drawn from public articles, and the UI must say so.
 
 ## Design
 Direction and tokens: [docs/DESIGN.md](docs/DESIGN.md), `web/styles/tokens.css`.
 
-## Specimen props (fake passport, boarding pass, bookings)
-Three fictional travellers with a SPECIMEN watermark, a made-up airline, and checksum-valid passport MRZs and IATA boarding-pass barcodes. They exist only to demo the booth.
+## Specimen props (fake passport, flight ticket, bookings)
+Three fictional travellers with a SPECIMEN watermark, a made-up airline, and checksum-valid passport MRZs and IATA flight-ticket barcodes. They exist only to demo the booth.
 
 ```bash
 uv venv .venv-tools && uv pip install --python .venv-tools/bin/python -r tools/requirements.txt

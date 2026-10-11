@@ -20,6 +20,7 @@ Usage: .venv/bin/python scripts/fetch_places.py [--only FJI,KEN] [--force] [--li
 
 import argparse
 import hashlib
+import html
 import io
 import json
 import re
@@ -83,7 +84,7 @@ class Http:
         if self.cache:
             self.cache.mkdir(parents=True, exist_ok=True)
 
-    def _fetch(self, url: str, tries: int = 5) -> bytes:
+    def _fetch(self, url: str, tries: int = 6) -> bytes:
         for attempt in range(tries):
             time.sleep(SLEEP)
             try:
@@ -92,7 +93,8 @@ class Http:
                     return resp.read()
             except urllib.error.HTTPError as err:
                 if err.code in (429, 500, 502, 503, 504) and attempt < tries - 1:
-                    time.sleep(min(30, 2 ** (attempt + 1)))
+                    retry_after = err.headers.get("Retry-After", "")
+                    time.sleep(min(90, int(retry_after) if retry_after.isdigit() else 10 * (attempt + 1)))
                     continue
                 raise
             except (urllib.error.URLError, TimeoutError, ConnectionError):
@@ -135,7 +137,10 @@ def clean_markup(text: str) -> str:
     text = re.sub(r"\[https?://\S+\s*([^\]]*)\]", r"\1", text)
     text = text.replace("'''", "").replace("''", "")
     text = re.sub(r"\([^()]*\)", "", text)  # parentheticals: pronunciations, notes
-    return re.sub(r"\s+", " ", text).strip(" \t-—–:;,")
+    text = html.unescape(text).replace("\u00a0", " ")
+    text = re.sub(r"\[[^\]]*\]|[\[\]]", "", text)  # bracketed IPA / stray brackets
+    text = re.sub(r"\s+", " ", text).strip(" \t-—–―:;,")
+    return re.sub(r"^(?:[-—–―]\s*)+", "", text)
 
 
 def parse_marker_params(raw: str) -> dict:
@@ -158,8 +163,15 @@ def link_target(text: str) -> tuple:
 
 
 def sections(wikitext: str) -> list:
+    """[(heading, parent level-2 heading, body)]; sub-headings (e.g. === West Bank ===) inherit their parent."""
     parts = re.split(r"^(={2,4})\s*([^=\n]+?)\s*\1\s*$", wikitext, flags=re.M)
-    return [(parts[i + 1].strip(), parts[i + 2]) for i in range(1, len(parts) - 2, 3)]
+    out, parent = [], ""
+    for i in range(1, len(parts) - 2, 3):
+        level, heading = len(parts[i]), parts[i + 1].strip()
+        if level == 2:
+            parent = heading
+        out.append((heading, parent, parts[i + 2]))
+    return out
 
 
 def list_candidates(body: str, kind: str) -> list:
@@ -167,7 +179,7 @@ def list_candidates(body: str, kind: str) -> list:
     for line in body.splitlines():
         if not line.startswith("*"):
             continue
-        marker = re.match(r"^\*+\s*\{\{marker\|([^{}]*)\}\}(.*)$", line)
+        marker = re.match(r"^\*+\s*\{\{\s*marker\s*\|([^{}]*)\}\}(.*)$", line, flags=re.I)
         if marker:
             params = parse_marker_params(marker.group(1))
             display, page = link_target(params.get("name", ""))
@@ -181,6 +193,12 @@ def list_candidates(body: str, kind: str) -> list:
             desc, qid = link.group(2), ""
         if display:
             found.append({"title": display, "wv_page": page, "qid": qid if re.fullmatch(r"Q\d+", qid) else "", "desc": clean_markup(desc), "kind": kind})
+    for m in re.finditer(r"\{\{\s*listing\s*\|((?:[^{}]|\{\{[^{}]*\}\})*)\}\}", body, flags=re.I | re.S):
+        params = parse_marker_params(re.sub(r"\{\{[^{}]*\}\}", "", m.group(1)).replace("\n", ""))
+        display, page = link_target(params.get("name", ""))
+        qid = params.get("wikidata", "")
+        if display:
+            found.append({"title": display, "wv_page": page, "qid": qid if re.fullmatch(r"Q\d+", qid) else "", "desc": clean_markup(params.get("content", "")), "kind": kind})
     return found
 
 
@@ -196,15 +214,31 @@ def see_candidates(body: str) -> list:
     return found
 
 
+def region_candidates(wikitext: str) -> list:
+    """Fallback for articles whose Regionlist names the highlights in prose: [[links]] inside regionNdescription
+    (then regionNname / regionNitems when the descriptions give too few)."""
+    found = []
+    for fields in ("description", "name|items"):
+        for m in re.finditer(rf"^\|\s*region\d+(?:{fields})\s*=(.*)$", wikitext, flags=re.M | re.I):
+            for link in re.finditer(r"\[\[([^\]|]+)(?:\|[^\]]*)?\]\]", m.group(1)):
+                page = link.group(1).strip()
+                found.append({"title": page, "wv_page": page, "qid": "", "desc": "", "kind": "region"})
+        if len({c["title"] for c in found}) >= 3:
+            break
+    return found
+
+
 def gather_candidates(wikitext: str) -> list:
     cities, others, sees = [], [], []
-    for heading, body in sections(wikitext):
+    for heading, parent, body in sections(wikitext):
         h = heading.lower()
+        if parent.lower() != h and parent.lower() in ("cities", "other destinations", "destinations", "islands", "settlements"):
+            h = parent.lower()
         if h == "see":
             sees += see_candidates(body)
         elif "other destinations" in h or h == "destinations" or "top destinations" in h:
             others += list_candidates(body, "destination")
-        elif h in ("cities", "towns", "cities and towns", "islands", "national parks") or h.startswith("cities"):
+        elif h in ("cities", "towns", "cities and towns", "islands", "settlements", "national parks") or h.startswith("cities"):
             cities += list_candidates(body, "city")
     merged, seen = [], set()
     pools = [cities, others]
@@ -213,6 +247,8 @@ def gather_candidates(wikitext: str) -> list:
             if i < len(pool):
                 merged.append(pool[i])
     merged += sees
+    if not merged:
+        merged = region_candidates(wikitext)
     unique = []
     for cand in merged:
         key = cand["title"].lower()
@@ -291,7 +327,7 @@ def file_info(http: Http, filename: str) -> dict | None:
 
 
 def photo_acceptable(info: dict | None, filename: str) -> bool:
-    if not info or info["mime"] != "image/jpeg" or SKIP_WORDS.search(filename):
+    if not info or info["mime"] != "image/jpeg" or SKIP_WORDS.search(filename) or not info["author"]:
         return False
     if info["width"] < MIN_WIDTH or info["width"] < info["height"] * 1.2:
         return False
@@ -304,10 +340,33 @@ def photo_acceptable(info: dict | None, filename: str) -> bool:
 # ---------------------------------------------------------------- blurbs
 
 
+ABBREV = re.compile(r"\b(?:lit|c|ca|approx|St|Mt|Mr|Mrs|Dr|vs|etc|e\.g|i\.e|No|Fr)\.$")
+
+
 def sentences(text: str) -> list:
-    text = re.sub(r"\([^()]*\)", "", text)
+    text = html.unescape(text)
+    text = re.sub(r"\([^()]*\)|\[[^\]]*\]", "", text)
     text = re.sub(r"\s+", " ", text).strip()
-    return [s.strip() for s in re.split(r"(?<=[.!?])\s+(?=[A-Z\"'])", text) if s.strip()]
+    out, buf = [], ""
+    for part in re.split(r"(?<=[.!?])\s+(?=[A-Z\"'])", text):
+        buf = f"{buf} {part}".strip() if buf else part
+        if not ABBREV.search(buf):
+            out.append(buf)
+            buf = ""
+    return out + ([buf] if buf else [])
+
+
+NON_LATIN = re.compile(r"[^\x00-\u024f\u2010-\u2027\u2030-\u205e]")
+DANGLING = re.compile(r"(?:\b(?:a|an|the|and|or|of|to|in|with|is|are|was|by|for)|,|;|:)\.?$", re.I)
+
+
+def clean_enough(sentence: str) -> bool:
+    """Reject text that is not plain, complete English prose."""
+    if NON_LATIN.search(sentence) or re.search(r"[\[\]{}<>|&]|&\w+;", sentence):
+        return False
+    if re.search(r"(?:\b(?:a|an|and|or|of|to|the)|,)\s*[,.]|\b(?:a|an),", sentence):
+        return False
+    return not DANGLING.search(sentence.strip())
 
 
 def tidy_sentence(text: str) -> str:
@@ -327,21 +386,22 @@ def shorten(sentence: str, limit: int = 130) -> str:
 
 
 def usable(sentence: str, low: int, high: int) -> bool:
-    return low <= len(sentence) <= high and not re.search(r"\d", sentence) and "=" not in sentence
+    return low <= len(sentence) <= high and not re.search(r"\d", sentence) and "=" not in sentence and clean_enough(sentence)
 
 
 def make_blurb(cand: dict, page: dict | None) -> str:
     """One sentence, digit-free, from the Wikivoyage listing text if present, else the Wikipedia lead."""
     listing = tidy_sentence(cand["desc"]) if cand["desc"] else ""
     if listing and usable(listing, 20, 200):
-        return shorten(listing)
+        short = shorten(listing)
+        if usable(short, 20, 200):
+            return short
     if page:
-        for sentence in sentences(page.get("extract", ""))[:3]:
-            if usable(sentence, 30, 200):
-                return shorten(tidy_sentence(sentence))
-        short = tidy_sentence(page.get("description", ""))
-        if short and usable(short, 12, 120):
-            return f"{cand['title']}: {short[0].lower() + short[1:]}"
+        for sentence in sentences(page.get("extract", ""))[:4]:
+            if usable(sentence, 30, 220):
+                short = shorten(tidy_sentence(sentence))
+                if usable(short, 30, 200):
+                    return short
     return ""
 
 
@@ -414,7 +474,7 @@ def build_country(http: Http, iso3: str, dry_run: bool = False) -> tuple:
     }
     if re.search(r"\d", json.dumps(entry, ensure_ascii=False).replace("https://", "")):
         raise LookupError("digits in assembled copy")
-    credit = {"title": info["title"], "author": info["author"] or "Unknown", "license": info["license"], "source": info["page"], "subject": lead["title"]}
+    credit = {"title": info["title"], "author": info["author"], "license": info["license"], "source": info["page"], "subject": lead["title"]}
     if not dry_run:
         size = save_jpeg(http.get(info["thumb"]), PLACES / f"{iso3}-1.jpg")
         print(f"  {iso3} {name}: {lead['title']} ({info['license']}, {size // 1024} KB)")

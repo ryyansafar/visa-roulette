@@ -1,0 +1,36 @@
+<section id="hardware" data-transition="fade" style="background:#0C1220;color:#EFECE3;font-family:'Space Grotesk', Arial, sans-serif;padding:104px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<p style="font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;color:#98A3B8">THE HARDWARE</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:84px;font-weight:700;line-height:1.05;letter-spacing:-1px;color:#EFECE3">The plane is the controller.</h2>
+<div style="display:flex;flex-direction:row;gap:48px;align-items:stretch">
+<div style="width:760px;display:flex;flex-direction:row;flex-wrap:wrap;gap:24px">
+<div style="width:368px;background:#151D2E;border-top:4px solid #F7E92F;padding:32px;display:flex;flex-direction:column;gap:12px"><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1;color:#F7E92F">±16 g</p><p style="font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">ACCEL RANGE</p></div>
+<div style="width:368px;background:#151D2E;border-top:4px solid #F7E92F;padding:32px;display:flex;flex-direction:column;gap:12px"><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1;color:#F7E92F">500 Hz</p><p style="font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">SAMPLE RATE</p></div>
+<div style="width:368px;background:#151D2E;border-top:4px solid #F7E92F;padding:32px;display:flex;flex-direction:column;gap:12px"><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1;color:#F7E92F">±2000 °/s</p><p style="font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">GYRO RANGE</p></div>
+<div style="width:368px;background:#151D2E;border-top:4px solid #F7E92F;padding:32px;display:flex;flex-direction:column;gap:12px"><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1;color:#F7E92F">&lt; 7 m/s²</p><p style="font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">RELEASE THRESHOLD</p></div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:28px;justify-content:center">
+<p style="font-size:32px;line-height:1.35;color:#EFECE3;border-top:2px solid #333E54;padding:20px 0 0 0">ESP32 + MPU-6050 inside a paper plane, streaming over WiFi to the laptop.</p>
+<p style="font-size:32px;line-height:1.35;color:#EFECE3;border-top:2px solid #333E54;padding:20px 0 0 0">Launch push at 20 m/s² or more. Release when the reading drops below 7 m/s² for 20 ms.</p>
+<p style="font-size:32px;line-height:1.35;color:#EFECE3;border-top:2px solid #333E54;padding:20px 0 0 0">Bad throws are rejected with a reason: no rest, too weak, mount angle, straight up.</p>
+<p style="font-size:32px;line-height:1.35;color:#EFECE3;border-top:2px solid #333E54;padding:20px 0 0 0">No sensor? A webcam flick or a single Space key flies the same model.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:900px;font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">VISA ROULETTE · LAYOVER 2026</p>
+<p style="position:absolute;right:128px;bottom:64px;width:300px;text-align:right;font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">07 / 08</p>
+<aside>TIME: 1:38 to 1:56 (18 s).
+
+SAY: "The plane is the controller. An ESP32 and a motion sensor ride inside it and stream 500 samples a second. We detect the push, then the release, when the sensor feels freefall. Bad throws are rejected with a reason." (About 35 words.)
+
+DEMO CUE: if the plane was not thrown live, play the hardware video (Drive link on the thank-you slide). Do not describe a throw you have not shown.
+
+FACTS (docs/HARDWARE_MPU6050.md, backend/visa_roulette/throw.py):
+- MPU-6050 configured for +/-16 g and +/-2000 deg/s, sampled at 500 Hz, sent in 25-sample WebSocket batches.
+- Launch push: at or above 20 m/s2. Release: reading below 7 m/s2 for 20 ms (freefall). Gyro magnitude gives tumble.
+- Rejection codes: no_rest, too_weak, mount_angle, straight_up.
+- Webcam flick and single-switch (Space: lock heading, lock power) feed the same flight model.
+- The hosted Vercel demo has NO hardware and no live sensor; say so if asked.
+
+Q AND A:
+Q: What if the hardware dies on stage? A: Three fallbacks that use the same flight model: webcam flick, single-switch Space key, and the recorded hardware video. The demo never dead-ends.
+Q: How reliable is the throw detection? A: Thresholds are tuned on our own throws and covered by unit tests in backend/tests/test_throw.py. It is a hackathon sensor build, not calibrated lab hardware, and it rejects ambiguous throws rather than guessing.</aside>
+</section>

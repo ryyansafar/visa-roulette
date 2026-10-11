@@ -325,7 +325,7 @@
   },
   "BFA-1": {
     "title": "Kabore Tambi NP MS 10798.jpg",
-    "author": "Marco Schmidt [1]",
+    "author": "Marco Schmidt",
     "license": "CC BY-SA 3.0",
     "source": "https://commons.wikimedia.org/wiki/File:Kabore_Tambi_NP_MS_10798.jpg",
     "subject": "Arli National Park"
@@ -408,11 +408,11 @@
     "subject": "El Calafate"
   },
   "AZE-1": {
-    "title": "Sumqayıt şəhər İcra Hakimiyyəti.jpg",
-    "author": "Electronic Arts",
-    "license": "CC BY-SA 3.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Sumqay%C4%B1t_%C5%9F%C9%99h%C9%99r_%C4%B0cra_Hakimiyy%C9%99ti.jpg",
-    "subject": "Sumqayit"
+    "title": "Qobustan qesebesi.jpg",
+    "author": "Азербайджан-е-Джануби",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Qobustan_qesebesi.jpg",
+    "subject": "Qobustan National Historical-Artistic Reserve"
   },
   "BTN-1": {
     "title": "Tashichödzong Thimphu-2008-01-23.jpg",
@@ -422,11 +422,11 @@
     "subject": "Thimphu"
   },
   "CRI-1": {
-    "title": "Arenal volcano (70785p) (cropped).jpg",
-    "author": "Rhododendrites",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Arenal_volcano_(70785p)_(cropped).jpg",
-    "subject": "Arenal Volcano"
+    "title": "Cahuita national park, Costa Rica.jpg",
+    "author": "Haakon S. Krohn",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Cahuita_national_park,_Costa_Rica.jpg",
+    "subject": "Cahuita National Park"
   },
   "HRV-1": {
     "title": "Zagreb (29255640143).jpg",
@@ -506,11 +506,11 @@
     "subject": "Quito"
   },
   "EGY-1": {
-    "title": "Abu Simbel in 2017 , photo by Hatem Moushir 96.jpg",
-    "author": "Hatem Moushir",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Abu_Simbel_in_2017_,_photo_by_Hatem_Moushir_96.jpg",
-    "subject": "Abu Simbel"
+    "title": "Cairo Opera House, Al Hurriyah Park and the Nile river (14797782354).jpg",
+    "author": "Jorge Láscar from Melbourne, Australia",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Cairo_Opera_House,_Al_Hurriyah_Park_and_the_Nile_river_(14797782354).jpg",
+    "subject": "Cairo"
   },
   "SLV-1": {
     "title": "Monumento al Salvador del Mundo 1.jpg",
@@ -527,11 +527,11 @@
     "subject": "Monte Alén National Park"
   },
   "ERI-1": {
-    "title": "ISS067-E-939 - View of Earth.jpg",
-    "author": "Earth Science and Remote Sensing Unit, Lyndon B. Johnson Space Center",
+    "title": "Keren - 2008-11-01.jpg",
+    "author": "Voice of Clam",
     "license": "Public domain",
-    "source": "https://commons.wikimedia.org/wiki/File:ISS067-E-939_-_View_of_Earth.jpg",
-    "subject": "Dahlak Marine National Park"
+    "source": "https://commons.wikimedia.org/wiki/File:Keren_-_2008-11-01.jpg",
+    "subject": "Keren"
   },
   "EST-1": {
     "title": "Raekoja plats at night.jpg",
@@ -674,17 +674,689 @@
     "subject": "Black River"
   },
   "JOR-1": {
-    "title": "Ajlun from Ajlun Castle.jpg",
-    "author": "Daniel Case",
-    "license": "CC BY-SA 3.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Ajlun_from_Ajlun_Castle.jpg",
-    "subject": "Ajlun"
+    "title": "Azraq view.jpg",
+    "author": "Ldud at English Wikipedia",
+    "license": "CC BY 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Azraq_view.jpg",
+    "subject": "Azraq Wetland Reserves"
   },
   "KOS-1": {
-    "title": "Monument of Miloš Obilić, Gračanica.jpg",
-    "author": "This image was made by Sadko. Please credit this with: \"Sadko, Wikipedia\" in the immediate vicinity of the image. A message to me would be appreciated as well. If you wish to use, license, or buy the image, please contact me to discuss terms. More of my work can be found in my personal gallery.",
+    "title": "View of Prishtina.jpg",
+    "author": "IEstiv03",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:View_of_Prishtina.jpg",
+    "subject": "Pristina"
+  },
+  "KWT-1": {
+    "title": "Kuwait City Skyline 1.jpg",
+    "author": "Zairon",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Kuwait_City_Skyline_1.jpg",
+    "subject": "Kuwait City"
+  },
+  "KGZ-1": {
+    "title": "Bishkek City's business center.jpg",
+    "author": "Aitenir",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Bishkek_City%27s_business_center.jpg",
+    "subject": "Bishkek"
+  },
+  "LAO-1": {
+    "title": "Luang Namtha Stupa.jpg",
+    "author": "Sainamtha",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Luang_Namtha_Stupa.jpg",
+    "subject": "Luang Namtha"
+  },
+  "LVA-1": {
+    "title": "Riga (33844464828).jpg",
+    "author": "Jorge Franganillo from Barcelona, Spain",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Riga_(33844464828).jpg",
+    "subject": "Riga"
+  },
+  "LBN-1": {
+    "title": "Jaeta Lebanon 2014.jpg",
+    "author": "Mahmoudalrawi",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Jaeta_Lebanon_2014.jpg",
+    "subject": "Jeita"
+  },
+  "LSO-1": {
+    "title": "Maseru City CBD.jpg",
+    "author": "Lschefa",
     "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Monument_of_Milo%C5%A1_Obili%C4%87,_Gra%C4%8Danica.jpg",
-    "subject": "Gračanica"
+    "source": "https://commons.wikimedia.org/wiki/File:Maseru_City_CBD.jpg",
+    "subject": "Maseru"
+  },
+  "LBR-1": {
+    "title": "Liberia, Africa - panoramio (256).jpg",
+    "author": "blk24ga",
+    "license": "CC BY 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Liberia,_Africa_-_panoramio_(256).jpg",
+    "subject": "Monrovia"
+  },
+  "LBY-1": {
+    "title": "Tripoli at night.jpg",
+    "author": "Sanadalahlafi",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Tripoli_at_night.jpg",
+    "subject": "Tripoli"
+  },
+  "MWI-1": {
+    "title": "K.a.r-.clocktower-in-lilongwe.jpg",
+    "author": "Felixfeld",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:K.a.r-.clocktower-in-lilongwe.jpg",
+    "subject": "Lilongwe"
+  },
+  "MRT-1": {
+    "title": "Nouakchott.jpg",
+    "author": "Laminesall96",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Nouakchott.jpg",
+    "subject": "Nouakchott"
+  },
+  "MEX-1": {
+    "title": "Sobrevuelos CDMX HJ2A4913 (25514321687) (cropped).jpg",
+    "author": "Gobierno CDMX",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Sobrevuelos_CDMX_HJ2A4913_(25514321687)_(cropped).jpg",
+    "subject": "Mexico City"
+  },
+  "MNG-1": {
+    "title": "UB downtown.jpg",
+    "author": "Zazaa Mongolia",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:UB_downtown.jpg",
+    "subject": "Ulaanbaatar"
+  },
+  "MNE-1": {
+    "title": "P064720-426794 - Panoramic view of Podgorica.jpg",
+    "author": "Savo Prelevic",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:P064720-426794_-_Panoramic_view_of_Podgorica.jpg",
+    "subject": "Podgorica"
+  },
+  "MAR-1": {
+    "title": "Crossing the High Atlas mountains in Morocco - 45020232664.jpg",
+    "author": "Ralf Steinberger",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Crossing_the_High_Atlas_mountains_in_Morocco_-_45020232664.jpg",
+    "subject": "High Atlas"
+  },
+  "MOZ-1": {
+    "title": "ISS059-E-92404 - View of Mozambique.jpg",
+    "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+    "license": "Public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:ISS059-E-92404_-_View_of_Mozambique.jpg",
+    "subject": "Bazaruto Archipelago"
+  },
+  "MMR-1": {
+    "title": "NPT Water Fountain.jpg",
+    "author": "Thawng",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:NPT_Water_Fountain.jpg",
+    "subject": "Naypyidaw"
+  },
+  "NAM-1": {
+    "title": "Christ Church in Windhoek, Namibia.jpg",
+    "author": "Christoph Strässler",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Christ_Church_in_Windhoek,_Namibia.jpg",
+    "subject": "Windhoek"
+  },
+  "NLD-1": {
+    "title": "Efteling The House of the Five Senses.jpg",
+    "author": "Rémih",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Efteling_The_House_of_the_Five_Senses.jpg",
+    "subject": "Efteling"
+  },
+  "NCL-1": {
+    "title": "View over Noumea.jpg",
+    "author": "Pilettes",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:View_over_Noumea.jpg",
+    "subject": "Nouméa"
+  },
+  "NIC-1": {
+    "title": "LagunaApoyo.jpg",
+    "author": "Phayne",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:LagunaApoyo.jpg",
+    "subject": "Laguna de Apoyo"
+  },
+  "NGA-1": {
+    "title": "Abuja heritages 30.jpg",
+    "author": "MediaMOF",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Abuja_heritages_30.jpg",
+    "subject": "Abuja"
+  },
+  "PRK-1": {
+    "title": "The Arch of Triumph (11360607534).jpg",
+    "author": "Clay Gilliland",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:The_Arch_of_Triumph_(11360607534).jpg",
+    "subject": "Pyongyang"
+  },
+  "NOR-1": {
+    "title": "Nationaltheatret evening.jpg",
+    "author": "Orjanarvola",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Nationaltheatret_evening.jpg",
+    "subject": "Oslo"
+  },
+  "OMN-1": {
+    "title": "Al Alam Palace.jpg",
+    "author": "Tristan",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Al_Alam_Palace.jpg",
+    "subject": "Muscat"
+  },
+  "PAK-1": {
+    "title": "Faisal Mosque, Islamabad III.jpg",
+    "author": "Fassifarooq",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Faisal_Mosque,_Islamabad_III.jpg",
+    "subject": "Islamabad"
+  },
+  "PAN-1": {
+    "title": "Panama Papers (148830809).jpeg",
+    "author": "Dronepicr",
+    "license": "CC BY 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Panama_Papers_(148830809).jpeg",
+    "subject": "Panama City"
+  },
+  "GNB-1": {
+    "title": "Bissau-Stroossenzeen--w.jpg",
+    "author": "Original: Colleen Taugher from Lewiston Idaho, USA Modifications: The original uploader was Cornischong at Luxembourgish Wikipedia.",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Bissau-Stroossenzeen--w.jpg",
+    "subject": "Bissau"
+  },
+  "HND-1": {
+    "title": "Cusuco National Park, Honduras.jpg",
+    "author": "Yamil Gonzales from Tegucigalpa, Honduras",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Cusuco_National_Park,_Honduras.jpg",
+    "subject": "Cusuco National Park"
+  },
+  "IND-1": {
+    "title": "Mahabodhi temple at Bodhgaya in Bihar 21.jpg",
+    "author": "Amitabha Gupta",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Mahabodhi_temple_at_Bodhgaya_in_Bihar_21.jpg",
+    "subject": "Bodh Gaya"
+  },
+  "IRL-1": {
+    "title": "University College Cork - Quad during Eclipse 2015 (16684104050).jpg",
+    "author": "Darius Whelan",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:University_College_Cork_-_Quad_during_Eclipse_2015_(16684104050).jpg",
+    "subject": "Cork"
+  },
+  "ITA-1": {
+    "title": "Trevi Fountain, Rome, Italy 2 - May 2007.jpg",
+    "author": "Diliff",
+    "license": "CC BY 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Trevi_Fountain,_Rome,_Italy_2_-_May_2007.jpg",
+    "subject": "Rome"
+  },
+  "KAZ-1": {
+    "title": "Astana Esil view.jpg",
+    "author": "Dauren Nabijan",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Astana_Esil_view.jpg",
+    "subject": "Astana"
+  },
+  "MLI-1": {
+    "title": "Place de la liberté - Bamako.jpg",
+    "author": "Rgaudin",
+    "license": "Public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Place_de_la_libert%C3%A9_-_Bamako.jpg",
+    "subject": "Bamako"
+  },
+  "MDA-1": {
+    "title": "Consiliul Municipal Chișinău (cropped).jpg",
+    "author": "Rodion Gavriloi",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Consiliul_Municipal_Chi%C8%99in%C4%83u_(cropped).jpg",
+    "subject": "Chișinău"
+  },
+  "NPL-1": {
+    "title": "Kathmandu-Durbar Square-06-Mahavishnu-Kuh-Vishnu-Pratapamalla-Jagannath-2007-gje.jpg",
+    "author": "Gerd Eichmann",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Kathmandu-Durbar_Square-06-Mahavishnu-Kuh-Vishnu-Pratapamalla-Jagannath-2007-gje.jpg",
+    "subject": "Kathmandu"
+  },
+  "NER-1": {
+    "title": "Niamey from grand mosque theatre 2006.jpg",
+    "author": "Roland Huziaker",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Niamey_from_grand_mosque_theatre_2006.jpg",
+    "subject": "Niamey"
+  },
+  "MKD-1": {
+    "title": "Skopje view from Kale 3.jpg",
+    "author": "kallerna",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Skopje_view_from_Kale_3.jpg",
+    "subject": "Skopje"
+  },
+  "PNG-1": {
+    "title": "Tufi Town.jpg",
+    "author": "Larry V. Dumlao",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Tufi_Town.jpg",
+    "subject": "Tufi"
+  },
+  "PRY-1": {
+    "title": "Palacio de los López Asunción 2.jpg",
+    "author": "MosheA",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Palacio_de_los_L%C3%B3pez_Asunci%C3%B3n_2.jpg",
+    "subject": "Asunción"
+  },
+  "PER-1": {
+    "title": "Basílica Catedral Metropolitana de Lima (cropped).jpg",
+    "author": "David Felipe Ruiz Hoyos",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Bas%C3%ADlica_Catedral_Metropolitana_de_Lima_(cropped).jpg",
+    "subject": "Lima"
+  },
+  "PHL-1": {
+    "title": "BGC skyline, BF Homes drone distant AU (Parañaque City; 01-04-2026).jpg",
+    "author": "Patrickroque01",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:BGC_skyline,_BF_Homes_drone_distant_AU_(Para%C3%B1aque_City;_01-04-2026).jpg",
+    "subject": "Metro Manila"
+  },
+  "POL-1": {
+    "title": "Bialowieza National Park in Poland0029.JPG",
+    "author": "Jacek Karczmarz",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Bialowieza_National_Park_in_Poland0029.JPG",
+    "subject": "Białowieża National Park"
+  },
+  "PRT-1": {
+    "title": "Lisboa - Portugal (52597836992).jpg",
+    "author": "Vitor Oliveira from Torres Vedras, PORTUGAL",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Lisboa_-_Portugal_(52597836992).jpg",
+    "subject": "Lisbon"
+  },
+  "PRI-1": {
+    "title": "2013 Old San Juan 01.JPG",
+    "author": "Farragutful",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:2013_Old_San_Juan_01.JPG",
+    "subject": "San Juan"
+  },
+  "QAT-1": {
+    "title": "The Pearl Marina in Nov 2013.jpg",
+    "author": "Alex Sergeev",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:The_Pearl_Marina_in_Nov_2013.jpg",
+    "subject": "Doha"
+  },
+  "ROU-1": {
+    "title": "Bucharest University Square (cropped).jpg",
+    "author": "Madalin Pentelie",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Bucharest_University_Square_(cropped).jpg",
+    "subject": "Bucharest"
+  },
+  "RWA-1": {
+    "title": "High Angle View Of Kigali City Street on November 29, 2018. Emmanuel Kwizera.jpg",
+    "author": "Emmanuelkwizera",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:High_Angle_View_Of_Kigali_City_Street_on_November_29,_2018._Emmanuel_Kwizera.jpg",
+    "subject": "Kigali"
+  },
+  "SDS-1": {
+    "title": "John Garang Mausoleum Square in Juba.JPG",
+    "author": "Jens Klinzing",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:John_Garang_Mausoleum_Square_in_Juba.JPG",
+    "subject": "Juba"
+  },
+  "SAU-1": {
+    "title": "Riyadh Skyline.jpg",
+    "author": "B.alotaby",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Riyadh_Skyline.jpg",
+    "subject": "Riyadh"
+  },
+  "SEN-1": {
+    "title": "Island of Saint-Louis-113799.jpg",
+    "author": "Jim Williams",
+    "license": "CC BY-SA 3.0 igo",
+    "source": "https://commons.wikimedia.org/wiki/File:Island_of_Saint-Louis-113799.jpg",
+    "subject": "Saint-Louis"
+  },
+  "SRB-1": {
+    "title": "Panorama Belgrad.jpg",
+    "author": "ZlatanJovanovic",
+    "license": "CC BY 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Panorama_Belgrad.jpg",
+    "subject": "Belgrade"
+  },
+  "SLE-1": {
+    "title": "Freetown-aerialview.jpg",
+    "author": "David Hond",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Freetown-aerialview.jpg",
+    "subject": "Freetown"
+  },
+  "SVK-1": {
+    "title": "Slovakia bratislava.jpg",
+    "author": "Arne Müseler",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Slovakia_bratislava.jpg",
+    "subject": "Bratislava"
+  },
+  "SVN-1": {
+    "title": "Ljubljana Old Town, Slovenia (Old Camera) (33286165680).jpg",
+    "author": "Andrew Milligan Sumo",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Ljubljana_Old_Town,_Slovenia_(Old_Camera)_(33286165680).jpg",
+    "subject": "Ljubljana"
+  },
+  "SOL-1": {
+    "title": "Borama 2.jpg",
+    "author": "Mashhuur",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Borama_2.jpg",
+    "subject": "Borama"
+  },
+  "ZAF-1": {
+    "title": "Kruger Zebra.JPG",
+    "author": "Nithin bolar k",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Kruger_Zebra.JPG",
+    "subject": "Kruger National Park"
+  },
+  "ESP-1": {
+    "title": "Madrid - Sky Bar 360º (Hotel Riu Plaza España), vistas 19.jpg",
+    "author": "Zarateman",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Madrid_-_Sky_Bar_360%C2%BA_(Hotel_Riu_Plaza_Espa%C3%B1a),_vistas_19.jpg",
+    "subject": "Madrid"
+  },
+  "LKA-1": {
+    "title": "Beach of Arugam Bay.jpg",
+    "author": "Dennis Sylvester Hurd",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Beach_of_Arugam_Bay.jpg",
+    "subject": "Arugam Bay"
+  },
+  "SDN-1": {
+    "title": "©Nile-Project -Sari Omer 0025.jpg",
+    "author": "Evon2023",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:%C2%A9Nile-Project_-Sari_Omer_0025.jpg",
+    "subject": "Khartoum"
+  },
+  "SUR-1": {
+    "title": "Albina2008.jpg",
+    "author": "Brokopondo",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Albina2008.jpg",
+    "subject": "Albina"
+  },
+  "SWE-1": {
+    "title": "Royal Dramatic Theatre Stockholm.jpg",
+    "author": "Steven Lek",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Royal_Dramatic_Theatre_Stockholm.jpg",
+    "subject": "Stockholm"
+  },
+  "CHE-1": {
+    "title": "Bundeshaus Bern 2009, Flooffy.jpg",
+    "author": "Flooffy",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Bundeshaus_Bern_2009,_Flooffy.jpg",
+    "subject": "Bern"
+  },
+  "SYR-1": {
+    "title": "Damascus, Syria, Panoramic view of Damascus.jpg",
+    "author": "Vyacheslav Argenberg",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Damascus,_Syria,_Panoramic_view_of_Damascus.jpg",
+    "subject": "Damascus"
+  },
+  "TWN-1": {
+    "title": "Taipei Skyline 2022.06.29.jpg",
+    "author": "毛貓大少爺",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Taipei_Skyline_2022.06.29.jpg",
+    "subject": "Taipei"
+  },
+  "TJK-1": {
+    "title": "Ледник Советских офицеров южн. - panoramio (3).jpg",
+    "author": "AmanovDmitry",
+    "license": "CC BY 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:%D0%9B%D0%B5%D0%B4%D0%BD%D0%B8%D0%BA_%D0%A1%D0%BE%D0%B2%D0%B5%D1%82%D1%81%D0%BA%D0%B8%D1%85_%D0%BE%D1%84%D0%B8%D1%86%D0%B5%D1%80%D0%BE%D0%B2_%D1%8E%D0%B6%D0%BD._-_panoramio_(3).jpg",
+    "subject": "Pamir Mountains"
+  },
+  "TZA-1": {
+    "title": "Street in Viwandani ward, Dodoma City.jpg",
+    "author": "Mangapwani",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Street_in_Viwandani_ward,_Dodoma_City.jpg",
+    "subject": "Dodoma"
+  },
+  "TLS-1": {
+    "title": "Government Palace, Dili, 2023 (02).jpg",
+    "author": "Bahnfrend",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Government_Palace,_Dili,_2023_(02).jpg",
+    "subject": "Dili"
+  },
+  "TGO-1": {
+    "title": "Togo Taberma house 02.jpg",
+    "author": "Erik Kristensen",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Togo_Taberma_house_02.jpg",
+    "subject": "Koutammakou"
+  },
+  "TTO-1": {
+    "title": "TnT Arima The Dial.jpg",
+    "author": "Grueslayer",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:TnT_Arima_The_Dial.jpg",
+    "subject": "Arima"
+  },
+  "TUN-1": {
+    "title": "Minaret et patio de la mosquée Zitouna au centre de la Médina de Tunis.jpg",
+    "author": "T A",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Minaret_et_patio_de_la_mosqu%C3%A9e_Zitouna_au_centre_de_la_M%C3%A9dina_de_Tunis.jpg",
+    "subject": "Tunis"
+  },
+  "TKM-1": {
+    "title": "View of Ashgabat (42376779291).jpg",
+    "author": "John Pavelka from Austin, TX, USA",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:View_of_Ashgabat_(42376779291).jpg",
+    "subject": "Ashgabat"
+  },
+  "UGA-1": {
+    "title": "Urban Rising, KAMPALA, Uganda.jpg",
+    "author": "Chapelle musa",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Urban_Rising,_KAMPALA,_Uganda.jpg",
+    "subject": "Kampala"
+  },
+  "UKR-1": {
+    "title": "Будинок з химерами, серпень 2019.jpg",
+    "author": "Larmarphoto",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:%D0%91%D1%83%D0%B4%D0%B8%D0%BD%D0%BE%D0%BA_%D0%B7_%D1%85%D0%B8%D0%BC%D0%B5%D1%80%D0%B0%D0%BC%D0%B8,_%D1%81%D0%B5%D1%80%D0%BF%D0%B5%D0%BD%D1%8C_2019.jpg",
+    "subject": "Kyiv"
+  },
+  "URY-1": {
+    "title": "PALACIO LEGISLATIVO 01.JPG",
+    "author": "Eduardo Ruggieri",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:PALACIO_LEGISLATIVO_01.JPG",
+    "subject": "Montevideo"
+  },
+  "UZB-1": {
+    "title": "Kalon-Ensemble Buchara.jpg",
+    "author": "Euyasik",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Kalon-Ensemble_Buchara.jpg",
+    "subject": "Bukhara"
+  },
+  "VUT-1": {
+    "title": "Main Street Luganville (28661070193).jpg",
+    "author": "Simon_sees from Australia",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Main_Street_Luganville_(28661070193).jpg",
+    "subject": "Luganville"
+  },
+  "VEN-1": {
+    "title": "Caracas desde el ávila.jpg",
+    "author": "Olga Berrios",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Caracas_desde_el_%C3%A1vila.jpg",
+    "subject": "Caracas"
+  },
+  "VNM-1": {
+    "title": "Hanoi skyline with Ba Vi Mountain.jpg",
+    "author": "Quangnlnhe182394",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Hanoi_skyline_with_Ba_Vi_Mountain.jpg",
+    "subject": "Hanoi"
+  },
+  "YEM-1": {
+    "title": "Sana'a (2286825748).jpg",
+    "author": "Dan from Brussels, Europe",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Sana%27a_(2286825748).jpg",
+    "subject": "Sana'a"
+  },
+  "ZMB-1": {
+    "title": "Downtown Lusaka.JPG",
+    "author": "Matthew Grollnek",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Downtown_Lusaka.JPG",
+    "subject": "Lusaka"
+  },
+  "ZWE-1": {
+    "title": "ZW-Victoria-falls-stadt-1.jpg",
+    "author": "Bgabel",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:ZW-Victoria-falls-stadt-1.jpg",
+    "subject": "Victoria Falls"
+  },
+  "SWZ-1": {
+    "title": "Mbabane (6035476964).jpg",
+    "author": "Athena Lao from Bulgaria",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Mbabane_(6035476964).jpg",
+    "subject": "Mbabane"
+  },
+  "KOR-1": {
+    "title": "중화전의 낮.jpg",
+    "author": "Eunmi Park",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:%EC%A4%91%ED%99%94%EC%A0%84%EC%9D%98_%EB%82%AE.jpg",
+    "subject": "Seoul"
+  },
+  "BLR-1": {
+    "title": "View of Minsk (180819) 09.jpg",
+    "author": "Homoatrox",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:View_of_Minsk_(180819)_09.jpg",
+    "subject": "Minsk"
+  },
+  "FLK-1": {
+    "title": "Goose Green, Falkland Islands.jpg",
+    "author": "John5199",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Goose_Green,_Falkland_Islands.jpg",
+    "subject": "Goose Green"
+  },
+  "LTU-1": {
+    "title": "Vilnius old town by Augustas Didzgalvis.jpg",
+    "author": "BigHead",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Vilnius_old_town_by_Augustas_Didzgalvis.jpg",
+    "subject": "Vilnius"
+  },
+  "CYN-1": {
+    "title": "Cyprus ESA356100 (cropped to Karpas Peninsula).jpg",
+    "author": "European Space Agency",
+    "license": "CC BY-SA 3.0 igo",
+    "source": "https://commons.wikimedia.org/wiki/File:Cyprus_ESA356100_(cropped_to_Karpas_Peninsula).jpg",
+    "subject": "Karpaz"
+  },
+  "NZL-1": {
+    "title": "Seddon Statue in Parliament Grounds.jpg",
+    "author": "russellstreet",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Seddon_Statue_in_Parliament_Grounds.jpg",
+    "subject": "Wellington"
+  },
+  "TUR-1": {
+    "title": "Ankara from bus station.jpg",
+    "author": "Boubacar Amadou Cisse",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Ankara_from_bus_station.jpg",
+    "subject": "Ankara"
+  },
+  "LUX-1": {
+    "title": "Luxembourg Grand Ducal Palace 01.jpg",
+    "author": "Cayambe",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Luxembourg_Grand_Ducal_Palace_01.jpg",
+    "subject": "Luxembourg City"
+  },
+  "MDG-1": {
+    "title": "Anakao South of Madagascar.jpg",
+    "author": "Marie Salichon",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Anakao_South_of_Madagascar.jpg",
+    "subject": "Anakao"
+  },
+  "PSX-1": {
+    "title": "Church of the Nativity (7703592746).jpg",
+    "author": "Neil Ward",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Church_of_the_Nativity_(7703592746).jpg",
+    "subject": "Bethlehem"
+  },
+  "SOM-1": {
+    "title": "Lido beach from the sea in Mogadishu.jpg",
+    "author": "AMISOM",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Lido_beach_from_the_sea_in_Mogadishu.jpg",
+    "subject": "Mogadishu"
+  },
+  "SAH-1": {
+    "title": "Dakhla, Western Sahara (11).jpg",
+    "author": "YoTuT from United States",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Dakhla,_Western_Sahara_(11).jpg",
+    "subject": "Ad Dakhla"
+  },
+  "SLB-1": {
+    "title": "Visale, Solomon Islands.JPG",
+    "author": "StewyOz",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Visale,_Solomon_Islands.JPG",
+    "subject": "Guadalcanal"
+  },
+  "ATA-1": {
+    "title": "Ross Sea, Summer 2016 25.jpg",
+    "author": "Francisco Ardini/PNRA",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Ross_Sea,_Summer_2016_25.jpg",
+    "subject": "Ross Sea"
   }
 }

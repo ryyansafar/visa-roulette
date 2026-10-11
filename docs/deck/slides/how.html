@@ -1,0 +1,42 @@
+<section id="how" data-transition="fade" style="background:#0C1220;color:#EFECE3;font-family:'Space Grotesk', Arial, sans-serif;padding:104px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<p style="font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;color:#98A3B8">HOW IT WORKS</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:84px;font-weight:700;line-height:1.05;letter-spacing:-1px">Scan. Throw. Land.</h2>
+<div style="display:flex;flex-direction:row;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:24px;background:#151D2E;border-top:4px solid #333E54;padding:40px">
+<x-icon name="Search" style="color:#F7E92F;width:72px;height:72px"></x-icon>
+<p style="font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">STEP 1</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:56px;font-weight:700;line-height:1.1">Scan</h3>
+<p style="font-size:30px;line-height:1.4;color:#EFECE3">Show a passport and a flight ticket to the camera. OCR reads the passport, the IATA barcode gives the flight, and a checklist ticks live.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:24px;background:#151D2E;border-top:4px solid #333E54;padding:40px">
+<x-icon name="PaperPlane" style="color:#F7E92F;width:72px;height:72px"></x-icon>
+<p style="font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">STEP 2</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:56px;font-weight:700;line-height:1.1">Throw</h3>
+<p style="font-size:30px;line-height:1.4;color:#EFECE3">Throw a paper plane fitted with an ESP32 and an IMU. A webcam flick or a single switch works too. The globe slows and lands.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:24px;background:#151D2E;border-top:4px solid #333E54;padding:40px">
+<x-icon name="Globe" style="color:#F7E92F;width:72px;height:72px"></x-icon>
+<p style="font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">STEP 3</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:56px;font-weight:700;line-height:1.1">Land</h3>
+<p style="font-size:30px;line-height:1.4;color:#EFECE3">Get the visa verdict with its source, the documents to carry, destination highlights, and a QR trip card for your phone.</p>
+</div>
+</div>
+<p style="font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:26px;letter-spacing:1px;color:#98A3B8">PLUS: OFFICER INTERVIEW · PASSPORT DUEL · WRONG-DOCUMENT PICK · SOUVENIR WALL</p>
+<p style="position:absolute;left:128px;bottom:64px;width:900px;font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">VISA ROULETTE · LAYOVER 2026</p>
+<p style="position:absolute;right:128px;bottom:64px;width:300px;text-align:right;font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">04 / 08</p>
+<aside>TIME: 0:34 to 0:44 (10 s).
+
+SAY: "Three steps. Scan: the camera reads your passport and flight ticket, and a checklist ticks live. Throw: a paper plane with a sensor inside. Land: the globe picks a country and you get the verdict." (About 35 words, 10 s: speak briskly, or drop the middle step.)
+
+FACTS BEHIND EACH STEP (for Q and A):
+Scan: Tesseract OCR reads the passport MRZ (machine readable zone) and zxing reads the flight ticket IATA BCBP barcode. Both are validated with check digits. Three sample travellers are included.
+Throw: the ESP32 plus MPU-6050 board streams IMU samples over WebSocket. Flick (webcam) and single-switch (Space key) inputs feed the same flight model.
+Land: rules in rules/visa_rules.json and rules/checklist_rules.json, curated highlights for 11 destinations in rules/destinations.json, QR hand-off served from the laptop over the local network.
+
+The extras line (officer interview, passport duel, wrong-document pick, souvenir wall) is in the README. Mention it in one breath only if time allows. Do not claim any extra beyond those.
+
+DEMO CUE: end this slide with "Let me show you," and click to the demo slide. Switch to the booth laptop.
+
+Q AND A:
+Q: Does a judge have to bring their own passport? A: No. Use a sample traveller or the specimen props. The booth is built for fake and sample passports only.</aside>
+</section>

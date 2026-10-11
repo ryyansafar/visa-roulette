@@ -8,7 +8,7 @@ green run, and a lot of digits). The seed is not stored in the repo.
 - **Grid:** 12 columns, 12 px gutter. The globe takes 8 columns, the checklist 4. Break the grid on purpose
   for the stamp and the dart, nowhere else.
 - **Colour:** ink-blue ground, signal yellow for the one thing that matters on screen, green = go,
-  red = held, amber = review. One signal colour per screen. Paper (cream) only for boarding-pass surfaces.
+  red = held, amber = review. One signal colour per screen. Paper (cream) only for flight-ticket surfaces.
 - **Type:** Space Grotesk for display and UI, IBM Plex Mono for data (MRZ, rule ids, timestamps), Barrio only
   inside stamps. Tabular numerals everywhere. Labels are mono, small caps feel, wide tracking.
 - **Numerals are the hero.** Big outcome numbers (score, months left, budget) at 96 px.
@@ -24,4 +24,7 @@ Purple-blue gradients, glassmorphism cards, emoji as icons, centred hero + subti
 everything, neon glow, stock illustration.
 
 ## Files
-`web/styles/tokens.css` holds the tokens. Fonts and the NASA maps live in `assets/` (see credits in README).
+`web/styles/tokens.css` holds the tokens (dark by default; `data-theme="light"` or the OS preference switches to light).
+`web/styles/polish.css` loads last and holds the design-critic overrides: flat stamps, the pre-throw route card
+(Throw / Check / Prepare), the rail hiding mode controls after landing, and the light-theme yellow primary button.
+Fonts and the NASA maps live in `assets/` (see credits in README). The review process is in `DESIGN_CRITIC_LOOP.md`.

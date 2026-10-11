@@ -455,10 +455,6 @@ async def imu_device(socket: WebSocket) -> None:
                 await hub.broadcast({"type": "device_error", "message": str(exc)[:200]})
                 continue
             anchor = time.monotonic() - (samples[-1].t if samples else 0.0)
-            if samples:
-                mags = [(s.ax**2 + s.ay**2 + s.az**2) ** 0.5 for s in samples]
-                if max(mags) > 15.0 or min(mags) < 5.0:
-                    logging.getLogger("uvicorn.error").info("imu batch peak=%.1f m/s2 low=%.1f m/s2", max(mags), min(mags))
             for sample in samples:
                 outcome = detector.feed(sample)
                 if outcome is not None:

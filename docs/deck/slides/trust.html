@@ -1,0 +1,51 @@
+<section id="trust" data-transition="fade" style="background:#0C1220;color:#EFECE3;font-family:'Space Grotesk', Arial, sans-serif;padding:104px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<p style="font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;color:#98A3B8">TRUST ARCHITECTURE</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:84px;font-weight:700;line-height:1.05;letter-spacing:-1px">AI sees. Rules decide.</h2>
+<div style="display:flex;flex-direction:row;gap:16px;align-items:stretch">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;border:2px dashed #98A3B8;padding:32px">
+<p style="font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">AI SEES</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:700;line-height:1.1">Camera</h3>
+<p style="font-size:26px;line-height:1.4;color:#EFECE3">Passport and flight ticket photographed at the desk.</p>
+</div>
+<x-shape kind="arrow-right" style="align-self:center;background:#98A3B8;width:64px;height:32px"></x-shape>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;border:2px dashed #98A3B8;padding:32px">
+<p style="font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">AI SEES</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:700;line-height:1.1">OCR + vision</h3>
+<p style="font-size:26px;line-height:1.4;color:#EFECE3">Tesseract reads the MRZ, zxing reads the barcode. Check digits catch bad reads.</p>
+</div>
+<x-shape kind="arrow-right" style="align-self:center;background:#98A3B8;width:64px;height:32px"></x-shape>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#F7E92F;color:#0C1220;padding:32px">
+<p style="font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#0C1220">RULES DECIDE</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:700;line-height:1.1;color:#0C1220">Rules engine</h3>
+<p style="font-size:26px;line-height:1.4;color:#0C1220">JSON rule files. Same input, same answer. No model in the loop.</p>
+</div>
+<x-shape kind="arrow-right" style="align-self:center;background:#98A3B8;width:64px;height:32px"></x-shape>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;border:3px solid #5FB88F;padding:32px">
+<p style="font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#5FB88F">THE VERDICT</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:700;line-height:1.1">Cited</h3>
+<p style="font-size:26px;line-height:1.4;color:#EFECE3">Status, documents, source link and as-of date on every line.</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:row;gap:48px">
+<p style="flex:1;font-size:30px;line-height:1.4;color:#EFECE3;border-top:2px solid #333E54;padding:24px 0 0 0">A local LLM may explain a verdict in plain words. It cannot change one.</p>
+<p style="flex:1;font-size:30px;line-height:1.4;color:#EFECE3;border-top:2px solid #333E54;padding:24px 0 0 0">Destination unknown? The booth says unknown. It never guesses.</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:900px;font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">DASHED = PROBABILISTIC · SOLID = DETERMINISTIC</p>
+<p style="position:absolute;right:128px;bottom:64px;width:300px;text-align:right;font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;color:#98A3B8">06 / 08</p>
+<aside>TIME: 1:24 to 1:38 (14 s).
+
+SAY: "Here is why you can trust it. The AI only sees: it reads the document. The rules decide: a deterministic engine over JSON rule files. Same input, same answer. And every verdict carries its source and its as-of date. The local language model can explain a verdict in plain words, but it can never change one."
+
+KEY POINT: separating perception (probabilistic, dashed boxes) from judgement (deterministic, solid box) is the design decision. Say "AI sees. Rules decide. Every verdict cites its source." as your closing line for this slide.
+
+FACTS (all in the repo):
+- Rule files: rules/visa_rules.json and rules/checklist_rules.json. Every checklist item carries a rule id, source link, as-of date and a verified flag.
+- visa_rules.json states: "A destination with no entry is reported as unknown, never guessed."
+- The booth operator is a local Ollama model (default gemma3n:e4b). Its replies are trimmed to two plain sentences and fall back to a rules template if the model is slow, down, or says anything the rules do not contain.
+- The immigration interview: the backend owns the questions and the stamp. The stamp is always the rules engine verdict with source and as-of date.
+
+DEMO CUE: if you skipped it in the live demo, tap the red checklist item now to show the evidence drawer (rule id, source, date).
+
+Q AND A:
+Q: Is the AI deciding visas? A: No. Vision and OCR only read the document. A deterministic rules engine produces the verdict from JSON rule files, with a source and as-of date. The LLM only phrases an explanation and is bound to the rules facts; if it strays, a template replaces it.</aside>
+</section>

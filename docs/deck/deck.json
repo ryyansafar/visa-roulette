@@ -1,0 +1,56 @@
+{
+ "v": 4,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-10-11T04:00:00Z"
+ },
+ "lists": "css",
+ "title": "Visa Roulette Pitch",
+ "order": [
+  "cover",
+  "hook",
+  "idea",
+  "how",
+  "demo",
+  "trust",
+  "hardware",
+  "thanks",
+  "built",
+  "next",
+  "qa"
+ ],
+ "cover": "cover",
+ "sections": {
+  "s1": {
+   "description": "Cover and the traveller whose passport fails at the gate.",
+   "start": "cover"
+  },
+  "s2": {
+   "description": "The idea, how it works and the live demo.",
+   "start": "idea"
+  },
+  "s3": {
+   "description": "Trust architecture, hardware and thank you.",
+   "start": "trust"
+  },
+  "s4": {
+   "description": "Backup: what was built, honest limits and judge Q and A.",
+   "start": "built"
+  }
+ },
+ "faces": {
+  "space-grotesk": {
+   "family": "Space Grotesk",
+   "href": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
+  },
+  "ibm-plex-mono": {
+   "family": "IBM Plex Mono",
+   "href": "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap"
+  },
+  "barrio": {
+   "family": "Barrio",
+   "href": "https://fonts.googleapis.com/css2?family=Barrio&display=swap"
+  }
+ },
+ "designSystems": []
+}
