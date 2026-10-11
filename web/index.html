@@ -13,6 +13,9 @@
   <link rel="stylesheet" href="/styles/throw.css">
   <link rel="stylesheet" href="/styles/checklist.css">
   <link rel="stylesheet" href="/styles/stamp.css">
+  <link rel="stylesheet" href="/styles/airmouse.css">
+  <link rel="stylesheet" href="/styles/polish.css">
+  <script src="/js/theme.js"></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -115,11 +118,11 @@
             <div class="guide" aria-hidden="true"></div>
             <p id="cl-hint" class="hint" role="status"></p>
           </div>
-          <button type="button" id="cl-cam" class="ghost">Show your boarding pass to the camera</button>
+          <button type="button" id="cl-cam" class="ghost">Show your flight ticket to the camera</button>
           <form id="cl-own-form" class="fields" novalidate>
             <label id="cl-passport-field">Passport photo page
               <input id="cl-own-passport" type="file" accept="image/*"></label>
-            <label>Boarding pass image
+            <label>Flight ticket image
               <input id="cl-own-boarding" type="file" accept="image/*"></label>
             <label>Name on return ticket <span class="opt">optional</span>
               <input id="cl-own-return" type="text" maxlength="80"></label>
@@ -133,7 +136,7 @@
       </div>
       <aside class="col-5 side">
         <div id="cl-verdict" class="verdict" data-verdict="">
-          <p class="label">PRE-FLIGHT VERDICT</p>
+          <p class="label">Pre-flight verdict</p>
           <p id="cl-stamp" class="stamp">-</p>
           <p id="cl-note" class="cl-note"></p>
           <p class="big"><span id="cl-ready">0</span><small>% ready</small></p>
@@ -143,7 +146,7 @@
         </div>
         <div class="cl-docs" hidden>
           <figure><img id="cl-passport-img" alt="The passport photo page being checked"><figcaption>Passport, specimen</figcaption></figure>
-          <figure><img id="cl-boarding-img" alt="The boarding pass being checked"><figcaption>Boarding pass, specimen</figcaption></figure>
+          <figure><img id="cl-boarding-img" alt="The flight ticket being checked"><figcaption>Flight ticket, specimen</figcaption></figure>
         </div>
         <div class="actions">
           <button type="button" id="cl-back" class="ghost">Back</button>
@@ -155,7 +158,7 @@
     <section id="step-throw" class="grid" aria-labelledby="h-throw" hidden>
       <div class="stage-col">
       <div class="stage">
-        <canvas id="map" width="1200" height="720" tabindex="0"
+        <canvas id="map" width="1200" height="1200" tabindex="0"
           aria-label="Spinning globe. Throw the paper plane to land it: flick on screen, press Space for the single-switch throw, throw it past the camera, or throw the ESP32 board."></canvas>
         <svg id="plane-trail" class="plane-trail" aria-hidden="true" hidden><polyline points=""/></svg>
         <svg id="plane" class="plane" viewBox="0 0 64 64" aria-hidden="true" hidden>
@@ -189,10 +192,10 @@
         <button type="button" id="switch-btn" class="primary" hidden>Lock (or press Space)</button>
         <p id="device" class="mono"></p>
         <div class="readout" aria-live="polite">
-          <p class="label">LANDED IN</p>
+          <p class="label">Landed in</p>
           <p id="r-country" class="country">-</p>
           <img id="r-photo" class="place-photo-landed" alt="" hidden>
-          <p class="dist"><span class="label">DISTANCE</span><span class="big"><span id="r-distance">---</span><small> km</small></span></p>
+          <p class="dist"><span class="label">Distance</span><span class="big"><span id="r-distance">---</span><small> km</small></span></p>
           <div class="stamp-slot"><p id="r-stamp" class="route-stamp" data-status="" hidden></p></div>
           <p id="r-note" class="help"></p>
         </div>
@@ -201,7 +204,7 @@
           <button type="button" id="keep" class="primary" disabled>Keep this landing</button>
         </div>
         <section id="needs" class="needs" aria-labelledby="needs-h" hidden>
-          <p id="needs-h" class="label">WHAT YOU NEED</p>
+          <p id="needs-h" class="label">What you need</p>
           <ul id="needs-list"></ul>
           <p id="needs-foot" class="help"></p>
         </section>
@@ -282,13 +285,13 @@
         <h2 id="h-handoff">Take it with you</h2>
         <p>Scan this with your phone. The trip card and your passes live in your phone wallet. Then walk on to the airport on this screen and show your boarding pass to the camera.</p>
         <article id="stranger" class="chip" hidden aria-labelledby="chip-title">
-          <p class="label" id="chip-title">SOUVENIR FROM A STRANGER</p>
+          <p class="label" id="chip-title">Souvenir from a stranger</p>
           <p id="chip-route" class="chip-route"></p>
           <p id="chip-note" class="chip-note"></p>
           <p id="chip-by" class="chip-by"></p>
           <p id="chip-visa" class="chip-visa"></p>
         </article>
-        <p class="label">OR OPEN</p>
+        <p class="label">Or open</p>
         <p id="phone-url" class="mono url"></p>
         <button type="button" id="to-airport" class="primary">Continue at the airport</button>
         <button type="button" id="restart" class="ghost">Start over</button>

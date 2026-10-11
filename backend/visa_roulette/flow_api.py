@@ -2,9 +2,11 @@
 
 import dataclasses
 import json
+import logging
 import re
 import secrets
 import socket
+import time
 from collections import OrderedDict
 from datetime import date
 from typing import Annotated, Literal
@@ -14,6 +16,7 @@ from fastapi.concurrency import run_in_threadpool
 from pydantic import AfterValidator, BaseModel, Field
 
 from visa_roulette import destination as destination_info
+from visa_roulette.airmouse import THROW_MUTE_S, ClickDetector, ClickTracker, MouseStepper
 from visa_roulette import geo, officer_flow, pick, stt, tts
 from visa_roulette import operator as booth_operator
 from visa_roulette.camera_throw import throw_from_camera
@@ -343,6 +346,10 @@ def _lan_ip() -> str | None:
 
 def _phone_origin(request: Request) -> str:
     """Origin a phone on the same Wi-Fi can reach: a localhost URL on a QR code would open the phone itself."""
+    forwarded_host = request.headers.get("x-forwarded-host", "").split(",")[0].strip()
+    if getattr(request.app.state, "hosted", False) and forwarded_host:  # behind Vercel's proxy the app only sees an internal host
+        proto = request.headers.get("x-forwarded-proto", "https").split(",")[0].strip()
+        return f"{proto}://{forwarded_host}"
     host = request.url.hostname or ""
     origin = str(request.base_url).rstrip("/")
     if host in ("localhost", "127.0.0.1", "::1") and (ip := _lan_ip()) and not ip.startswith("127."):
@@ -393,7 +400,8 @@ async def handoff(request: Request, body: HandoffIn) -> dict:
         "stranger": stranger,
     })
     text = encode_handoff(card)
-    card_id = _keep_card(text)
+    # Hosted: no instance remembers cards between requests, so the link carries the whole card (phone.html reads "#VR1.").
+    card_id = text if getattr(request.app.state, "hosted", False) else _keep_card(text)
     url = f"{_phone_origin(request)}/phone.html#{card_id}"
     matrix = qr_matrix(url)
     return {"stranger": card.stranger.model_dump(mode="json") if card.stranger else None, "text": text, "url": url, "matrix": matrix, "size": len(matrix)}
@@ -406,26 +414,64 @@ def _samples_from(payload) -> list:
     return [Sample(*ImuIn(samples=[row]).samples[0]) for row in rows]
 
 
+class AirMouse:
+    """Per-device cursor state: gyro deltas, tap clicks and the optional hardware button."""
+
+    def __init__(self) -> None:
+        self.stepper, self.clicks, self.pairs = MouseStepper(), ClickDetector(), ClickTracker()
+
+    def click_event(self, now: float) -> dict:
+        return {"type": self.pairs.register(now)}
+
+    def feed(self, sample: Sample, now: float):
+        if self.clicks.feed(sample):
+            return "click", self.click_event(now)
+        delta = self.stepper.feed(sample)
+        return ("move", {"type": "mouse", "dx": delta.dx, "dy": delta.dy}) if delta else (None, None)
+
+
 @router.websocket("/ws/imu")
 async def imu_device(socket: WebSocket) -> None:
     hub: Hub = socket.app.state.hub
     await socket.accept()
     hub.devices += 1
     await hub.broadcast({"type": "device", "online": True})
-    detector = ThrowDetector()
+    detector, mouse = ThrowDetector(), AirMouse()
     try:
         while True:
             try:
-                samples = _samples_from(json.loads(await socket.receive_text()))
+                payload = json.loads(await socket.receive_text())
+                if isinstance(payload, dict) and "button" in payload:
+                    down = bool(payload["button"])
+                    if down:
+                        detector = ThrowDetector()
+                    await hub.broadcast({"type": "button", "down": down})
+                    continue
+                if isinstance(payload, dict) and payload.get("click"):
+                    await hub.broadcast(mouse.click_event(time.monotonic()))
+                    continue
+                samples = _samples_from(payload)
             except ValueError as exc:  # bad JSON or bad rows: report, keep listening
                 await hub.broadcast({"type": "device_error", "message": str(exc)[:200]})
                 continue
+            anchor = time.monotonic() - (samples[-1].t if samples else 0.0)
+            if samples:
+                mags = [(s.ax**2 + s.ay**2 + s.az**2) ** 0.5 for s in samples]
+                if max(mags) > 15.0 or min(mags) < 5.0:
+                    logging.getLogger("uvicorn.error").info("imu batch peak=%.1f m/s2 low=%.1f m/s2", max(mags), min(mags))
             for sample in samples:
                 outcome = detector.feed(sample)
+                if outcome is not None:
+                    mouse.clicks.mute_until(sample.t + THROW_MUTE_S)
                 if isinstance(outcome, ThrowRejected):
                     await hub.broadcast({"type": "rejected", **dataclasses.asdict(outcome)})
                 elif outcome is not None:
                     await hub.broadcast({"type": "throw", **dataclasses.asdict(outcome)})
+                kind, event = mouse.feed(sample, anchor + sample.t)
+                if kind == "click":
+                    detector = ThrowDetector()
+                if event is not None and (kind != "move" or detector.idle):
+                    await hub.broadcast(event)
     except WebSocketDisconnect:
         pass
     finally:

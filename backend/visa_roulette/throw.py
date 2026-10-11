@@ -19,8 +19,8 @@ GLOBE_KM_PER_M = 900.0
 MAX_DISTANCE_KM = 19_000.0
 
 LAUNCH_READING = 20.0  # m/s^2 total reading that starts a throw
-FREEFALL_READING = 4.0  # below this the board is no longer in the hand
-FREEFALL_HOLD_S = 0.03
+FREEFALL_READING = 7.0  # below this the board is no longer being pushed (a real hand release rarely reaches true zero g)
+FREEFALL_HOLD_S = 0.02
 MAX_PUSH_S = 0.5  # a push longer than this was a shake, not a throw
 REST_S = 0.5
 REST_TOLERANCE = 2.0
@@ -29,9 +29,10 @@ LANDED_QUIET_S = 0.3
 MAX_FLIGHT_S = 4.0
 SWITCH_SPEED_RANGE = (3.0, 11.0)
 FLICK_FULL_POWER_PX_PER_MS = 3.0
-FLICK_MIN_PX = 20.0
+FLICK_MIN_PX = 10.0
 DEFAULT_ELEVATION_DEG = 25.0
 MAX_IMU_BANK_DEG = 20.0
+MIN_IMU_ELEVATION_DEG = 10.0  # a hand swing often pitches down; a plane thrown that way would dive into the floor
 BANK_DEADBAND_DEG = 2.0
 FLUTTER_WINDOW_S = (0.06, 0.5)
 FLUTTER_PER_RAD_S = 0.5  # a board spinning at 16 rad/s (about 2.5 turns a second) counts as a full tumble
@@ -180,7 +181,7 @@ def _launch(history: list, push: list, release_t: float) -> Launch | ThrowReject
         return ThrowRejected("straight_up", "Throw it forward, not straight up.")
     elevation = math.degrees(math.asin(float(np.clip(velocity @ up / speed, -1.0, 1.0))))
     heading = math.degrees(math.atan2(float(horizontal @ right), float(horizontal @ forward)))
-    return Launch(min(speed, MAX_SPEED), elevation, heading % 360.0, _bank_from_rest(gravity))
+    return Launch(min(speed, MAX_SPEED), max(elevation, MIN_IMU_ELEVATION_DEG), heading % 360.0, _bank_from_rest(gravity))
 
 
 class ThrowDetector:
@@ -199,6 +200,10 @@ class ThrowDetector:
         self._spin: list = []
         self._release_t = 0.0
         self._quiet_since: float | None = None
+
+    @property
+    def idle(self) -> bool:
+        return self._state == "idle"
 
     def feed(self, sample: Sample) -> Outcome:
         if self._state == "idle":

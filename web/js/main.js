@@ -1,18 +1,20 @@
 import { acceptPassport, enterChecklist, initChecklist, preflightSummary, ruleStatus, startSample } from "/js/checklist.js";
 import { closeCamera, openCamera, scanLoop, watchThrow } from "/js/camera.js";
 import { createGlobe } from "/js/globe.js";
+import { createAirMouse } from "/js/airmouse.js";
 import { closeDuel, initDuel, openDuel } from "/js/duel.js";
 import { initOfficer } from "/js/officer.js";
 import { initPick } from "/js/pick.js";
 import { buildTrail, easeFlight, flightDurationMs, sampleFlight } from "/js/planeflight.js";
+import { createPlane3d, flightScale } from "/js/plane3d.js";
 const $ = (id) => document.getElementById(id);
 const STEPS = ["profile", "checklist", "throw", "consent", "handoff"];
 const W = 1200;
 const css = (name, fallback) => getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
-const COLORS = {
-  home: css("--go", "#4caf7d"), held: css("--go", "#4caf7d"), free: css("--go", "#4caf7d"),
-  on_arrival: "hsl(32 90% 56%)", evisa: "hsl(32 90% 56%)", required: css("--held", "#e0553f"),
-  unknown: css("--line", "#2b3446"),
+const colors = () => {
+  const go = css("--globe-go", css("--go", "#4caf7d"));
+  const warn = css("--globe-arrival", css("--warn", "#e8a33a"));
+  return { home: go, held: go, free: go, on_arrival: warn, evisa: warn, required: css("--globe-held", css("--held", "#e0553f")) };
 };
 const KIND_LABEL = { tourist: "Tourist", business: "Business", transit: "Transit", student: "Student", work: "Work", residence: "Residence", evisa: "E-visa" };
 
@@ -212,11 +214,13 @@ function statusOf(iso3) {
 }
 
 function paintGlobe() {
+  const palette = colors();
   state.globe?.setOverlay(state.shapes, (iso3) => {
     const status = statusOf(iso3);
-    return status === "unknown" ? null : COLORS[status];
+    return status === "unknown" ? null : palette[status];
   });
 }
+window.addEventListener("themechange", () => paintGlobe());
 
 /* ---- throw ---- */
 let pickGame = { open() {}, close() {} };
@@ -297,12 +301,21 @@ function clearTrail() {
   trail.toggleAttribute("hidden", true);
 }
 
+let plane3d;
+let lastPose3d = null;
+const getPlane3d = () => {
+  if (plane3d === undefined) plane3d = createPlane3d($("map").parentElement);
+  return plane3d;
+};
+
 const showPlane = (on) => {
   if (!on) {
     cancelFlight();
     clearTrail();
   }
-  planeEl().toggleAttribute("hidden", !on);
+  const p3 = getPlane3d();
+  if (p3) p3.show(on);
+  else planeEl().toggleAttribute("hidden", !on);
 };
 
 // Sub-60 fps tilt is clamped so the cue stays a hint, not a roll: 0.6 of the physical angle, max 35 deg.
@@ -329,7 +342,13 @@ function flyPlane(result) {
     const bow = ((s.lateral - lastLateral) / range) * reach;
     return { x: -ahead.x * behind + right.x * bow, y: -ahead.y * behind + right.y * bow };
   };
-  const place = (s, p, opacity) => {
+  const place = (s, p, opacity, u) => {
+    const p3 = getPlane3d();
+    if (p3) {
+      lastPose3d = { x: p.x, y: p.y, yawDeg: heading + s.yawDeg, pitchDeg: s.pitchDeg, bankDeg: s.bankDeg, scale: flightScale(u, s.height), opacity };
+      p3.setPose(lastPose3d);
+      return;
+    }
     const scale = 0.7 + Math.min(s.height, 6) * 0.14;
     plane.style.transform =
       `translate3d(${p.x.toFixed(2)}px, ${p.y.toFixed(2)}px, 0) rotate(${(heading + s.yawDeg).toFixed(2)}deg) ` +
@@ -350,7 +369,7 @@ function flyPlane(result) {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
     const end = sampleFlight(path, pose, 1);
     const p = project(end);
-    place(end, p, 1);
+    place(end, p, 1, 1);
     drawTrail(1, p);
     return Promise.resolve();
   }
@@ -364,7 +383,7 @@ function flyPlane(result) {
       const u = easeFlight(r);
       const s = sampleFlight(path, pose, u);
       const p = project(s);
-      place(s, p, Math.min(u / 0.06, 1)); // fade in over the first ~6% so launch does not pop
+      place(s, p, Math.min(u / 0.06, 1), u); // fade in over the first ~6% so launch does not pop
       drawTrail(u, p);
       if (r < 1) {
         state.raf = requestAnimationFrame(frame);
@@ -377,7 +396,15 @@ function flyPlane(result) {
   });
 }
 
+function landPlane3d(p3) {
+  if (!p3.isVisible() || !lastPose3d) return;
+  trailEl().classList.add("is-fading");
+  p3.fadeOut(450, lastPose3d).finally(() => showPlane(false));
+}
+
 function landPlane() {
+  const p3 = getPlane3d();
+  if (p3) return landPlane3d(p3);
   const plane = planeEl();
   if (plane.hasAttribute("hidden")) return;
   trailEl().classList.add("is-fading");
@@ -445,6 +472,7 @@ function initFlick() {
     const scale = W / rect.width;
     const { x, y, t } = down;
     down = null;
+    if (Math.hypot(e.clientX - x, e.clientY - y) * scale < 20) return;
     throwWith("/api/throw/flick", { dx: (e.clientX - x) * scale, dy: (e.clientY - y) * scale, dt_ms: performance.now() - t });
   });
 }
@@ -476,7 +504,7 @@ async function syncThrowCamera() {
 const currentMode = () => document.querySelector('input[name="mode"]:checked').value;
 
 const MODE_HELP = {
-  flick: "Flick the plane across the globe. Up is north.",
+  flick: "Flick the plane across the globe, or throw the board. Double-click for air mouse. Up is north.",
   camera: "Allow the camera, then throw from 2 to 4 metres away.",
   switch: "Press Space to lock the heading, again to lock the power.",
   board: "Hold the board still, then throw.",
@@ -531,13 +559,30 @@ function initSwitch() {
   $("mode-help").textContent = MODE_HELP.flick;
 }
 
-function initBoard() {
+let airMouse = null;
+
+function initAirMouse() {
+  const throwReady = () => !$("step-throw").hidden && ["flick", "board"].includes(currentMode());
+  airMouse = createAirMouse({
+    throwStage: $("map").parentElement,
+    setStatus,
+    canThrow: throwReady,
+    canActivate: () => $("step-throw").hidden || throwReady(),
+    onThrow: (flick) => throwWith("/api/throw/flick", flick),
+  });
+}
+
+async function initBoard() {
+  // The hosted (Vercel) deployment has no ESP32 board and no websocket route, so do not open one there.
+  const health = await fetch("/api/health").then((r) => r.json()).catch(() => null);
+  if (health?.hosted) return;
   const connect = () => {
     const socket = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/throw`);
     socket.onmessage = (e) => {
       const msg = JSON.parse(e.data);
+      airMouse?.handle(msg);
       if (msg.type === "hello" || msg.type === "device") $("device").textContent = (msg.device_online ?? msg.online) ? "ESP32 board connected" : "ESP32 board not connected";
-      else if (msg.type === "throw" && currentMode() === "board" && !$("step-throw").hidden) land(msg);
+      else if (msg.type === "throw" && !airMouse?.isOn() && !["camera", "switch"].includes(currentMode()) && !$("step-throw").hidden) land(msg);
       else if (msg.type === "rejected") setStatus(msg.message, true);
     };
     socket.onclose = () => setTimeout(connect, 3000);
@@ -660,12 +705,19 @@ async function init() {
   });
   try {
     state.globe = await createGlobe($("map"));
+    paintGlobe();
   } catch {
-    setStatus("The 3D globe needs WebGL. Try Chrome or Safari with hardware acceleration on.", true);
+    const note = document.createElement("p");
+    note.className = "hint";
+    note.setAttribute("role", "alert");
+    note.textContent = "The globe needs WebGL. In Chrome open Settings, System, and turn on hardware acceleration, then reload.";
+    $("map").after(note);
+    setStatus("The 3D globe needs WebGL.", true);
   }
   initFlick();
   initSwitch();
   initBoard();
+  initAirMouse();
   $("meter").hidden = true;
   show("profile");
 }

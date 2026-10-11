@@ -2,9 +2,10 @@ import { createGlobe } from "/js/globe.js";
 
 const $ = (id) => document.getElementById(id);
 const css = (name, fallback) => getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
-const COLORS = {
-  home: css("--go", "#4caf7d"), held: css("--go", "#4caf7d"), free: css("--go", "#4caf7d"),
-  on_arrival: "hsl(32 90% 56%)", evisa: "hsl(32 90% 56%)", required: css("--held", "#e0553f"),
+const colors = () => {
+  const go = css("--globe-go", css("--go", "#4caf7d"));
+  const warn = css("--globe-arrival", css("--warn", "#e8a33a"));
+  return { home: go, held: go, free: go, on_arrival: warn, evisa: warn, required: css("--globe-held", css("--held", "#e0553f")) };
 };
 const WORDS = { free: "visa-free", on_arrival: "visa on arrival", evisa: "e-visa", required: "visa needed", held: "visa held", home: "home", unknown: "no rule" };
 const POLL_MS = 4000;
@@ -27,9 +28,12 @@ async function loadShapes() {
 }
 
 function paintPins(pins) {
+  state.lastPins = pins;
+  const palette = colors();
   const latest = new Map(pins.map((p) => [p.iso3, p.status]));
-  state.globe.setOverlay(state.shapes, (iso3) => COLORS[latest.get(iso3)] ?? null);
+  state.globe.setOverlay(state.shapes, (iso3) => palette[latest.get(iso3)] ?? null);
 }
+window.addEventListener("themechange", () => state.lastPins && state.globe && paintPins(state.lastPins));
 
 function renderStats({ stats }) {
   const lucky = stats.luckiest_passport;

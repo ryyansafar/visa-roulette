@@ -32,6 +32,8 @@
 }
 
 :root {
+  color-scheme: dark;
+
   /* ground: deep steel-blue ink, never pure black */
   --ink: hsl(219 40% 8%);
   --ink-2: hsl(219 32% 12%);
@@ -41,9 +43,25 @@
 
   /* wayfinding signal + status */
   --signal: hsl(56 94% 58%);
-  --go: hsl(144 46% 52%);
-  --held: hsl(8 78% 58%);
-  --warn: hsl(32 90% 56%);
+  --on-signal: hsl(219 40% 8%);
+  --accent-text: var(--signal);
+  --go: hsl(150 34% 46%);
+  --held: hsl(10 52% 52%);
+  --warn: hsl(34 62% 50%);
+
+  /* instruments (camera lens, globe) */
+  --lens: hsl(219 44% 5%);
+  --lens-text: hsl(46 20% 92%);
+  --globe-ocean: hsl(219 34% 14%);
+  --globe-land: hsl(219 12% 36%);
+  --globe-grid: hsl(219 30% 19%);
+  --globe-edge: hsl(219 22% 30%);
+  --globe-go: hsl(150 34% 46%);
+  --globe-arrival: hsl(38 70% 52%);
+  --globe-held: hsl(10 52% 52%);
+  --field: hsl(219 32% 12%);
+  --idle-lens: hsl(219 44% 5%);
+  --idle-line: hsl(46 20% 92% / 0.5);
 
   /* boarding-pass paper (phone page, printed props) */
   --paper: hsl(46 30% 92%);
@@ -61,6 +79,7 @@
   --t-48: 48px;
   --t-96: 96px;
 
+  --page: 1440px;
   --grid-cols: 12;
   --gutter: 12px;
   --radius: 0;
@@ -71,13 +90,53 @@
   --ease-mech: cubic-bezier(0.2, 0.9, 0.1, 1);
 }
 
+/* Light: warm paper ground, ink type. Status hues darken so text on paper keeps contrast. */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --ink: hsl(46 30% 95%);
+  --ink-2: hsl(46 24% 90%);
+  --rule: hsl(219 14% 76%);
+  --muted: hsl(219 12% 38%);
+  --text: hsl(219 40% 10%);
+  --signal: hsl(52 96% 54%);
+  --accent-text: hsl(219 40% 10%);
+  --go: hsl(144 54% 24%);
+  --held: hsl(8 68% 42%);
+  --warn: hsl(26 92% 34%);
+  --globe-ocean: hsl(212 30% 86%);
+  --globe-land: hsl(46 12% 80%);
+  --globe-grid: hsl(212 22% 78%);
+  --globe-edge: hsl(219 14% 56%);
+  --globe-go: hsl(150 30% 48%);
+  --globe-arrival: hsl(38 78% 56%);
+  --globe-held: hsl(8 50% 60%);
+  --field: hsl(46 40% 98%);
+  --idle-lens: hsl(46 22% 88%);
+  --idle-line: hsl(219 40% 10% / 0.45);
+}
 @media (prefers-color-scheme: light) {
-  :root[data-theme="auto"] {
-    --ink: var(--paper);
-    --ink-2: hsl(46 24% 86%);
-    --text: var(--paper-ink);
-    --rule: hsl(219 14% 70%);
-    --muted: hsl(219 14% 38%);
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --ink: hsl(46 30% 95%);
+    --ink-2: hsl(46 24% 90%);
+    --rule: hsl(219 14% 76%);
+    --muted: hsl(219 12% 38%);
+    --text: hsl(219 40% 10%);
+    --signal: hsl(52 96% 54%);
+    --accent-text: hsl(219 40% 10%);
+    --go: hsl(144 54% 24%);
+    --held: hsl(8 68% 42%);
+    --warn: hsl(26 92% 34%);
+    --globe-ocean: hsl(212 30% 86%);
+    --globe-land: hsl(46 12% 80%);
+    --globe-grid: hsl(212 22% 78%);
+    --globe-edge: hsl(219 14% 56%);
+    --globe-go: hsl(150 30% 48%);
+    --globe-arrival: hsl(38 78% 56%);
+    --globe-held: hsl(8 50% 60%);
+    --field: hsl(46 40% 98%);
+    --idle-lens: hsl(46 22% 88%);
+    --idle-line: hsl(219 40% 10% / 0.45);
   }
 }
 

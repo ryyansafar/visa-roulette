@@ -3,67 +3,57 @@ import * as THREE from "/vendor/three.module.min.js";
 
 const IDLE_SPIN = 5.2; // rad/s, about one turn a second
 const TILT_IDLE = 0.32;
-const BASE_TEXTURE = "/assets/globe/earth-blue-marble.jpg";
-const SKY_TEXTURE = "/assets/globe/night-sky.png";
 const TEX_W = 4096;
 const TEX_H = 2048;
 
 const toRad = (deg) => (deg * Math.PI) / 180;
 const easeOutCubic = (t) => 1 - (1 - t) ** 3;
-const loadImage = (src) =>
-  new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error(`Could not load ${src}`));
-    img.src = src;
-  });
+const token = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const normalizer = document.createElement("canvas").getContext("2d");
+/** Canvas parses any CSS colour (including space-separated hsl) and reads it back as #rrggbb, which three.js accepts. */
+const hex = (css) => { normalizer.fillStyle = "#000"; normalizer.fillStyle = css; return normalizer.fillStyle; };
+const palette = () => ({ ocean: token("--globe-ocean"), land: token("--globe-land"), grid: token("--globe-grid"), edge: token("--globe-edge"), pin: token("--text") });
 
 /** Yaw that brings longitude `lon` to face the camera, shifted by whole turns. */
 const yawFor = (lon) => -Math.PI / 2 - toRad(lon);
 
-function paintTexture(canvas, base, shapes, colorFor) {
+/** Flat matte map: ocean, graticule, neutral land, and status fills only where a visa answer exists. */
+function paintTexture(canvas, shapes, colorFor, pal) {
   const ctx = canvas.getContext("2d");
-  ctx.drawImage(base, 0, 0, TEX_W, TEX_H);
+  ctx.fillStyle = pal.ocean;
+  ctx.fillRect(0, 0, TEX_W, TEX_H);
   const at = (lon, lat) => [((lon + 180) / 360) * TEX_W, ((90 - lat) / 180) * TEX_H];
+  ctx.strokeStyle = pal.grid;
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  for (let lon = -180; lon <= 180; lon += 30) { ctx.moveTo(...at(lon, 90)); ctx.lineTo(...at(lon, -90)); }
+  for (let lat = -60; lat <= 60; lat += 30) { ctx.moveTo(...at(-180, lat)); ctx.lineTo(...at(180, lat)); }
+  ctx.stroke();
+  ctx.strokeStyle = pal.ocean;
+  ctx.lineWidth = 1.8;
+  ctx.lineJoin = "round";
   for (const shape of shapes) {
-    const color = colorFor(shape.iso3);
-    ctx.fillStyle = color ?? "transparent";
-    ctx.globalAlpha = 0.5;
-    ctx.strokeStyle = "rgba(255,255,255,0.35)";
-    ctx.lineWidth = 1.2;
+    ctx.fillStyle = colorFor(shape.iso3) ?? pal.land;
     for (const polygon of shape.polygons) {
       ctx.beginPath();
       for (const ring of polygon) {
         ring.forEach(([lon, lat], i) => (i ? ctx.lineTo(...at(lon, lat)) : ctx.moveTo(...at(lon, lat))));
         ctx.closePath();
       }
-      if (color) ctx.fill("evenodd");
-      ctx.globalAlpha = 1;
+      ctx.fill("evenodd");
       ctx.stroke();
-      ctx.globalAlpha = 0.5;
     }
   }
-  ctx.globalAlpha = 1;
-}
-
-function rimMaterial(color) {
-  return new THREE.ShaderMaterial({
-    transparent: true,
-    side: THREE.BackSide,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-    uniforms: { glow: { value: new THREE.Color(color) } },
-    vertexShader: "varying vec3 n; void main(){ n = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }",
-    fragmentShader: "uniform vec3 glow; varying vec3 n; void main(){ float k = pow(0.72 - dot(n, vec3(0.0,0.0,1.0)), 3.0); gl_FragColor = vec4(glow, 1.0) * k; }",
-  });
 }
 
 export async function createGlobe(canvas, { signal = "#f5e642" } = {}) {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setSize(canvas.width, canvas.height, false);
+  const { width: cssW, height: cssH } = canvas;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
+  renderer.setClearColor(0x000000, 0);
+  renderer.setPixelRatio(1);
+  renderer.setSize(cssW, cssH, false);
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(30, canvas.width / canvas.height, 0.1, 50);
+  const camera = new THREE.PerspectiveCamera(30, cssW / cssH, 0.1, 50);
   camera.position.z = 4.1;
 
   const paint = document.createElement("canvas");
@@ -76,7 +66,8 @@ export async function createGlobe(canvas, { signal = "#f5e642" } = {}) {
   const globe = new THREE.Group();
   const earth = new THREE.Mesh(new THREE.SphereGeometry(1, 96, 64), new THREE.MeshBasicMaterial({ map: texture }));
   globe.add(earth);
-  scene.add(globe, new THREE.Mesh(new THREE.SphereGeometry(1.12, 64, 48), rimMaterial("#6aa7ff")));
+  const rim = new THREE.Mesh(new THREE.SphereGeometry(1.008, 96, 64), new THREE.MeshBasicMaterial({ color: hex(palette().edge), side: THREE.BackSide }));
+  scene.add(globe, rim);
 
   const pin = new THREE.Group();
   const pinColor = new THREE.Color(signal);
@@ -86,14 +77,16 @@ export async function createGlobe(canvas, { signal = "#f5e642" } = {}) {
   pin.visible = false;
   globe.add(pin);
 
-  const [base, sky] = await Promise.all([loadImage(BASE_TEXTURE), loadImage(SKY_TEXTURE)]);
-  const skyTexture = new THREE.Texture(sky);
-  skyTexture.mapping = THREE.EquirectangularReflectionMapping;
-  skyTexture.colorSpace = THREE.SRGBColorSpace;
-  skyTexture.needsUpdate = true;
-  scene.background = skyTexture;
-  paintTexture(paint, base, [], () => null);
-  texture.needsUpdate = true;
+  let overlay = null;
+  const repaint = () => {
+    const pal = palette();
+    paintTexture(paint, overlay?.shapes ?? [], overlay?.colorFor ?? (() => null), pal);
+    texture.needsUpdate = true;
+    rim.material.color.set(hex(pal.edge));
+    pinColor.set(hex(pal.pin));
+  };
+  repaint();
+  window.addEventListener("themechange", repaint);
 
   globe.rotation.order = "XYZ";
   globe.rotation.x = TILT_IDLE;
@@ -133,8 +126,8 @@ export async function createGlobe(canvas, { signal = "#f5e642" } = {}) {
   return {
     /** Recolour countries, e.g. by visa status. `colorFor(iso3)` returns a CSS colour or null. */
     setOverlay(shapes, colorFor) {
-      paintTexture(paint, base, shapes, colorFor);
-      texture.needsUpdate = true;
+      overlay = { shapes, colorFor };
+      repaint();
     },
     isBusy: () => mode === "landing",
     resume() {

@@ -11,7 +11,7 @@ a:hover { opacity: 0.8; }
 select {
   appearance: none;
   background-color: var(--ink-2);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23baa078' d='M1 1l5 5 5-5' stroke='%23baa078' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238a93a6' d='M1 1l5 5 5-5' stroke='%238a93a6' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   padding-right: 36px;
@@ -93,7 +93,7 @@ button {
 button.primary {
   background: var(--signal);
   border-color: var(--signal);
-  color: var(--ink);
+  color: var(--on-signal);
 }
 
 button.secondary {
@@ -103,12 +103,12 @@ button.secondary {
 }
 
 button.ghost {
-  border: none;
+  border: 1px solid var(--rule);
   background: transparent;
 }
 
-button.ghost:hover {
-  text-decoration: underline;
+button.ghost:hover:not(:disabled) {
+  border-color: var(--text);
 }
 
 button:disabled {

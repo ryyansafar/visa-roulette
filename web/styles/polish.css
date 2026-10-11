@@ -1,0 +1,93 @@
+/* Round-4 polish: one hero per screen, fewer mono eyebrows, bigger stamps, calmer controls. Loaded last. */
+
+/* hero titles */
+#step-profile .desk-head { border-bottom: 0; padding-bottom: 0; align-items: end; }
+#step-profile .desk-head h2, #step-checklist h2#h-checklist {
+  font: 700 clamp(48px, 6vw, 88px)/0.95 var(--font-display); letter-spacing: -0.04em; text-transform: none; margin: 0;
+}
+.desk-head .desk-note, .desk-form-head .desk-note {
+  font: 400 var(--t-14)/1.4 var(--font-display); letter-spacing: 0; text-transform: none; color: var(--muted); order: 0;
+}
+.desk-form-head .label {
+  font: 700 var(--t-18)/1.2 var(--font-display); letter-spacing: -0.01em; text-transform: none; color: var(--text);
+}
+#step-checklist .help { font: 400 var(--t-18)/1.4 var(--font-display); color: var(--muted); max-width: 46ch; }
+
+/* status line only speaks when something is wrong */
+.status:not(.bad) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* labels and legends in the display face */
+.label, legend.label, .rail h2, #step-throw .rail h2, #step-throw .legend, #step-throw .modes label {
+  font-family: var(--font-display); letter-spacing: 0.02em; text-transform: none;
+}
+.label { font-size: var(--t-14); }
+#step-throw .legend { font-size: var(--t-14); font-weight: 500; gap: 6px 22px; }
+#step-throw .rail h2 { font-size: var(--t-14); font-weight: 700; color: var(--text); }
+#step-throw .modes label { font-size: var(--t-14); font-weight: 700; }
+#step-throw .modes { border: 0; gap: 6px; }
+#step-throw .modes label { border: 1px solid var(--rule); }
+#step-throw .modes label + label { border-left: 1px solid var(--rule); }
+#step-throw .modes label:has(input:checked) { border-color: var(--text); }
+#mode-help { font: 700 var(--t-28)/1.1 var(--font-display); letter-spacing: -0.02em; }
+.rail:has(#r-stamp:not([hidden])) #mode-help { font: 400 var(--t-14)/1.5 var(--font-display); letter-spacing: 0; color: var(--muted); }
+
+/* idle desk: two columns, the specimen page on the left, the form beside it */
+@media (min-width: 1100px) {
+  #step-profile { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); column-gap: 56px; align-items: start; }
+  #step-profile > .desk-head { grid-column: 1 / -1; }
+  #step-profile > .desk-scan, #step-profile > .desk-bar { grid-column: 1; }
+  #step-profile > .desk-form { grid-column: 2; grid-row: 2 / span 3; border-top: 0; padding-top: 0; align-self: start; }
+  #step-profile .desk-form .fields { grid-template-columns: 1fr 1fr; }
+  #step-profile .viewfinder { height: clamp(320px, 44vh, 440px); }
+}
+#step-profile .viewfinder:not([data-live="true"]) { background: var(--idle-lens); }
+#step-profile .viewfinder:not([data-live="true"]) .guide { --corner: var(--idle-line); }
+#step-profile .viewfinder:not([data-live="true"]) .guide::before { opacity: 0.55; filter: var(--idle-invert, none); }
+:root[data-theme="light"] #step-profile .viewfinder:not([data-live="true"]) .guide::before { filter: invert(1) hue-rotate(180deg); opacity: 0.4; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) #step-profile .viewfinder:not([data-live="true"]) .guide::before { filter: invert(1) hue-rotate(180deg); opacity: 0.4; } }
+#step-profile .viewfinder:not([data-live="true"]) .guide-tag,
+#step-profile .viewfinder:not([data-live="true"]) .guide-mrz { display: none; }
+#step-profile .viewfinder:not([data-live="true"]) .guide-mrz::before { display: none; }
+#step-profile .viewfinder:not([data-live="true"]) .hint { background: transparent; border-top: 0; color: var(--muted); }
+.desk-form input, .desk-form select { background-color: var(--field); }
+
+/* persona buttons: a segmented row, not underlined links */
+#step-profile #desk-people { gap: 0; border: 1px solid var(--rule); }
+#step-profile #desk-people button { text-decoration: none; border-right: 1px solid var(--rule); font-family: var(--font-display); font-weight: 600; padding: 0 14px; }
+#step-profile #desk-people button:last-child { border-right: 0; }
+#step-profile #desk-people button:hover:not(:disabled) { background: var(--text); color: var(--ink); }
+
+/* checklist: calmer rows, hero count, borderless verdict */
+#step-checklist .cl-item { border-top: 1px solid var(--rule); }
+#step-checklist .cl-head { padding: 18px 0; transition: padding-left 120ms var(--ease-mech); }
+#step-checklist .cl-item:hover .cl-head { padding-left: 6px; }
+#step-checklist .cl-label { font-size: var(--t-18); }
+#step-checklist .verdict { border: 0; background: transparent; padding: 0 0 0 8px; gap: 6px; position: sticky; top: 88px; }
+#step-checklist .verdict .label:first-child { font: 700 var(--t-14)/1 var(--font-display); color: var(--muted); }
+#step-checklist .verdict .stamp { --stamp-size: clamp(40px, 4vw + 8px, 84px); margin: 24px 0 18px -6px; transform: rotate(-7deg); }
+#cl-count { display: flex; align-items: baseline; gap: 10px; font: 700 var(--t-18)/1 var(--font-display); letter-spacing: 0; text-transform: none; color: var(--muted); }
+#cl-count .n { font: 700 clamp(72px, 8vw, 120px)/0.85 var(--font-display); letter-spacing: -0.05em; color: var(--text); }
+#cl-count .of { font-size: var(--t-28); font-weight: 500; }
+#step-checklist details.own { border: 0; border-top: 1px solid var(--rule); }
+#step-checklist details.own > summary { min-height: 56px; display: flex; align-items: center; cursor: pointer; font: 700 var(--t-14)/1 var(--font-display); }
+
+/* stamps: bigger, looser, more physical */
+.route-stamp { --stamp-size: clamp(22px, 2.2vw + 8px, 44px); margin: 14px 0 10px 4px; transform: rotate(-8deg); }
+#step-throw .stamp-slot { padding: 32px 8px 18px; }
+
+/* footer: no stray plus */
+.about summary::after, .about summary::before { content: none; }
+
+/* round-4b */
+body .label { font-family: var(--font-display); letter-spacing: 0.01em; text-transform: none; font-size: var(--t-14); font-weight: 500; }
+#step-profile .desk-head { display: grid; grid-template-columns: 1fr; justify-items: start; gap: 12px; }
+#step-profile .desk-head .desk-note { order: 1; }
+#step-profile .desk-form-head { display: grid; gap: 6px; }
+#step-checklist .cl-docs figcaption { font-family: var(--font-display); letter-spacing: 0; text-transform: none; font-size: var(--t-12); }
+#step-checklist .verdict .stamp { margin-top: 36px; }
+#cl-count { margin-top: 8px; }
+#cl-count .n { padding-top: 6px; }
+#step-throw .legend .sw[data-k="free"] { background: var(--globe-go); border-color: var(--globe-go); }
+#step-throw .legend .sw[data-k="arrival"] { background: var(--globe-arrival); border-color: var(--globe-arrival); }
+#step-throw .legend .sw[data-k="needed"] { background: var(--globe-held); border-color: var(--globe-held); }
+#step-throw .dist .label { font-weight: 500; }

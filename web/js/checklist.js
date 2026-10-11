@@ -119,7 +119,10 @@ function renderVerdict(result) {
   const pending = result.items.length - done;
   $("cl-note").textContent = result.verdict === "CLEARED" && pending > 0 ? `No rule blocks you. ${pending} ${pending === 1 ? "paper" : "papers"} still to confirm.` : VERDICT_NOTE[result.verdict];
   $("cl-ready").nextElementSibling.textContent = "%";
-  $("cl-count").textContent = `ready, ${done} of ${result.items.length} checks done`;
+  const count = $("cl-count");
+  count.replaceChildren();
+  const part = (cls, text) => { const el = document.createElement("span"); el.className = cls; el.textContent = text; return el; };
+  count.append(part("n", String(done)), part("of", `of ${result.items.length} checks done`));
   $("cl-go").disabled = result.verdict === "HELD";
   const bad = result.items.filter((i) => i.status === "fail").length;
   const announce = `${result.verdict}. ${percent} percent ready.${bad ? ` ${bad} item${bad > 1 ? "s" : ""} failed.` : ""}`;
@@ -230,13 +233,13 @@ function renderPersonas(people) {
   );
 }
 
-/** The desk read a passport by camera or upload. Keep it so the boarding pass is the only paper left to show. */
+/** The desk read a passport by camera or upload. Keep it so the flight ticket is the only paper left to show. */
 export function acceptPassport(blob) {
   Object.assign(model, { passportBlob: blob, persona: null, result: null, inputs: null, ticked: [] });
   save();
   $("cl-passport-field").hidden = true;
   document.querySelector(".cl-docs").hidden = true;
-  $("cl-empty").textContent = "Passport read. Show your boarding pass to the camera, or upload it below.";
+  $("cl-empty").textContent = "Passport read. Show your flight ticket to the camera, or upload it below.";
   $("cl-own").open = true;
   render();
 }
@@ -251,7 +254,7 @@ function stopBoardingCamera() {
 async function onBoardingCamera() {
   if (model.stopScan) return stopBoardingCamera();
   if (!model.passportBlob && !$("cl-own-passport").files[0]) {
-    model.setStatus("Add the passport photo page first, then show the boarding pass.", true);
+    model.setStatus("Add the passport photo page first, then show the flight ticket.", true);
     return;
   }
   $("cl-finder").hidden = false;
@@ -262,7 +265,7 @@ async function onBoardingCamera() {
     model.setStatus(err.message, true);
     return;
   }
-  $("cl-hint").textContent = "Hold the boarding pass barcode in the frame.";
+  $("cl-hint").textContent = "Hold the ticket barcode in the frame.";
   model.stopScan = scanLoop($("cl-video"), async (blob) => {
     const boarding = await model.api("/api/scan/boarding-pass", undefined, { method: "POST", body: blob });
     if (!boarding.boarding_pass) return null;
@@ -279,7 +282,7 @@ async function onOwnScan(event) {
   const passportBlob = model.passportBlob || $("cl-own-passport").files[0];
   const boardingBlob = $("cl-own-boarding").files[0];
   if (!passportBlob || !boardingBlob) {
-    model.setStatus("Choose a passport photo page and a boarding pass image.", true);
+    model.setStatus("Choose a passport photo page and a flight ticket image.", true);
     return;
   }
   const bag = $("cl-own-bag").value.split(",").map((s) => s.trim()).filter(Boolean);

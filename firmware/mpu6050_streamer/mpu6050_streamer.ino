@@ -2,7 +2,7 @@
 #include <WebSocketsClient.h>
 #include <Wire.h>
 
-// Wiring: ESP32(3V3->GY-521 VCC, GND->GND, 21->SDA, 22->SCL)
+// Wiring: ESP32(3V3->GY-521 VCC, GND->GND, 21->SDA, 22->SCL); click switch between GPIO 13 and GND
 
 #ifndef LED_BUILTIN
 #define LED_BUILTIN 2
@@ -16,9 +16,7 @@
 #if __has_include("secrets.h")
 #include "secrets.h"
 #else
-#define WIFI_SSID "YOUR_SSID"
-#define WIFI_PASS "YOUR_PASSWORD"
-#define SERVER_HOST_IP "192.168.1.100"
+#error "Missing secrets.h: copy secrets.example.h to secrets.h and fill it in."
 #endif
 
 const char* SERVER_HOST = SERVER_HOST_IP;
@@ -38,6 +36,12 @@ const int CALIB_SAMPLES = 500;
 const int BATCH_SIZE = 25;
 const unsigned long SAMPLE_INTERVAL_US = 2000;
 
+const uint8_t CLICK_PIN = 0;         // BOOT button on most ESP32 dev boards, active low
+const uint8_t CLICK_PIN_EXT = 13;     // external push button between GPIO 13 and GND
+const unsigned long CLICK_DEBOUNCE_MS = 40;
+bool click_was_down = false;
+unsigned long click_changed_ms = 0;
+
 unsigned long boot_time_us, last_sample_us;
 char json_buffer[2048];
 int sample_count = 0;
@@ -49,6 +53,7 @@ struct Sample {
 WebSocketsClient webSocket;
 
 void send_batch();
+void poll_click();
 void read_imu(int16_t& ax, int16_t& ay, int16_t& az, int16_t& gx, int16_t& gy, int16_t& gz);
 void read_gyro(int16_t& gx, int16_t& gy, int16_t& gz);
 void read_bytes(uint8_t reg, uint8_t* buf, int len);
@@ -61,6 +66,8 @@ void setup() {
   Serial.println("\nVisa Roulette IMU Streamer");
 
   pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(CLICK_PIN, INPUT_PULLUP);
+  pinMode(CLICK_PIN_EXT, INPUT_PULLUP);
   Wire.begin(21, 22, 400000);
   delay(100);
 
@@ -105,6 +112,7 @@ void setup() {
 
 void loop() {
   webSocket.loop();
+  poll_click();
 
   unsigned long now_us = micros();
   if (now_us - last_sample_us >= SAMPLE_INTERVAL_US) {
@@ -142,6 +150,15 @@ void send_batch() {
   }
   snprintf(json_buffer + offset, sizeof(json_buffer) - offset, "]}");
   webSocket.sendTXT((uint8_t*)json_buffer, strlen(json_buffer));
+}
+
+void poll_click() {
+  bool down = digitalRead(CLICK_PIN) == LOW || digitalRead(CLICK_PIN_EXT) == LOW;
+  unsigned long now_ms = millis();
+  if (down == click_was_down || now_ms - click_changed_ms < CLICK_DEBOUNCE_MS) return;
+  click_was_down = down;
+  click_changed_ms = now_ms;
+  if (webSocket.isConnected()) webSocket.sendTXT(down ? "{\"button\":1}" : "{\"button\":0}");
 }
 
 void read_imu(int16_t& ax, int16_t& ay, int16_t& az, int16_t& gx, int16_t& gy, int16_t& gz) {

@@ -1,11 +1,11 @@
 .wall-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr); gap: 24px; padding: 0 24px; }
 .wall-globe { position: relative; }
-.wall-globe canvas { width: 100%; height: auto; display: block; background: #000; border: var(--hairline); aspect-ratio: 3 / 2; }
+.wall-globe canvas { width: 100%; height: auto; display: block; background: transparent; border: var(--hairline); aspect-ratio: 3 / 2; }
 .flash { position: absolute; left: 16px; right: 16px; bottom: 16px; margin: 0; padding: 12px 16px; background: var(--ink); border: 2px solid var(--signal); font: 700 var(--t-28)/1.15 var(--font-display); animation: flash-in var(--thud) var(--ease-mech); }
 .flash[hidden] { display: none; }
 @keyframes flash-in { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
 .wall-side { display: grid; gap: 20px; align-content: start; }
-.wall-big { margin: 4px 0; font: 700 var(--t-48)/1 var(--font-display); letter-spacing: -0.02em; color: var(--signal); }
+.wall-big { margin: 4px 0; font: 700 var(--t-48)/1 var(--font-display); letter-spacing: -0.02em; color: var(--accent-text); }
 .wall-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 12px 0 0; }
 .wall-facts dd { margin: 4px 0 0; font: 700 var(--t-28)/1 var(--font-display); }
 .ticker { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }

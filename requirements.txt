@@ -1,0 +1,7 @@
+# Runtime dependencies of the Vercel function (api/index.py) only. Versions are the ones the test suite runs on.
+# The booth laptop installs backend/requirements.txt instead (adds OpenCV, zxing-cpp, Pillow, faster-whisper, ...).
+fastapi==0.143.0
+pydantic==2.14.0
+numpy==2.5.3
+qrcode==8.2
+httpx==0.28.1

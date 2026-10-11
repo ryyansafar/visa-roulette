@@ -1,0 +1,30 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "true",
+  "buildCommand": "bash scripts/vercel_build.sh",
+  "outputDirectory": "public",
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 15,
+      "excludeFiles": "{public/**,web/**,assets/{fonts,places}/**,assets/globe/*.{jpg,png},docs/**,tools/**,firmware/**,phone_props/**,backend/tests/**,fixtures/*/{hotel_booking,return_ticket,role_card}.png,fixtures/wallet.html}"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api/index"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    }
+  ]
+}

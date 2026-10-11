@@ -9,6 +9,8 @@
   Built for <a href="https://github.com/jasimcm/layover-2026">LAYOVER 2026</a> at TinkerSpace Calicut, 10–11 Oct 2026.
 </p>
 
+**Live demo:** https://layoverhackathon.vercel.app (hosted mode: sample travellers only, no hardware or live camera scans; see [docs/DEPLOY_VERCEL.md](docs/DEPLOY_VERCEL.md)).
+
 > **Status:** work in progress, being built during the hackathon. The features below are built and tested; the "still planned" line is not. See [PLAN.md](PLAN.md) for tiers and progress.
 
 ## What it is

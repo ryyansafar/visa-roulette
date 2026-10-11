@@ -1,0 +1,30 @@
+# Never uploaded: environments, caches, secrets, hardware and visitor data.
+.git
+.claude
+.venv
+.venv-tools
+node_modules
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+.DS_Store
+*.log
+
+# secrets
+.env
+.env.*
+**/secrets.h
+**/*.pem
+**/*.key
+
+# booth-only material
+/firmware
+/phone_props
+/tools
+/docs
+/backend/tests
+/data/souvenirs.jsonl
+
+# generated on Vercel by scripts/vercel_build.sh
+/public

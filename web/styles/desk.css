@@ -7,7 +7,7 @@
 .desk-note { font: 400 var(--t-14)/1.4 var(--font-data); color: var(--muted); }
 
 /* camera band */
-#step-profile .viewfinder { margin: 0; aspect-ratio: auto; height: 232px; background: #05080f; }
+#step-profile .viewfinder { margin: 0; aspect-ratio: auto; height: clamp(300px, 36vh, 380px); background: var(--lens); }
 #step-profile .viewfinder[data-live="true"] { height: clamp(320px, 42vh, 440px); }
 @media (prefers-reduced-motion: no-preference) { #step-profile .viewfinder { transition: height 0.25s ease; } }
 #step-profile .viewfinder .guide {
@@ -27,7 +27,7 @@
 /* idle: a ghosted specimen photo page, with the two labels moved outside it as annotations */
 #step-profile .viewfinder:not([data-live="true"]) .guide { --corner: rgba(240, 236, 224, 0.35); }
 #step-profile .viewfinder:not([data-live="true"]) .guide::before {
-  content: ""; position: absolute; inset: 0; opacity: 0.18;
+  content: ""; position: absolute; inset: 0; opacity: 0.3;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 142 100'%3E%3Cg fill='none' stroke='%23f0ece0' stroke-width='0.8'%3E%3Crect x='0.5' y='0.5' width='141' height='99'/%3E%3Crect x='10' y='12' width='34' height='42'/%3E%3C/g%3E%3Cg fill='%23f0ece0'%3E%3Crect x='54' y='14' width='56' height='2.4'/%3E%3Crect x='54' y='25' width='44' height='2.4'/%3E%3Crect x='54' y='36' width='50' height='2.4'/%3E%3Crect x='54' y='47' width='32' height='2.4'/%3E%3Ctext x='8' y='80' font-family='monospace' font-size='6.4' textLength='126' lengthAdjust='spacingAndGlyphs'%3EP%26lt;UTOSPECIMEN%26lt;%26lt;TRAVELLER%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%3C/text%3E%3Ctext x='8' y='90' font-family='monospace' font-size='6.4' textLength='126' lengthAdjust='spacingAndGlyphs'%3E0000000000UTO0001010M3001012%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;%26lt;00%3C/text%3E%3C/g%3E%3C/svg%3E") center / 100% 100% no-repeat;
 }
 #step-profile .viewfinder:not([data-live="true"]) .guide-tag { left: auto; right: calc(100% + 18px); top: 14px; text-align: right; white-space: nowrap; }
@@ -36,7 +36,7 @@
 .guide-tag, .guide-mrz { position: absolute; left: 14px; font: 400 var(--t-12)/1 var(--font-data); letter-spacing: 0.14em; text-transform: uppercase; color: rgba(240, 236, 224, 0.8); }
 .guide-tag { top: 12px; }
 .guide-mrz { right: 14px; bottom: 12px; padding: 8px 0 0; border-top: 1px dashed rgba(240, 236, 224, 0.55); }
-#step-profile .viewfinder .hint { font: 400 var(--t-14)/1.4 var(--font-data); color: var(--text); background: rgba(5, 8, 15, 0.85); border-top: var(--hairline); }
+#step-profile .viewfinder .hint { font: 400 var(--t-14)/1.4 var(--font-data); color: var(--lens-text); background: hsl(219 44% 5% / 0.88); border-top: 1px solid hsl(219 22% 24%); }
 
 /* action bar under the camera */
 .desk-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px 32px; flex-wrap: wrap; margin-top: 16px; }
@@ -66,7 +66,7 @@
 .desk-form input, .desk-form select { background-color: var(--ink-2); border: var(--hairline); }
 .desk-form select {
   appearance: none; padding-right: 40px; background-repeat: no-repeat; background-position: right 14px center; background-size: 12px 8px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%23c9cfdb' stroke-width='1.6' fill='none'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%238a93a6' stroke-width='1.6' fill='none'/%3E%3C/svg%3E");
 }
 .desk-form input:hover, .desk-form select:hover { border-color: var(--muted); }
 .desk-form fieldset { grid-column: 1 / -1; margin: 0; padding: 0; border: 0; min-width: 0; }

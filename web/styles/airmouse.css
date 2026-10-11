@@ -1,0 +1,12 @@
+html.airmouse-on #step-throw .stage canvas { cursor: none; }
+html.airmouse-on #step-throw .stage { outline: 1px solid var(--signal); outline-offset: -1px; }
+
+.air-cursor {
+  position: fixed; left: 0; top: 0; z-index: 9999; width: 28px; height: 28px; pointer-events: none;
+  will-change: transform; transition: opacity 160ms linear;
+}
+.air-cursor[hidden] { display: none; }
+.air-cursor svg { display: block; filter: drop-shadow(0 4px 5px rgb(0 0 0 / 0.55)); transform-origin: 3px 3px; }
+.air-cursor.is-thrown { opacity: 0; }
+.air-cursor.is-held svg { transform: scale(0.8); filter: drop-shadow(0 0 8px var(--signal)); }
+@media (prefers-reduced-motion: reduce) { .air-cursor { transition: none; } }

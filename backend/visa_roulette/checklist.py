@@ -187,7 +187,7 @@ def build_checklist(
     items = (
         _check_mrz(mrz),
         _check_validity(mrz, travel_date),
-        _check_name("R-NAME-BP", boarding_name, passport_name, "boarding pass", len(boarding_name) >= 19),
+        _check_name("R-NAME-BP", boarding_name, passport_name, "flight ticket", len(boarding_name) >= 19),
         _check_name("R-NAME-RET", return_ticket_name, passport_name, "return ticket"),
         _check_name("R-NAME-HOTEL", hotel_name, passport_name, "hotel booking"),
         _check_return(return_ticket_name),

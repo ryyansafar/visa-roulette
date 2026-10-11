@@ -18,7 +18,7 @@
       "verified": false
     },
     "R-NAME-BP": {
-      "label": "Boarding pass name matches the passport",
+      "label": "Flight ticket name matches the passport",
       "source_url": "https://visa2fly.com/blog/Dubai-Visa-Rejection-Reasons-for-Indians",
       "source_kind": "third-party",
       "as_of": "2026-10-10",

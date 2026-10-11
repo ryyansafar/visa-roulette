@@ -196,5 +196,495 @@
     "author": "Dietmar Rabich",
     "license": "CC BY-SA 4.0",
     "source": "https://commons.wikimedia.org/wiki/File:Amboy_(California,_USA),_Hist._Route_66_--_2012_--_5705.jpg"
+  },
+  "BIH-1": {
+    "title": "Sarajevo City Panorama.JPG",
+    "author": "Julian Nyča",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Sarajevo_City_Panorama.JPG",
+    "subject": "Sarajevo"
+  },
+  "FJI-1": {
+    "title": "Suva, Fiji 77.jpg",
+    "author": "Maksym Kozlenko",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Suva,_Fiji_77.jpg",
+    "subject": "Suva"
+  },
+  "KEN-1": {
+    "title": "Nairobi skyline from Gem Hotel.jpg",
+    "author": "Daniel Case",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Nairobi_skyline_from_Gem_Hotel.jpg",
+    "subject": "Nairobi"
+  },
+  "AFG-1": {
+    "title": "Black Hawk flying over a valley in Bamyan.jpg",
+    "author": "Sgt. Ken Scar",
+    "license": "Public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Black_Hawk_flying_over_a_valley_in_Bamyan.jpg",
+    "subject": "Bamiyan"
+  },
+  "ALB-1": {
+    "title": "Skanderbeg square tirana 2016.jpg",
+    "author": "Photo: Chris Walts",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Skanderbeg_square_tirana_2016.jpg",
+    "subject": "Tirana"
+  },
+  "DZA-1": {
+    "title": "La baie d'Alger (cropped).jpg",
+    "author": "Manini row",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:La_baie_d%27Alger_(cropped).jpg",
+    "subject": "Algiers"
+  },
+  "AGO-1": {
+    "title": "Luanda 2025 focused (cropped).jpg",
+    "author": "Iamdelcioborges",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Luanda_2025_focused_(cropped).jpg",
+    "subject": "Luanda"
+  },
+  "ARM-1": {
+    "title": "Mount Ararat and the Yerevan skyline (June 2018).jpg",
+    "author": "Սէրուժ Ուրիշեան",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Mount_Ararat_and_the_Yerevan_skyline_(June_2018).jpg",
+    "subject": "Yerevan"
+  },
+  "AUT-1": {
+    "title": "Schoenbrunn philharmoniker 2012.jpg",
+    "author": "Superbass",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Schoenbrunn_philharmoniker_2012.jpg",
+    "subject": "Vienna"
+  },
+  "BHS-1": {
+    "title": "Nassau, Bahamas aerial view (cropped).jpg",
+    "author": "Quintin Soloviev",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Nassau,_Bahamas_aerial_view_(cropped).jpg",
+    "subject": "Nassau"
+  },
+  "BGD-1": {
+    "title": "Tejgaon Commercial Area.jpg",
+    "author": "AshiqJB007",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Tejgaon_Commercial_Area.jpg",
+    "subject": "Dhaka"
+  },
+  "BLZ-1": {
+    "title": "Belize Caye Caulker-221.jpg",
+    "author": "Dronepicr",
+    "license": "CC BY 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Belize_Caye_Caulker-221.jpg",
+    "subject": "Caye Caulker"
+  },
+  "BEN-1": {
+    "title": "Grande Mosquee Porto-Novo Benin Joseph Herve Ahissou.jpg",
+    "author": "GBETONGNINOUGBO JOSEPH HERVE AHISSOU",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Grande_Mosquee_Porto-Novo_Benin_Joseph_Herve_Ahissou.jpg",
+    "subject": "Porto-Novo"
+  },
+  "BOL-1": {
+    "title": "Vista del centro de La Paz.jpg",
+    "author": "Parallelepiped09",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Vista_del_centro_de_La_Paz.jpg",
+    "subject": "La Paz"
+  },
+  "BWA-1": {
+    "title": "View from I-Tower SE 20200712.jpg",
+    "author": "CNJerem",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:View_from_I-Tower_SE_20200712.jpg",
+    "subject": "Gaborone"
+  },
+  "BRA-1": {
+    "title": "Planalto Central (cropped).jpg",
+    "author": "Arturdiasr",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Planalto_Central_(cropped).jpg",
+    "subject": "Brasília"
+  },
+  "BRN-1": {
+    "title": "Brunei Fireworks & Drone Light Show 2024 12.jpg",
+    "author": "Pangalau",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Brunei_Fireworks_%26_Drone_Light_Show_2024_12.jpg",
+    "subject": "Bandar Seri Begawan"
+  },
+  "BGR-1": {
+    "title": "Panoramic view over central Sofia and the Vitosha Mountain 2017-10-08.jpg",
+    "author": "Deensel",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Panoramic_view_over_central_Sofia_and_the_Vitosha_Mountain_2017-10-08.jpg",
+    "subject": "Sofia"
+  },
+  "BFA-1": {
+    "title": "Kabore Tambi NP MS 10798.jpg",
+    "author": "Marco Schmidt [1]",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Kabore_Tambi_NP_MS_10798.jpg",
+    "subject": "Arli National Park"
+  },
+  "BDI-1": {
+    "title": "Diocèse Gitega y.jpg",
+    "author": "NIHEREWENIMANA Richard",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Dioc%C3%A8se_Gitega_y.jpg",
+    "subject": "Gitega"
+  },
+  "KHM-1": {
+    "title": "Phnom Penh skyline from TK district Dec 2024.jpg",
+    "author": "Looppty",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Phnom_Penh_skyline_from_TK_district_Dec_2024.jpg",
+    "subject": "Phnom Penh"
+  },
+  "CMR-1": {
+    "title": "Dja River and pirogue.JPG",
+    "author": "Amcaja",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Dja_River_and_pirogue.JPG",
+    "subject": "Dja Faunal Reserve"
+  },
+  "CAN-1": {
+    "title": "Downtown Calgary 2020-4.jpg",
+    "author": "AceYYC",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Downtown_Calgary_2020-4.jpg",
+    "subject": "Calgary"
+  },
+  "CAF-1": {
+    "title": "Dzanga Sangha Entry Point, Central African Republic.jpg",
+    "author": "JosepMGracia",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Dzanga_Sangha_Entry_Point,_Central_African_Republic.jpg",
+    "subject": "Dzanga-Sangha National Park"
+  },
+  "TCD-1": {
+    "title": "Building of National Assembly DJAMENA.jpg",
+    "author": "Kayhan ERTUGRUL",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Building_of_National_Assembly_DJAMENA.jpg",
+    "subject": "N'Djamena"
+  },
+  "CHL-1": {
+    "title": "Palacio de La Moneda - miguelreflex.jpg",
+    "author": "Miguel hernandez",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Palacio_de_La_Moneda_-_miguelreflex.jpg",
+    "subject": "Santiago"
+  },
+  "CHN-1": {
+    "title": "Skyline of Beijing CBD with B-5906 approaching (20211016171955) (1).jpg",
+    "author": "N509FZ",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Skyline_of_Beijing_CBD_with_B-5906_approaching_(20211016171955)_(1).jpg",
+    "subject": "Beijing"
+  },
+  "COL-1": {
+    "title": "Bogota, Colombia (36668708290).jpg",
+    "author": "Pedro Szekely from Los Angeles, USA",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Bogota,_Colombia_(36668708290).jpg",
+    "subject": "Bogotá"
+  },
+  "COG-1": {
+    "title": "Les lieux de Brazzaville 03.jpg",
+    "author": "Africany",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Les_lieux_de_Brazzaville_03.jpg",
+    "subject": "Brazzaville"
+  },
+  "ARG-1": {
+    "title": "El Calafate (25825005237).jpg",
+    "author": "Deensel",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:El_Calafate_(25825005237).jpg",
+    "subject": "El Calafate"
+  },
+  "AZE-1": {
+    "title": "Sumqayıt şəhər İcra Hakimiyyəti.jpg",
+    "author": "Electronic Arts",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Sumqay%C4%B1t_%C5%9F%C9%99h%C9%99r_%C4%B0cra_Hakimiyy%C9%99ti.jpg",
+    "subject": "Sumqayit"
+  },
+  "BTN-1": {
+    "title": "Tashichödzong Thimphu-2008-01-23.jpg",
+    "author": "Christopher J. Fynn",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Tashich%C3%B6dzong_Thimphu-2008-01-23.jpg",
+    "subject": "Thimphu"
+  },
+  "CRI-1": {
+    "title": "Arenal volcano (70785p) (cropped).jpg",
+    "author": "Rhododendrites",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Arenal_volcano_(70785p)_(cropped).jpg",
+    "subject": "Arenal Volcano"
+  },
+  "HRV-1": {
+    "title": "Zagreb (29255640143).jpg",
+    "author": "Nick Savchenko from Kiev, Ukraine",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Zagreb_(29255640143).jpg",
+    "subject": "Zagreb"
+  },
+  "CUB-1": {
+    "title": "DJI 0197 crp wiki.jpg",
+    "author": "RenaatPeeters",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:DJI_0197_crp_wiki.jpg",
+    "subject": "Havana"
+  },
+  "BEL-1": {
+    "title": "Brussels view from Mont des Arts, Brussels, Belgium (cropped).jpg",
+    "author": "Ank Kumar",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Brussels_view_from_Mont_des_Arts,_Brussels,_Belgium_(cropped).jpg",
+    "subject": "Brussels"
+  },
+  "CYP-1": {
+    "title": "Nicosia's skyline 2024.jpg",
+    "author": "PomposPompou",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Nicosia%27s_skyline_2024.jpg",
+    "subject": "Nicosia"
+  },
+  "CZE-1": {
+    "title": "Prague (6365119737).jpg",
+    "author": "Moyan Brenn from Italy",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Prague_(6365119737).jpg",
+    "subject": "Prague"
+  },
+  "CIV-1": {
+    "title": "Visite du musée de civilisation de Côte d'Ivoire 08.jpg",
+    "author": "Abiba Pauline",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Visite_du_mus%C3%A9e_de_civilisation_de_C%C3%B4te_d%27Ivoire_08.jpg",
+    "subject": "Abidjan"
+  },
+  "COD-1": {
+    "title": "La Gombe, Kinshasa, RDC (cropped).jpg",
+    "author": "Francis Shok Mweze",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:La_Gombe,_Kinshasa,_RDC_(cropped).jpg",
+    "subject": "Kinshasa"
+  },
+  "DNK-1": {
+    "title": "2018 - Christiansborg from the Marble Bridge.jpg",
+    "author": "Moahim",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:2018_-_Christiansborg_from_the_Marble_Bridge.jpg",
+    "subject": "Copenhagen"
+  },
+  "DJI-1": {
+    "title": "Tagore.jpg",
+    "author": "Driss 19:28, 3. Jul. 2007",
+    "license": "CC BY-SA 2.0 de",
+    "source": "https://commons.wikimedia.org/wiki/File:Tagore.jpg",
+    "subject": "Tadjoura"
+  },
+  "DOM-1": {
+    "title": "SantoDomingoedit.JPG",
+    "author": "Jose Juan C",
+    "license": "Public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:SantoDomingoedit.JPG",
+    "subject": "Santo Domingo"
+  },
+  "ECU-1": {
+    "title": "FACHADA ASAMBLEA NACIONAL. QUITO, 20 DE FEBRERO 2020. 01.jpg",
+    "author": "Asamblea Nacional del Ecuador",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:FACHADA_ASAMBLEA_NACIONAL._QUITO,_20_DE_FEBRERO_2020._01.jpg",
+    "subject": "Quito"
+  },
+  "EGY-1": {
+    "title": "Abu Simbel in 2017 , photo by Hatem Moushir 96.jpg",
+    "author": "Hatem Moushir",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Abu_Simbel_in_2017_,_photo_by_Hatem_Moushir_96.jpg",
+    "subject": "Abu Simbel"
+  },
+  "SLV-1": {
+    "title": "Monumento al Salvador del Mundo 1.jpg",
+    "author": "Frankjh",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Monumento_al_Salvador_del_Mundo_1.jpg",
+    "subject": "San Salvador"
+  },
+  "GNQ-1": {
+    "title": "Nationalpark Monte Alén (Tafel).jpg",
+    "author": "Mehlauge",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Nationalpark_Monte_Al%C3%A9n_(Tafel).jpg",
+    "subject": "Monte Alén National Park"
+  },
+  "ERI-1": {
+    "title": "ISS067-E-939 - View of Earth.jpg",
+    "author": "Earth Science and Remote Sensing Unit, Lyndon B. Johnson Space Center",
+    "license": "Public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:ISS067-E-939_-_View_of_Earth.jpg",
+    "subject": "Dahlak Marine National Park"
+  },
+  "EST-1": {
+    "title": "Raekoja plats at night.jpg",
+    "author": "Jorge Franganillo",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Raekoja_plats_at_night.jpg",
+    "subject": "Tallinn"
+  },
+  "ETH-1": {
+    "title": "Addis in night.jpg",
+    "author": "Abshewaga",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Addis_in_night.jpg",
+    "subject": "Addis Ababa"
+  },
+  "FIN-1": {
+    "title": "Suomenlinna (cropped).jpg",
+    "author": "Michal Pise, Michal.Pise",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Suomenlinna_(cropped).jpg",
+    "subject": "Helsinki"
+  },
+  "GAB-1": {
+    "title": "Libreville frond de mer.jpg",
+    "author": "Shirmy25",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Libreville_frond_de_mer.jpg",
+    "subject": "Libreville"
+  },
+  "GMB-1": {
+    "title": "Gambia, Banjul, Arch 22.jpg",
+    "author": "Hannu Sääskilahti",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Gambia,_Banjul,_Arch_22.jpg",
+    "subject": "Banjul"
+  },
+  "GEO-1": {
+    "title": "View of Tbilisi from Tabori Church 2023-10-08-2.jpg",
+    "author": "Alexey Komarov",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:View_of_Tbilisi_from_Tabori_Church_2023-10-08-2.jpg",
+    "subject": "Tbilisi"
+  },
+  "GHA-1": {
+    "title": "Boti Falls, Eastern Region.JPG",
+    "author": "magwanwagwan",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Boti_Falls,_Eastern_Region.JPG",
+    "subject": "Boti Falls"
+  },
+  "GRC-1": {
+    "title": "Athens Acropolis at Daybreak.jpg",
+    "author": "Andrew Parlette",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Athens_Acropolis_at_Daybreak.jpg",
+    "subject": "Athens"
+  },
+  "GRL-1": {
+    "title": "Nuuk, Greenland skyline aerial view.jpg",
+    "author": "Quintin Soloviev",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Nuuk,_Greenland_skyline_aerial_view.jpg",
+    "subject": "Nuuk"
+  },
+  "GTM-1": {
+    "title": "Ciudad de Guatemala, CA.jpg",
+    "author": "Rene Hernandez",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Ciudad_de_Guatemala,_CA.jpg",
+    "subject": "Guatemala City"
+  },
+  "GIN-1": {
+    "title": "Ville de Conaky.jpg",
+    "author": "Boubacar Bila Diao Balde",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Ville_de_Conaky.jpg",
+    "subject": "Conakry"
+  },
+  "GUY-1": {
+    "title": "Arrowpoint HDR - panoramio.jpg",
+    "author": "Marco Farouk Basir",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Arrowpoint_HDR_-_panoramio.jpg",
+    "subject": "Essequibo Islands"
+  },
+  "HTI-1": {
+    "title": "Labadee, Haiti II.jpg",
+    "author": "SpaceEconomist192",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Labadee,_Haiti_II.jpg",
+    "subject": "Labadie"
+  },
+  "HUN-1": {
+    "title": "View from Gellért Hill to the Danube, Hungary - Budapest (28493220635).jpg",
+    "author": "Visions of Domino",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:View_from_Gell%C3%A9rt_Hill_to_the_Danube,_Hungary_-_Budapest_(28493220635).jpg",
+    "subject": "Budapest"
+  },
+  "ISL-1": {
+    "title": "Reykjavík, view from Hallgrímskirkja (2).jpg",
+    "author": "Olga Ernst",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Reykjav%C3%ADk,_view_from_Hallgr%C3%ADmskirkja_(2).jpg",
+    "subject": "Reykjavík"
+  },
+  "IDN-1": {
+    "title": "Bundaran Hotel Indonesia (2025) (cropped).jpg",
+    "author": "Medelam",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Bundaran_Hotel_Indonesia_(2025)_(cropped).jpg",
+    "subject": "Jakarta"
+  },
+  "IRN-1": {
+    "title": "North of Tehran Skyline view.jpg",
+    "author": "Ninara from Helsinki, Finland",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:North_of_Tehran_Skyline_view.jpg",
+    "subject": "Tehran"
+  },
+  "IRQ-1": {
+    "title": "5628442718 b10fc2c47f o.jpg",
+    "author": "USACE HQ , JIM GORDAN, CIV, USACE",
+    "license": "Public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:5628442718_b10fc2c47f_o.jpg",
+    "subject": "Baghdad"
+  },
+  "ISR-1": {
+    "title": "Temple Mount (Aerial view, 2007) 07.jpg",
+    "author": "Godot13",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Temple_Mount_(Aerial_view,_2007)_07.jpg",
+    "subject": "Jerusalem"
+  },
+  "JAM-1": {
+    "title": "Wildlife on Black River, Jamaica.JPG",
+    "author": "Johannes49 at English Wikipedia",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Wildlife_on_Black_River,_Jamaica.JPG",
+    "subject": "Black River"
+  },
+  "JOR-1": {
+    "title": "Ajlun from Ajlun Castle.jpg",
+    "author": "Daniel Case",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Ajlun_from_Ajlun_Castle.jpg",
+    "subject": "Ajlun"
+  },
+  "KOS-1": {
+    "title": "Monument of Miloš Obilić, Gračanica.jpg",
+    "author": "This image was made by Sadko. Please credit this with: \"Sadko, Wikipedia\" in the immediate vicinity of the image. A message to me would be appreciated as well. If you wish to use, license, or buy the image, please contact me to discuss terms. More of my work can be found in my personal gallery.",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Monument_of_Milo%C5%A1_Obili%C4%87,_Gra%C4%8Danica.jpg",
+    "subject": "Gračanica"
   }
 }

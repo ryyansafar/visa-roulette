@@ -11,10 +11,10 @@
 
 .board-inner {
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 36px;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 28px;
   align-items: baseline;
-  max-width: 1280px;
+  max-width: var(--page);
   width: 100%;
   margin: 0 auto;
 }
@@ -57,14 +57,23 @@
 }
 
 .steps li[data-done="true"] {
-  color: var(--muted);
+  color: var(--text);
 }
 
-.steps li[data-done="true"]::after {
-  content: "✓";
-  margin-left: 4px;
-  font-size: var(--t-12);
+.theme-toggle {
+  font: 400 var(--t-12)/1 var(--font-data);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  padding: 4px 0 3px;
+  min-height: 0;
+  cursor: pointer;
 }
+.theme-toggle:hover { color: var(--text); border-bottom-color: var(--text); }
+.theme-toggle.floating { position: fixed; top: 14px; right: 16px; z-index: 20; }
 
 .status {
   grid-column: auto;
@@ -88,7 +97,7 @@ main {
 }
 
 main > * {
-  max-width: 1280px;
+  max-width: var(--page);
   margin-left: auto;
   margin-right: auto;
 }
@@ -106,12 +115,12 @@ main > * {
 }
 
 .foot > p:first-child {
-  max-width: 1280px;
+  max-width: var(--page);
   margin: 0 auto 16px;
 }
 
 .about {
-  max-width: 1280px;
+  max-width: var(--page);
   margin: 0 auto;
 }
 
@@ -154,7 +163,7 @@ main > * {
 }
 
 .about .links a {
-  color: var(--signal);
+  color: var(--text);
   text-decoration: none;
   font: 400 var(--t-12)/1.4 var(--font-data);
   letter-spacing: 0.08em;
@@ -170,7 +179,7 @@ main > * {
 
 @media (max-width: 900px) {
   .board-inner {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr auto;
     gap: 12px;
     align-items: center;
   }
@@ -200,15 +209,9 @@ main > * {
 }
 
 .foot > * {
-  max-width: 1280px;
+  max-width: var(--page);
   margin-left: auto;
   margin-right: auto;
-}
-
-/* the globe screen runs wider; header and footer follow so edges stay shared */
-body:has(#step-throw:not([hidden])) .board-inner,
-body:has(#step-throw:not([hidden])) .foot > * {
-  max-width: 1872px;
 }
 
 /* Eyebrows: section helper text 12px mono uppercase muted */

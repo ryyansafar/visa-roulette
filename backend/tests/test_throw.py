@@ -169,3 +169,12 @@ def test_a_hard_throw_that_clips_the_accelerometer_still_registers():
     rows = [(t, *(max(-156.9, min(156.9, a)) for a in (ax, ay, az))) for t, ax, ay, az in synth_throw(14.0, 30.0, 0.0, push_s=0.05)]
     result = analyze_throw([Sample(*row) for row in rows])
     assert 5.0 < result.speed_mps <= 25.0
+
+
+@pytest.mark.parametrize(
+    ("dx", "dy", "heading"), [(0, -40, 0.0), (40, 0, 90.0), (0, 40, 180.0), (-40, 0, 270.0), (30, -30, 45.0)]
+)
+def test_a_short_air_mouse_sweep_still_heads_the_way_it_was_swept(dx, dy, heading):
+    result = throw_from_flick(dx, dy, dt_ms=150)
+    assert result.heading_deg == pytest.approx(heading, abs=0.01)
+    assert result.distance_km > 0

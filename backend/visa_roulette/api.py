@@ -2,6 +2,7 @@
 
 import asyncio
 import dataclasses
+import importlib.util
 import json
 import shutil
 from contextlib import asynccontextmanager
@@ -15,6 +16,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, StringConstraints, field_validator
 
+from visa_roulette import hosted
 from visa_roulette import operator as booth_operator
 from visa_roulette import stt
 from visa_roulette.bcbp import parse_bcbp
@@ -22,11 +24,7 @@ from visa_roulette.checklist import build_checklist
 from visa_roulette.errors import ScanError
 from visa_roulette.flow_api import Hub
 from visa_roulette.flow_api import router as flow_router
-from visa_roulette.imaging import load_image
 from visa_roulette.mrz import parse_td3
-from visa_roulette.mrz_locate import opencv_available
-from visa_roulette.scan_boarding import scan_boarding_pass
-from visa_roulette.scan_passport import read_mrz
 from visa_roulette.throw import ThrowError
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -67,15 +65,42 @@ async def read_body(request: Request) -> bytes:
     return b"".join(chunks)
 
 
-def _mrz_payload(scan) -> dict:
-    td3 = scan.td3
+def _mrz_payload(td3, line1: str, line2: str) -> dict:
     fields = {k: v for k, v in dataclasses.asdict(td3).items() if k != "checks"}
     return {
-        "lines": [scan.line1, scan.line2],
+        "lines": [line1, line2],
         "fields": fields,
         "checks": td3.checks,
         "all_checks_pass": td3.all_checks_pass,
     }
+
+
+async def _scan_passport(data: bytes) -> dict:
+    # Heavy imports (Pillow, OpenCV, Tesseract) stay inside the function so a host without them still boots.
+    if hosted.can_read_passport():
+        from visa_roulette.imaging import load_image
+        from visa_roulette.scan_passport import read_mrz
+
+        scan = await run_in_threadpool(lambda: read_mrz(load_image(data)))
+        return {"mrz": _mrz_payload(scan.td3, scan.line1, scan.line2), "confidence": scan.score / len(scan.td3.checks), "method": scan.method}
+    lines = hosted.passport_fixture(data)
+    if lines is None:
+        raise hosted.unavailable()
+    td3 = parse_td3(*lines)
+    return {"mrz": _mrz_payload(td3, *lines), "confidence": 1.0, "method": "fixture"}
+
+
+async def _scan_boarding(data: bytes, year: int) -> dict:
+    if hosted.can_read_boarding():
+        from visa_roulette.imaging import load_image
+        from visa_roulette.scan_boarding import scan_boarding_pass
+
+        scan = await run_in_threadpool(lambda: scan_boarding_pass(load_image(data), year))
+        return {"raw": scan.raw, "format": scan.format, "boarding_pass": dataclasses.asdict(scan.boarding_pass)}
+    raw = hosted.boarding_fixture(data)
+    if raw is None:
+        raise hosted.unavailable()
+    return {"raw": raw, "format": "PDF417", "boarding_pass": dataclasses.asdict(parse_bcbp(raw, year)), "source": "fixture"}
 
 
 def _mount(app: FastAPI, url: str, directory: Path, **kwargs) -> None:
@@ -83,10 +108,13 @@ def _mount(app: FastAPI, url: str, directory: Path, **kwargs) -> None:
         app.mount(url, StaticFiles(directory=directory, **kwargs), name=url.strip("/") or "web")
 
 
-def create_app() -> FastAPI:
+def create_app(hosted_mode: bool | None = None) -> FastAPI:
+    """`hosted_mode` defaults to the environment: on Vercel the CDN serves the pages, nothing is warmed and no hardware is assumed."""
+    on_host = hosted.is_hosted() if hosted_mode is None else hosted_mode
+
     @asynccontextmanager
     async def lifespan(_: FastAPI):
-        warming = [asyncio.create_task(asyncio.to_thread(warm)) for warm in (booth_operator.warm, stt.warm)]
+        warming = [] if on_host else [asyncio.create_task(asyncio.to_thread(warm)) for warm in (booth_operator.warm, stt.warm)]
         yield
         for task in warming:
             task.cancel()
@@ -102,6 +130,7 @@ def create_app() -> FastAPI:
         return JSONResponse({"detail": {"code": exc.code, "message": exc.message}}, status_code=422)
 
     app.state.hub = Hub()
+    app.state.hosted = on_host
     app.include_router(flow_router)
 
     @app.get("/api/health")
@@ -109,24 +138,21 @@ def create_app() -> FastAPI:
         return {
             "status": "ok",
             "version": app.version,
+            "hosted": on_host,
             "capabilities": {
                 "tesseract": shutil.which("tesseract") is not None,
-                "opencv": opencv_available(),
-                "zxing": True,
+                "opencv": importlib.util.find_spec("cv2") is not None,
+                "zxing": importlib.util.find_spec("zxingcpp") is not None,
             },
         }
 
     @app.post("/api/scan/boarding-pass")
     async def scan_boarding(request: Request, year: int = Query(default_factory=lambda: date.today().year, ge=2000, le=2100)):
-        image = await run_in_threadpool(load_image, await read_body(request))
-        scan = await run_in_threadpool(scan_boarding_pass, image, year)
-        return {"raw": scan.raw, "format": scan.format, "boarding_pass": dataclasses.asdict(scan.boarding_pass)}
+        return await _scan_boarding(await read_body(request), year)
 
     @app.post("/api/scan/passport")
     async def scan_passport(request: Request):
-        image = await run_in_threadpool(load_image, await read_body(request))
-        scan = await run_in_threadpool(read_mrz, image)
-        return {"mrz": _mrz_payload(scan), "confidence": scan.score / len(scan.td3.checks), "method": scan.method}
+        return await _scan_passport(await read_body(request))
 
     @app.post("/api/checklist")
     async def checklist(req: ChecklistRequest):
@@ -168,9 +194,17 @@ def create_app() -> FastAPI:
             for p in manifest
         ]
 
-    _mount(app, "/fixtures", ROOT / "fixtures")
-    _mount(app, "/assets", ROOT / "assets")
-    _mount(app, "/", ROOT / "web", html=True)
+    @app.middleware("http")
+    async def revalidate_static(request, call_next):
+        response = await call_next(request)
+        if not request.url.path.startswith("/api") and "cache-control" not in response.headers:
+            response.headers["Cache-Control"] = "no-cache"
+        return response
+
+    if not on_host:  # on Vercel the CDN serves web/, assets/ and fixtures/ (see scripts/vercel_build.sh)
+        _mount(app, "/fixtures", ROOT / "fixtures")
+        _mount(app, "/assets", ROOT / "assets")
+        _mount(app, "/", ROOT / "web", html=True)
     return app
 
 

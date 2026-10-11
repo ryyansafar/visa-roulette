@@ -77,9 +77,7 @@
 #step-checklist .verdict { padding: 20px 24px 24px; gap: 10px; overflow: visible; }
 #step-checklist .verdict .stamp { --stamp-size: clamp(28px, 2.4vw + 10px, 56px); margin: 14px 12px 8px 6px; }
 #step-checklist .cl-note { font: 500 var(--t-18)/1.35 var(--font-display); }
-#step-checklist .verdict .big { order: 1; display: flex; align-items: baseline; gap: 2px; font-size: var(--t-48); line-height: 1; margin-top: 6px; }
-#step-checklist .verdict .big small { font: 700 calc(var(--t-48) * 0.4)/1 var(--font-display); color: var(--text); letter-spacing: 0; }
-#step-checklist .verdict #cl-count { order: 2; margin: 0; }
+#step-checklist .verdict .big, #step-checklist .verdict .meter { display: none; }
 #step-checklist .verdict .meter { order: 3; }
 #step-checklist .verdict .meter { height: 6px; }
 #step-checklist .verdict .meter span { background: var(--muted); }

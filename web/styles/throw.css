@@ -2,7 +2,7 @@
 #step-throw {
   --throw-chrome: 150px; /* header + main padding; keeps the globe inside one viewport */
   --rail: clamp(380px, 26vw, 480px);
-  max-width: none;
+  max-width: var(--page);
   grid-template-columns: minmax(0, 1fr) var(--rail);
   gap: 0 40px;
   align-items: start;
@@ -15,9 +15,9 @@
 #step-throw .stage {
   position: relative;
   flex: 0 1 auto;
-  width: min(100%, calc((100svh - var(--throw-chrome)) * 5 / 3));
-  border: var(--hairline);
-  background: #05080f;
+  width: min(100%, calc(100svh - var(--throw-chrome)));
+  border: 0;
+  background: transparent;
 }
 #step-throw .stage::before {
   content: "";
@@ -31,8 +31,10 @@
     linear-gradient(var(--text), var(--text)) 0 50% / 14px 1px no-repeat,
     linear-gradient(var(--text), var(--text)) 100% 50% / 14px 1px no-repeat;
 }
-#step-throw canvas { border: 0; width: 100%; height: auto; aspect-ratio: 5 / 3; cursor: grab; }
+#step-throw canvas { border: 0; width: 100%; height: auto; aspect-ratio: 1 / 1; cursor: grab; }
 #step-throw canvas:focus-visible { outline-offset: -3px; }
+#step-throw canvas[hidden] { display: none !important; }
+#step-throw canvas.plane3d { background: transparent; cursor: default; }
 #step-throw .plane { width: 96px; height: 96px; margin: -48px 0 0 -48px; filter: none; z-index: 2; }
 
 #step-throw .legend {
@@ -50,11 +52,11 @@
 #step-throw .landed-tag { display: none; }
 #step-throw:has(#r-stamp:not([hidden])) .landed-tag {
   display: block; position: absolute; left: calc(50% + 34px); top: calc(50% - 52px); z-index: 2; pointer-events: none;
-  padding: 4px 8px; background: rgba(5, 8, 15, 0.85); border: 1px solid var(--signal); color: var(--text);
+  padding: 4px 8px; background: var(--ink); border: 1px solid var(--text); color: var(--text);
   font: 600 var(--t-12)/1 var(--font-data); letter-spacing: 0.14em; text-transform: uppercase;
 }
 #step-throw:has(#r-stamp:not([hidden])) .landed-tag::before {
-  content: ""; position: absolute; right: 100%; top: 100%; width: 24px; height: 1px; background: var(--signal); transform-origin: right center; transform: rotate(-45deg) translate(-4px, 4px);
+  content: ""; position: absolute; right: 100%; top: 100%; width: 24px; height: 1px; background: var(--text); transform-origin: right center; transform: rotate(-45deg) translate(-4px, 4px);
 }
 
 #step-throw .rail { container-type: inline-size; display: grid; align-content: start; min-width: 0; }
@@ -70,7 +72,7 @@
 }
 #step-throw .modes label + label { border-left: var(--hairline); }
 #step-throw .modes input { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; margin: 0; padding: 0; opacity: 0; cursor: pointer; }
-#step-throw .modes label:has(input:checked) { background: var(--paper); color: var(--paper-ink); }
+#step-throw .modes label:has(input:checked) { background: var(--text); color: var(--ink); }
 #step-throw .modes label:has(input:focus-visible) { outline: 3px solid var(--signal); outline-offset: -3px; }
 #step-throw .modes label:not(:has(input:checked)):hover { background: var(--ink-2); }
 
@@ -143,3 +145,7 @@
 .plane-trail[hidden] { display: none; }
 .plane-trail polyline { fill: none; stroke: var(--signal); stroke-width: 1.5; stroke-opacity: 0.45; stroke-linejoin: round; stroke-linecap: round; }
 .plane-trail.is-fading { opacity: 0; transition: opacity 600ms linear; }
+
+/* before a landing there is nothing to read or confirm, so the readout and its actions stay out of the way */
+#step-throw .readout:not(:has(#r-stamp:not([hidden]))) { display: none; }
+#step-throw .rail .actions:has(#keep:disabled) { display: none; }
